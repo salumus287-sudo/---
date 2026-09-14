@@ -374,3 +374,63 @@ main {
   overflow-wrap: anywhere;
   word-break: break-word;
 }
+
+/* =========================================================
+   MOBILE FIX - NO HORIZONTAL SCROLL
+   ========================================================= */
+
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden !important;
+}
+
+main,
+.page,
+.cards,
+.card {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0 !important;
+}
+
+.card {
+  overflow: hidden;
+}
+
+.card * {
+  max-width: 100% !important;
+  min-width: 0 !important;
+  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
+}
+
+@media (max-width: 600px) {
+  main {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .page {
+    width: 100%;
+    margin: 0;
+  }
+
+  .cards {
+    width: 100%;
+    grid-template-columns: 1fr !important;
+  }
+
+  .card {
+    width: 100%;
+    padding: 16px;
+  }
+
+  .card b {
+    display: block;
+    width: 100%;
+    font-size: 18px;
+    line-height: 1.4;
+  }
+}
