@@ -23,8 +23,13 @@ const FEEDS = [
         name: "BBC News",
         url: "https://feeds.bbci.co.uk/news/rss.xml",
         category: "dunia"
+    },
+    {
+        name: "AllAfrica Tanzania",
+        url: "https://allafrica.com/tools/headlines/rdf/tanzania/headlines.rdf",
+        category: "news"
     }
-];
+]
 
 async function importDailyNews() {
     if (!process.env.DATABASE_URL) {
