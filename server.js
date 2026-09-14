@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const path = require("path");
+const { importDailyNews } = require("./dailynews-import");
 const { Pool } = require("pg");
 
 const app = express();
@@ -189,6 +190,22 @@ app.use("/api", (req, res) => {
 // ===============================
 // START SERVER
 // ===============================
+
+
+async function startDailyNewsImporter() {
+    try {
+        await importDailyNews();
+        console.log("📰 Daily News auto-import: ONLINE");
+    } catch (error) {
+        console.error("❌ Daily News auto-import:", error.message);
+    }
+}
+
+startDailyNewsImporter();
+
+setInterval(() => {
+    startDailyNewsImporter();
+}, 10 * 60 * 1000);
 
 app.listen(PORT, HOST, () => {
     console.log("");
