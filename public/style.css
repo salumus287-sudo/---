@@ -239,3 +239,138 @@ button {
     gap: 10px;
   }
 }
+
+/* =========================================================
+   DRACK HUB - RESPONSIVE NEWS + BOLD FONT
+   ========================================================= */
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+/* Main area itumie nafasi yote */
+main {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  padding: 30px;
+}
+
+/* Page iwe pana vizuri */
+.page {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* News cards */
+.cards {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 30px;
+}
+
+/* Card */
+.card {
+  width: 100%;
+  min-width: 0;
+  background: #111820;
+  border: 1px solid #202b35;
+  border-radius: 15px;
+  padding: 22px;
+  overflow: hidden;
+}
+
+/* Title za habari - muonekano wa bold */
+.card b {
+  font-family: Arial, sans-serif;
+  font-weight: 900;
+  font-size: 20px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+/* Maandishi ya habari */
+.card {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.card small {
+  font-size: 13px;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 900px) {
+  main {
+    padding: 18px;
+  }
+
+  .page {
+    width: 100%;
+  }
+
+  .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+}
+
+@media (max-width: 600px) {
+  body {
+    display: block;
+  }
+
+  main {
+    width: 100%;
+    padding: 12px;
+  }
+
+  .page {
+    width: 100%;
+    max-width: none;
+  }
+
+  .cards {
+    width: 100%;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .card {
+    width: 100%;
+    padding: 18px;
+    border-radius: 13px;
+  }
+
+  .card b {
+    font-size: 19px;
+  }
+}
+
+/* Titles za sections */
+.title {
+  font-weight: 900;
+  letter-spacing: -0.3px;
+}
+
+/* Kuzuia maandishi marefu kuvunja page */
+.card,
+.card * {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
