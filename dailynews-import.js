@@ -1,10 +1,30 @@
 const { Pool } = require("pg");
 const Parser = require("rss-parser");
 
-const FEED_URL =
-    "https://dailynews.co.tz/?format=feed&type=rss";
+const parser = new Parser({
+    timeout: 15000,
+    headers: {
+        "User-Agent": "DRACK-HUB-News-Aggregator/1.0"
+    }
+});
 
-const parser = new Parser();
+const FEEDS = [
+    {
+        name: "ESPN Soccer",
+        url: "https://www.espn.com/espn/rss/soccer/news",
+        category: "sports"
+    },
+    {
+        name: "BBC Sport Football",
+        url: "https://feeds.bbci.co.uk/sport/football/rss.xml",
+        category: "sports"
+    },
+    {
+        name: "BBC News",
+        url: "https://feeds.bbci.co.uk/news/rss.xml",
+        category: "dunia"
+    }
+];
 
 async function importDailyNews() {
     if (!process.env.DATABASE_URL) {
@@ -20,66 +40,82 @@ async function importDailyNews() {
 
     try {
         console.log("=================================");
-        console.log("   📰 DAILY NEWS RSS IMPORT");
+        console.log("      📰 DRACK HUB RSS IMPORT");
         console.log("=================================");
 
-        const feed = await parser.parseURL(FEED_URL);
+        let totalAdded = 0;
 
-        const items = (feed.items || []).slice(0, 5);
+        for (const feedConfig of FEEDS) {
+            console.log("");
+            console.log(`📡 ${feedConfig.name}`);
 
-        console.log(`📡 Zimepatikana: ${items.length} habari`);
+            try {
+                const feed = await parser.parseURL(feedConfig.url);
+                const items = (feed.items || []).slice(0, 10);
 
-        for (const item of items) {
-            const title = item.title || "Bila kichwa";
-            const sourceUrl = item.link || "";
+                console.log(`   Habari zilizopatikana: ${items.length}`);
 
-            const content =
-                item["content:encoded"] ||
-                item.content ||
-                item.contentSnippet ||
-                item.summary ||
-                "";
+                for (const item of items) {
+                    const title = (item.title || "").trim();
+                    const sourceUrl = (item.link || "").trim();
 
-            if (!sourceUrl) continue;
+                    if (!title || !sourceUrl) {
+                        continue;
+                    }
 
-            const exists = await pool.query(
-                `SELECT id FROM posts WHERE source_url = $1 LIMIT 1`,
-                [sourceUrl]
-            );
+                    const content =
+                        item.contentSnippet ||
+                        item.summary ||
+                        item.content ||
+                        "";
 
-            if (exists.rows.length > 0) {
-                console.log(`⏭️ Tayari ipo: ${title}`);
-                continue;
+                    const exists = await pool.query(
+                        `SELECT id FROM posts WHERE source_url = $1 LIMIT 1`,
+                        [sourceUrl]
+                    );
+
+                    if (exists.rows.length > 0) {
+                        continue;
+                    }
+
+                    await pool.query(
+                        `
+                        INSERT INTO posts
+                        (
+                            title,
+                            content,
+                            category,
+                            image_url,
+                            source_name,
+                            source_url
+                        )
+                        VALUES ($1,$2,$3,$4,$5,$6)
+                        `,
+                        [
+                            title,
+                            content,
+                            feedConfig.category,
+                            null,
+                            feedConfig.name,
+                            sourceUrl
+                        ]
+                    );
+
+                    totalAdded++;
+
+                    console.log(`   ✅ ${title}`);
+                }
+
+            } catch (error) {
+                console.log(
+                    `   ⚠️ Feed imeshindwa: ${error.message}`
+                );
             }
-
-            await pool.query(
-                `
-                INSERT INTO posts
-                (
-                    title,
-                    content,
-                    category,
-                    image_url,
-                    source_name,
-                    source_url
-                )
-                VALUES ($1,$2,$3,$4,$5,$6)
-                `,
-                [
-                    title,
-                    content,
-                    "news",
-                    null,
-                    "Daily News",
-                    sourceUrl
-                ]
-            );
-
-            console.log(`✅ Imeongezwa: ${title}`);
         }
 
+        console.log("");
         console.log("=================================");
-        console.log("✅ DAILY NEWS RSS IMPORT IMEKAMILIKA");
+        console.log(`✅ Habari mpya: ${totalAdded}`);
         console.log("=================================");
 
     } finally {
@@ -87,4 +123,6 @@ async function importDailyNews() {
     }
 }
 
-module.exports = { importDailyNews };
+module.exports = {
+    importDailyNews
+};
