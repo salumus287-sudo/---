@@ -253,6 +253,573 @@ font-weight:bold;
 }
 
 </style>
+
+<style id="drack-live-score-style">
+.live-score-card {
+    width: 100%;
+    background: #101820;
+    border: 1px solid #263442;
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 10px;
+}
+
+.live-score-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.live-badge {
+    color: #fff;
+    background: #d71920;
+    padding: 5px 9px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.live-minute {
+    color: #ff4d4d;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.live-league {
+    text-align: center;
+    color: #8d9aa7;
+    font-size: 12px;
+    margin-bottom: 12px;
+}
+
+.live-team-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 10px;
+}
+
+.live-team {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 7px;
+    min-width: 0;
+}
+
+.live-team img {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+}
+
+.live-team strong {
+    color: #fff;
+    font-size: 13px;
+    line-height: 1.25;
+    word-break: break-word;
+}
+
+.live-score {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #fff;
+    font-size: 23px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.live-score b {
+    color: #778492;
+    font-size: 16px;
+}
+
+#drack-live-scores {
+    width: 100%;
+    margin-top: 14px;
+}
+
+@media (max-width: 480px) {
+    .live-team img {
+        width: 32px;
+        height: 32px;
+    }
+
+    .live-team strong {
+        font-size: 12px;
+    }
+
+    .live-score {
+        font-size: 20px;
+        gap: 5px;
+    }
+}
+</style>
+
+
+<style>
+.youtube-section {
+    margin: 25px 0;
+}
+
+.youtube-controls {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 15px 0;
+}
+
+.youtube-controls button {
+    border: 0;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.youtube-controls .active {
+    font-weight: bold;
+}
+
+.youtube-card {
+    overflow: hidden;
+}
+
+.youtube-thumb {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #111;
+}
+
+.youtube-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.play-button {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,.75);
+    color: white;
+    font-size: 22px;
+}
+
+.youtube-channel {
+    font-weight: bold;
+}
+
+.youtube-date {
+    font-size: 13px;
+    opacity: .75;
+}
+</style>
+
+<style id="drack-music-css">
+
+.music-hero {
+    padding: 24px;
+    margin: 15px 0 18px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #111, #292929);
+    color: #fff;
+    box-shadow: 0 6px 20px rgba(0,0,0,.15);
+}
+
+.music-hero h2 {
+    margin: 0 0 8px;
+    font-size: 24px;
+}
+
+.music-hero p {
+    margin: 0;
+    opacity: .8;
+}
+
+.music-search {
+    display: flex;
+    gap: 8px;
+    margin: 15px 0;
+}
+
+.music-search input {
+    flex: 1;
+    min-width: 0;
+    padding: 14px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    font-size: 16px;
+    outline: none;
+}
+
+.music-search input:focus {
+    border-color: #888;
+}
+
+.music-search button,
+.music-tools button {
+    border: 0;
+    border-radius: 12px;
+    padding: 13px 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.music-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 15px 0 20px;
+}
+
+.music-filter.active {
+    outline: 2px solid currentColor;
+}
+
+.music-player {
+    width: 100%;
+    background: #000;
+    color: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    margin: 15px 0 25px;
+}
+
+.music-player iframe {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 0;
+    display: block;
+}
+
+.music-player div {
+    padding: 14px;
+}
+
+#music-results {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.music-card {
+    overflow: hidden;
+    margin: 0;
+    min-width: 0;
+}
+
+.music-thumb {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #111;
+    overflow: hidden;
+}
+
+.music-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.music-play {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: rgba(255,0,0,.92);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    pointer-events: none;
+}
+
+.music-card h3 {
+    font-size: 16px;
+    line-height: 1.35;
+    margin: 10px 0 8px;
+}
+
+.music-card p {
+    font-size: 13px;
+    margin: 6px 0;
+    opacity: .8;
+}
+
+.music-download {
+    display: inline-block;
+    margin-top: 9px;
+    padding: 9px 12px;
+    border-radius: 9px;
+    background: #222;
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+@media (max-width: 600px) {
+
+    #music-results {
+        grid-template-columns: 1fr;
+    }
+
+    .music-search {
+        flex-direction: column;
+    }
+
+    .music-search button {
+        width: 100%;
+    }
+
+    .music-tools button {
+        flex: 1;
+    }
+}
+
+</style>
+
+<style id="drack-carved-font">
+body,
+button,
+input,
+select,
+textarea,
+a,
+p,
+span,
+div,
+article,
+section,
+label,
+li,
+td,
+th {
+    font-family: "Courier New", monospace !important;
+}
+
+/* VICHWA */
+.logo,
+.title,
+.section-title h2,
+.hero h1,
+.youtube-section .section-title h2 {
+    font-weight: 900 !important;
+    letter-spacing: 0.5px;
+}
+
+/* DRACK HUB */
+.logo {
+    font-size: 20px !important;
+}
+
+/* KICHWA CHA YOUTUBE */
+.youtube-section .section-title {
+    margin-top: 0 !important;
+    margin-bottom: 8px !important;
+    padding-top: 0 !important;
+}
+
+.youtube-section .section-title h2 {
+    font-size: 15px !important;
+    line-height: 1.15 !important;
+    margin: 0 !important;
+}
+
+/* HABARI / VIDEO */
+.card h3,
+.youtube-card h3,
+.youtube-section h3 {
+    font-size: 11px !important;
+    line-height: 1.35 !important;
+    font-weight: 700 !important;
+}
+
+.card p,
+.youtube-card p,
+.youtube-section p {
+    font-size: 9px !important;
+    line-height: 1.4 !important;
+}
+
+.news-meta,
+.news-source {
+    font-size: 8px !important;
+}
+
+/* BUTTONS */
+.menu button,
+.youtube-controls button {
+    font-family: "Courier New", monospace !important;
+    font-size: 9px !important;
+}
+</style>
+
+
+<style id="drack-home-tight">
+/* HOME: ondoa nafasi kubwa chini ya DRACK HUB */
+#home {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#home .hero {
+    margin: 0 !important;
+    padding: 6px 10px !important;
+    min-height: 0 !important;
+}
+
+#home .blue {
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 16px !important;
+    line-height: 1.1 !important;
+}
+
+/* YouTube iwe karibu na sehemu iliyotangulia */
+.youtube-section {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+.youtube-section .section-title {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+</style>
+
+
+<style id="drack-sports-buttons">
+/* SPORTS BUTTONS */
+#sports .sports-tabs,
+#sports .sports-buttons,
+#sports .tabs,
+#sports .section-tabs {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 7px !important;
+    width: 100% !important;
+    margin: 8px 0 12px !important;
+}
+
+/* Vitufe vya SPORTS */
+#sports button {
+    min-height: 38px !important;
+    padding: 7px 5px !important;
+    font-family: "Courier New", monospace !important;
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+    white-space: normal !important;
+}
+
+/* Kama buttons hazipo ndani ya container maalum */
+#sports > button,
+#sports .hero + button {
+    min-height: 38px !important;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    #sports button {
+        font-size: 8px !important;
+    }
+}
+</style>
+
+
+<style id="drack-font-size-v3">
+/* FONT YA JUMLA */
+body,
+button,
+input,
+select,
+textarea,
+a,
+p,
+span,
+div,
+article,
+section,
+label,
+li,
+td,
+th {
+    font-family: "Courier New", monospace !important;
+}
+
+/* VICHWA */
+.logo {
+    font-size: 22px !important;
+}
+
+.title {
+    font-size: 19px !important;
+}
+
+.hero h1 {
+    font-size: 22px !important;
+}
+
+.section-title h2,
+.youtube-section .section-title h2 {
+    font-size: 17px !important;
+    line-height: 1.2 !important;
+}
+
+/* HABARI */
+.card h3,
+.youtube-card h3,
+.youtube-section h3 {
+    font-size: 13px !important;
+    line-height: 1.35 !important;
+}
+
+.card p,
+.youtube-card p,
+.youtube-section p {
+    font-size: 11px !important;
+    line-height: 1.45 !important;
+}
+
+/* TAARIFA NDOGO */
+.news-meta,
+.news-source,
+.tag {
+    font-size: 10px !important;
+}
+
+/* BUTTONS */
+.menu button,
+.youtube-controls button {
+    font-size: 10px !important;
+}
+
+/* SPORTS BUTTONS */
+#sports button {
+    font-size: 10px !important;
+}
+</style>
+
 </head>
 
 <body>
@@ -260,12 +827,7 @@ font-weight:bold;
 <header>
 <div class="logo">DRACK <span>HUB</span></div>
 
-<input
-class="search"
-id="search"
-type="search"
-placeholder="🔎 Tafuta habari, timu, ligi..."
->
+
 
 </header>
 
@@ -276,17 +838,14 @@ placeholder="🔎 Tafuta habari, timu, ligi..."
 <button onclick="openPage('sports',this)">⚽<br>SPORTS</button>
 
 <button onclick="openPage('scores',this)">🔴<br>LIVE SCORES</button>
-<button onclick="openPage('table',this)">📊<br>LIVE TABLE</button>
-<button onclick="openPage('ligi',this)">🏆<br>LIGI</button>
 
-<button onclick="openPage('fixtures',this)">📅<br>FIXTURES</button>
-<button onclick="openPage('series',this)">🎬<br>SERIES</button>
 <button onclick="openPage('muziki',this)">🎵<br>MUZIKI</button>
 
-<button onclick="openPage('dunia',this)">🌍<br>DUNIA</button>
-<button onclick="openPage('updates',this)">📢<br>UPDATES</button>
-<button onclick="openPage('sportslive',this)">🔴<br>SPORTS LIVE</button>
 
+
+<button onclick="window.open('http://www.fawanews.sc/index.html','_blank','noopener,noreferrer')">
+🔴<br>TAZAMA MPIRA
+</button>
 </nav>
 
 <main class="container">
@@ -297,39 +856,6 @@ placeholder="🔎 Tafuta habari, timu, ligi..."
 
 <div class="hero">
 <div class="blue">🔥 DRACK HUB</div>
-<h1>Habari zote sehemu moja.</h1>
-<p>
-Sports • Habari • Live Scores • Ligi • Burudani
-</p>
-</div>
-
-<h2 class="title">🔥 Habari Mpya</h2>
-
-<div class="cards">
-
-<div class="card">
-<div class="tag">📰 HABARI</div>
-<h3>Karibu DRACK HUB</h3>
-<p>
-Jukwaa lako la habari, michezo na burudani.
-</p>
-</div>
-
-<div class="card live">
-<div class="red">🔴 LIVE</div>
-<h3>Live Scores</h3>
-<p>
-Mechi zinazoendelea zitaonekana hapa.
-</p>
-</div>
-
-<div class="card">
-<div class="tag">📊 LIVE TABLE</div>
-<h3>Misimamo ya ligi</h3>
-<p>
-Msimamo wa timu utaonyeshwa hapa.
-</p>
-</div>
 
 </div>
 </section>
@@ -341,6 +867,8 @@ Msimamo wa timu utaonyeshwa hapa.
 
 <h2 class="title">📰 HABARI</h2>
 
+
+
 <div id="news-list" class="cards">
 <div class="empty">⏳ Inapakia habari...</div>
 </div>
@@ -350,31 +878,117 @@ Msimamo wa timu utaonyeshwa hapa.
 
 <!-- SPORTS -->
 
+
+
+
 <section id="sports" class="page">
 
-<h2 class="title">⚽ SPORTS</h2>
+    <div class="section-title">
+        <h2>⚽ SPORTS</h2>
+        <p>Habari, live scores, fixtures na misimamo ya ligi</p>
+    </div>
 
-<div class="cards">
+    <div class="sports-tools">
 
-<div class="card">
-<div class="tag">⚽ FOOTBALL</div>
-<h3>Habari za mpira</h3>
-<p>
-Matokeo, usajili, taarifa za timu na habari nyingine za mpira.
-</p>
-</div>
+        <button onclick="loadCategoryNews('sports')">
+            📰 SPORTS NEWS
+        </button>
 
-<div class="card">
-<div class="tag">🏆 COMPETITIONS</div>
-<h3>Mashindano</h3>
-<p>
-Ligi na mashindano mbalimbali yataonekana hapa.
-</p>
-</div>
+        <button onclick="loadLiveScores()">
+            🔴 LIVE SCORES
+        </button>
 
-</div>
+        <button onclick="loadFixtures()">
+            📅 FIXTURES
+        </button>
+
+        <button onclick="loadLeagueTableData()">
+            📊 LIVE TABLE
+        </button>
+
+    </div>
+
+    <div class="sports-block">
+
+        <h3>📰 Habari za Michezo</h3>
+
+        <div id="sports-news-list" class="cards">
+            <div class="empty">
+                🔄 Inapakia habari za michezo...
+            </div>
+        </div>
+
+    </div>
+
+    <div class="sports-block">
+
+        <h3>🔴 Live Scores</h3>
+
+        <div id="drack-live-scores" class="cards">
+            <div class="empty">
+                ⚽ Bonyeza LIVE SCORES kuangalia mechi zinazoendelea.
+            </div>
+        </div>
+
+    </div>
+
+    <div class="sports-block">
+
+        <h3>🏆 Chagua Ligi</h3>
+
+        <select id="sports-league-select"
+                onchange="sportsLeagueChanged()">
+
+            <option value="39">🏴 Premier League</option>
+            <option value="140">🇪🇸 La Liga</option>
+            <option value="135">🇮🇹 Serie A</option>
+            <option value="78">🇩🇪 Bundesliga</option>
+            <option value="61">🇫🇷 Ligue 1</option>
+            <option value="2">🌍 UEFA Champions League</option>
+
+        </select>
+
+        <div class="sports-season">
+            <label for="sports-season-select">
+                📅 Season
+            </label>
+
+            <select id="sports-season-select"
+                    onchange="sportsLeagueChanged()">
+
+                <option value="2026">2026</option>
+                <option value="2025">2025</option>
+
+            </select>
+        </div>
+
+    </div>
+
+    <div class="sports-block">
+
+        <h3>📅 Fixtures</h3>
+
+        <div id="fixtures" class="cards">
+            <div class="empty">
+                📅 Bonyeza FIXTURES kuona ratiba za mechi.
+            </div>
+        </div>
+
+    </div>
+
+    <div class="sports-block">
+
+        <h3>📊 Live Table</h3>
+
+        <div id="table" class="cards">
+            <div class="empty">
+                📊 Bonyeza LIVE TABLE kuona msimamo wa ligi.
+            </div>
+        </div>
+
+    </div>
+
 </section>
-
 
 <!-- LIVE SCORES -->
 
@@ -382,110 +996,13 @@ Ligi na mashindano mbalimbali yataonekana hapa.
 
 <h2 class="title">🔴 LIVE SCORES</h2>
 
-<div class="match">
-<div class="team">TEAM A</div>
-<div class="score">0 - 0</div>
-<div class="team">TEAM B</div>
-</div>
-
-<div class="empty">
-🔴 Hakuna live match iliyounganishwa bado.
-<br><br>
-Tutaiunganisha na live scores data.
-</div>
-
-</section>
 
 
-<!-- LIVE TABLE -->
-
-<section id="table" class="page">
-
-<h2 class="title">📊 LIVE TABLE</h2>
-
-<table class="table">
-
-<tr>
-<th>#</th>
-<th>TEAM</th>
-<th>P</th>
-<th>W</th>
-<th>D</th>
-<th>L</th>
-<th>PTS</th>
-</tr>
-
-<tr>
-<td>1</td>
-<td>Team A</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-</tr>
-
-<tr>
-<td>2</td>
-<td>Team B</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-</tr>
-
-</table>
-
-<div class="empty" style="margin-top:15px">
-📊 Live league table itaunganishwa na data halisi.
-</div>
-
-</section>
 
 
-<!-- LIGI -->
 
-<section id="ligi" class="page">
-
-<h2 class="title">🏆 LIGI</h2>
-
-<div class="cards">
-
-<div class="card">
-<h3>🇹🇿 Tanzania</h3>
-<p>Ratiba, matokeo na msimamo wa ligi.</p>
-</div>
-
-<div class="card">
-<h3>🇬🇧 Premier League</h3>
-<p>Habari, fixtures, scores na table.</p>
-</div>
-
-<div class="card">
-<h3>🇪🇸 La Liga</h3>
-<p>Habari na matokeo ya ligi.</p>
-</div>
-
-<div class="card">
-<h3>🇪🇺 UEFA Champions League</h3>
-<p>Ratiba na matokeo ya mashindano.</p>
-</div>
 
 </div>
-</section>
-
-
-<!-- FIXTURES -->
-
-<section id="fixtures" class="page">
-
-<h2 class="title">📅 FIXTURES</h2>
-
-<div class="empty">
-📅 Ratiba za mechi zitaonekana hapa.
-</div>
-
 </section>
 
 
@@ -510,21 +1027,7 @@ Sehemu ya series na burudani.
 
 <!-- MUZIKI -->
 
-<section id="muziki" class="page">
-
-<h2 class="title">🎵 MUZIKI</h2>
-
-<div class="cards">
-
-<div class="card">
-<h3>🎵 Music Updates</h3>
-<p>
-Habari za muziki, releases na updates.
-</p>
-</div>
-
-</div>
-</section>
+<section id="muziki" class="page"><h2 class="title">🎵 MUZIKI</h2><div class="music-hero">  <h2>🎵 DRACK MUSIC</h2>  <p>Tafuta na tazama music videos ndani ya DRACK HUB.</p></div><div class="music-search">  <input id="music-search" type="search" placeholder="🔎 Tafuta wimbo au msanii...">  <button id="music-search-btn">SEARCH</button></div><div class="music-tools">  <button class="music-filter active" data-query="Tanzania music">🎵 MUSIC MPYA</button>  <button class="music-filter" data-query="Tanzania music video">🎬 VIDEOS</button>  <button id="music-refresh">🔄 REFRESH</button></div><div id="music-player" class="music-player">  <div>🎵 Chagua video kuanza kuicheza.</div></div><div id="music-results" class="cards">  <div class="empty">⏳ Inapakia music...</div></div></section>
 
 
 <!-- DUNIA -->
@@ -583,7 +1086,7 @@ Links za matangazo ya michezo zitawekwa hapa.
 </section>
 
 <footer>
-© 2026 DRACK HUB — All Rights Reserved
+
 </footer>
 
 </main>
@@ -679,7 +1182,7 @@ async function loadNews(){
                     '</a>';
             }
 
-            return '<article class="card news-card">' +
+            return '<article class="card news-card" data-post-id="' + post.id + '" data-category="' + (post.category || "news").toLowerCase() + '">' +
                 '<div class="tag">' +
                 (post.category
                     ? post.category.toUpperCase()
@@ -715,5 +1218,1993 @@ setInterval(loadNews, 60000);
 
 </script>
 
-</body>
+
+<script>
+/* DRACK_LIVE_SCORES_CONNECTED */
+
+
+
+loadLiveScores();
+
+setInterval(loadLiveScores, 60000);
+</script>
+
+
+<script>
+/* =========================================================
+   DRACK HUB - PAGE ENGINE
+   ========================================================= */
+
+function showPage(id, button) {
+    document.querySelectorAll(".page").forEach(page => {
+        page.classList.remove("active");
+    });
+
+    const page = document.getElementById(id);
+
+    if (page) {
+        page.classList.add("active");
+    }
+
+    document.querySelectorAll(".menu button").forEach(btn => {
+        btn.classList.remove("active");
+    });
+
+    if (button) {
+        button.classList.add("active");
+    }
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+    if (id === "habari") {
+        loadNews();
+    }
+
+    if (id === "sports") {
+        loadCategoryNews("sports");
+    }
+
+    if (id === "dunia") {
+        loadCategoryNews("dunia");
+    }
+
+    if (id === "updates") {
+        loadCategoryNews("updates");
+    }
+
+    if (id === "scores") {
+        loadLiveScores();
+    }
+
+    if (id === "table") {
+        loadLeagueTable();
+    }
+
+    if (id === "ligi") {
+        loadLeagues();
+    }
+}
+
+
+/* =========================================================
+   NEWS
+   ========================================================= */
+
+async function loadNews() {
+    const box = document.getElementById("news-list");
+
+    if (!box) return;
+
+    box.innerHTML =
+        '<div class="empty">🔄 Inapakia habari...</div>';
+
+    try {
+        const response = await fetch("/api/posts");
+        const data = await response.json();
+
+        if (!data.success || !data.posts || data.posts.length === 0) {
+            box.innerHTML =
+                '<div class="empty">📰 Hakuna habari bado.</div>';
+            return;
+        }
+
+        box.innerHTML = data.posts.map(post => {
+
+            const content =
+                (post.content || "").length > 220
+                ? post.content.substring(0, 220) + "..."
+                : (post.content || "");
+
+            const image = post.image_url
+                ? '<img class="news-image" src="' +
+                  post.image_url +
+                  '" alt="Habari">'
+                : "";
+
+            const source = post.source_url
+                ? '<a class="news-link" href="' +
+                  post.source_url +
+                  '" target="_blank" rel="noopener noreferrer">' +
+                  '🔗 SOMA ZAIDI ↗' +
+                  '</a>'
+                : "";
+
+            return `
+                <article class="card news-card" data-post-id="${post.id}">
+                    ${image}
+
+                    <div class="tag">
+                        ${(post.category || "habari").toUpperCase()}
+                    </div>
+
+                    <h3>${post.title || "Habari"}</h3>
+
+                    <p>${content}</p>
+
+                    <div class="news-meta">
+                        🕒 ${post.created_at
+                            ? new Date(post.created_at).toLocaleString("sw-TZ")
+                            : ""}
+                    </div>
+
+                    ${source}
+                </article>
+            `;
+
+        }).join("");
+
+    } catch (error) {
+        console.error(error);
+
+        box.innerHTML =
+            '<div class="empty">❌ Imeshindwa kupakia habari.</div>';
+    }
+}
+
+
+/* =========================================================
+   CATEGORY NEWS
+   ========================================================= */
+
+
+async function loadCategoryNews(category) {
+
+    let box = null;
+
+    if (category === "sports") {
+        box = document.getElementById("sports-news-list");
+    } else {
+        const page = document.getElementById(category);
+
+        if (!page) return;
+
+        box = page.querySelector(".category-news");
+
+        if (!box) {
+            box = document.createElement("div");
+            box.className = "cards category-news";
+            page.appendChild(box);
+        }
+    }
+
+    if (!box) return;
+
+    box.innerHTML =
+        '<div class="empty">🔄 Inapakia habari...</div>';
+
+    try {
+
+        const response = await fetch("/api/posts");
+        const data = await response.json();
+
+        if (!data.success) {
+            throw new Error("News API error");
+        }
+
+        const posts = (data.posts || []).filter(function(post) {
+
+            const cat = (post.category || "").toLowerCase();
+
+            return (
+                cat === "sports" ||
+                cat === "sport" ||
+                cat === "football" ||
+                cat === "mpira"
+            );
+
+        });
+
+        if (!posts.length) {
+
+            box.innerHTML =
+                '<div class="empty">' +
+                '⚽ Hakuna habari za michezo bado.' +
+                '</div>';
+
+            return;
+        }
+
+        box.innerHTML = posts.map(function(post) {
+
+            const content =
+                (post.content || "").length > 220
+                ? post.content.substring(0, 220) + "..."
+                : (post.content || "");
+
+            const image = post.image_url
+                ? '<img class="news-image" src="' +
+                  post.image_url +
+                  '" alt="Habari za michezo">'
+                : "";
+
+            const source = post.source_url
+                ? '<a class="news-link" href="' +
+                  post.source_url +
+                  '" target="_blank" rel="noopener noreferrer">' +
+                  '🔗 SOMA ZAIDI ↗' +
+                  '</a>'
+                : "";
+
+            return '<article class="card news-card" data-post-id="' + post.id + '">' +
+                image +
+
+                '<div class="tag">⚽ SPORTS</div>' +
+
+                '<h3>' +
+                (post.title || "Habari za michezo") +
+                '</h3>' +
+
+                '<p>' +
+                content +
+                '</p>' +
+
+                '<div class="news-meta">🕒 ' +
+                (post.created_at
+                    ? new Date(post.created_at).toLocaleString("sw-TZ")
+                    : "") +
+                '</div>' +
+
+                source +
+
+                '</article>';
+
+        }).join("");
+
+    } catch (error) {
+
+        console.error("SPORTS NEWS ERROR:", error);
+
+        box.innerHTML =
+            '<div class="empty">' +
+            '❌ Imeshindwa kupakia habari za michezo.' +
+            '</div>';
+    }
+}
+
+
+/* =========================================================
+   LIVE SCORES
+   ========================================================= */
+
+async function loadLiveScores() {
+
+    const box =
+        document.getElementById("drack-live-scores");
+
+    if (!box) return;
+
+    box.innerHTML =
+        '<div class="empty">🔄 Inatafuta mechi zinazoendelea...</div>';
+
+    try {
+
+        const response =
+            await fetch("/api/live-scores");
+
+        const data =
+            await response.json();
+
+        if (!data.success) {
+            throw new Error(data.message);
+        }
+
+        if (!data.matches || !data.matches.length) {
+
+            box.innerHTML =
+                '<div class="empty">' +
+                '⚽ Hakuna mechi inayoendelea kwa sasa.' +
+                '</div>';
+
+            return;
+        }
+
+        box.innerHTML =
+            data.matches.map(match => `
+
+                <article class="card live-score-card">
+
+                    <div class="live-score-header">
+                        <span class="live-badge">
+                            🔴 LIVE
+                        </span>
+
+                        <span class="live-minute">
+                            ${match.status || ""}
+                            ${match.elapsed
+                                ? match.elapsed + "'"
+                                : ""}
+                        </span>
+                    </div>
+
+                    <div class="live-league">
+                        ${match.league?.name || "Football"}
+                    </div>
+
+                    <div class="live-team-row">
+
+                        <div class="live-team">
+
+                            ${match.home?.logo
+                                ? '<img src="' +
+                                  match.home.logo +
+                                  '" alt="">'
+                                : ""}
+
+                            <strong>
+                                ${match.home?.name || "Home"}
+                            </strong>
+
+                        </div>
+
+                        <div class="live-score">
+
+                            <span>
+                                ${match.home?.score ?? 0}
+                            </span>
+
+                            <b>−</b>
+
+                            <span>
+                                ${match.away?.score ?? 0}
+                            </span>
+
+                        </div>
+
+                        <div class="live-team">
+
+                            ${match.away?.logo
+                                ? '<img src="' +
+                                  match.away.logo +
+                                  '" alt="">'
+                                : ""}
+
+                            <strong>
+                                ${match.away?.name || "Away"}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+            `).join("");
+
+    } catch (error) {
+
+        console.error(error);
+
+        box.innerHTML =
+            '<div class="empty">' +
+            '❌ Imeshindwa kupakia Live Scores.' +
+            '</div>';
+    }
+}
+
+
+/* =========================================================
+   LEAGUE TABLE
+   ========================================================= */
+
+async function loadLeagueTable() {
+
+    const box = document.querySelector("#table");
+
+    if (!box) return;
+
+    box.innerHTML =
+        '<div class="empty">🔄 Inapakia msimamo...</div>';
+
+    await loadLeagueTableData();
+}
+
+
+/* =========================================================
+   TABLE DATA
+   ========================================================= */
+
+async function loadLeagueTableData() {
+
+    const box = document.querySelector("#table");
+
+    if (!box) return;
+
+    const leagueSelect =
+        document.getElementById("sports-league-select");
+
+    const seasonSelect =
+        document.getElementById("sports-season-select");
+
+    const league =
+        leagueSelect ? leagueSelect.value : "39";
+
+    const season =
+        seasonSelect ? seasonSelect.value : "2026";
+
+    box.innerHTML =
+        '<div class="empty">🔄 Inapakia msimamo wa ligi...</div>';
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/league-table?league=" +
+                encodeURIComponent(league) +
+                "&season=" +
+                encodeURIComponent(season)
+            );
+
+        const data =
+            await response.json();
+
+        if (!data.success) {
+            throw new Error(
+                data.message || "API error"
+            );
+        }
+
+        if (!data.table || !data.table.length) {
+
+            box.innerHTML =
+                '<div class="empty">' +
+                '📊 Hakuna msimamo uliopatikana.' +
+                '</div>';
+
+            return;
+        }
+
+        box.innerHTML = `
+            <article class="card">
+
+                <h3>📊 ${data.league || "League Table"}</h3>
+
+                <div class="table-scroll">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Timu</th>
+                                <th>MP</th>
+                                <th>W</th>
+                                <th>D</th>
+                                <th>L</th>
+                                <th>GD</th>
+                                <th>PTS</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            ${data.table.map(team => `
+
+                                <tr>
+
+                                    <td>${team.rank}</td>
+
+                                    <td>
+                                        ${team.logo
+                                            ? '<img src="' +
+                                              team.logo +
+                                              '" width="22" alt="">'
+                                            : ""}
+                                        ${team.name}
+                                    </td>
+
+                                    <td>${team.played}</td>
+                                    <td>${team.win}</td>
+                                    <td>${team.draw}</td>
+                                    <td>${team.loss}</td>
+                                    <td>${team.goalDiff}</td>
+
+                                    <td>
+                                        <strong>
+                                            ${team.points}
+                                        </strong>
+                                    </td>
+
+                                </tr>
+
+                            `).join("")}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </article>
+        `;
+
+    } catch (error) {
+
+        console.error(
+            "LEAGUE TABLE ERROR:",
+            error
+        );
+
+        box.innerHTML =
+            '<div class="empty">' +
+            '❌ Imeshindwa kupata msimamo.' +
+            '</div>';
+    }
+}
+
+
+/* =========================================================
+   FIXTURES
+   ========================================================= */
+
+
+
+function sportsLeagueChanged() {
+
+    const table =
+        document.getElementById("table");
+
+    const fixtures =
+        document.getElementById("fixtures");
+
+    if (table) {
+        table.innerHTML =
+            '<div class="empty">' +
+            '📊 Bonyeza LIVE TABLE kupakia msimamo.' +
+            '</div>';
+    }
+
+    if (fixtures) {
+        fixtures.innerHTML =
+            '<div class="empty">' +
+            '📅 Bonyeza FIXTURES kupakia ratiba.' +
+            '</div>';
+    }
+}
+
+async function loadFixtures() {
+
+    const box = document.querySelector("#fixtures");
+
+    if (!box) return;
+
+    const leagueSelect =
+        document.getElementById("sports-league-select");
+
+    const seasonSelect =
+        document.getElementById("sports-season-select");
+
+    const league =
+        leagueSelect ? leagueSelect.value : "39";
+
+    const season =
+        seasonSelect ? seasonSelect.value : "2026";
+
+    box.innerHTML =
+        '<div class="empty">🔄 Inapakia fixtures...</div>';
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/fixtures?league=" +
+                encodeURIComponent(league) +
+                "&season=" +
+                encodeURIComponent(season)
+            );
+
+        const data =
+            await response.json();
+
+        if (!data.success) {
+            throw new Error(
+                data.message || "API error"
+            );
+        }
+
+        if (!data.fixtures || data.fixtures.length === 0) {
+
+            box.innerHTML =
+                '<div class="empty">' +
+                '📅 Hakuna fixtures zilizopatikana.' +
+                '</div>';
+
+            return;
+        }
+
+        box.innerHTML = data.fixtures.map(match => {
+
+            const date = match.date
+                ? new Date(match.date).toLocaleString()
+                : "";
+
+            return `
+                <article class="card">
+
+                    <div class="live-league">
+                        🏆 ${match.league?.name || "Football"}
+                    </div>
+
+                    <div class="live-score-header">
+                        <span>📅 ${date}</span>
+                        <span>${match.status || ""}</span>
+                    </div>
+
+                    <div class="live-team-row">
+
+                        <div class="live-team">
+
+                            ${match.home?.logo
+                                ? '<img src="' +
+                                  match.home.logo +
+                                  '" width="35" alt="">'
+                                : ""}
+
+                            <strong>
+                                ${match.home?.name || "Home"}
+                            </strong>
+
+                        </div>
+
+                        <div class="live-score">
+                            <b>VS</b>
+                        </div>
+
+                        <div class="live-team">
+
+                            ${match.away?.logo
+                                ? '<img src="' +
+                                  match.away.logo +
+                                  '" width="35" alt="">'
+                                : ""}
+
+                            <strong>
+                                ${match.away?.name || "Away"}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </article>
+            `;
+
+        }).join("");
+
+    } catch (error) {
+
+        console.error(
+            "FIXTURES ERROR:",
+            error
+        );
+
+        box.innerHTML =
+            '<div class="empty">' +
+            '❌ Imeshindwa kupakia fixtures.' +
+            '</div>';
+    }
+}
+
+
+/* =========================================================
+   LEAGUES
+   ========================================================= */
+
+function loadLeagues() {
+
+    const page =
+        document.getElementById("ligi");
+
+    if (!page) return;
+
+    let box =
+        page.querySelector(".league-actions");
+
+    if (!box) {
+
+        box = document.createElement("div");
+
+        box.className =
+            "cards league-actions";
+
+        page.appendChild(box);
+    }
+
+    box.innerHTML = `
+
+        <article class="card">
+
+            <h3>🇹🇿 Tanzania</h3>
+
+            <button onclick="openLeague(128)">
+                📊 ANGALIA MSIMAMO
+            </button>
+
+        </article>
+
+        <article class="card">
+
+            <h3>🇬🇧 Premier League</h3>
+
+            <button onclick="openLeague(39)">
+                📊 ANGALIA MSIMAMO
+            </button>
+
+        </article>
+
+        <article class="card">
+
+            <h3>🇪🇸 La Liga</h3>
+
+            <button onclick="openLeague(140)">
+                📊 ANGALIA MSIMAMO
+            </button>
+
+        </article>
+
+        <article class="card">
+
+            <h3>🇪🇺 Champions League</h3>
+
+            <button onclick="openLeague(2)">
+                📊 ANGALIA MSIMAMO
+            </button>
+
+        </article>
+    `;
+}
+
+
+/* =========================================================
+   OPEN LEAGUE
+   ========================================================= */
+
+function openLeague(id) {
+
+    showPage(
+        "table",
+        document.querySelector(
+            '.menu button[onclick*="table"]'
+        )
+    );
+
+    const box =
+        document.querySelector(".league-table-box");
+
+    if (box) {
+        box.dataset.league = id;
+    }
+
+    loadLeagueTableData();
+}
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    loadNews();
+
+    setInterval(loadNews, 60000);
+
+    setInterval(loadLiveScores, 60000);
+
+});
+
+</script>
+
+<script>
+function filterNews(category) {
+    const cards = document.querySelectorAll("#news-list .news-card");
+
+    cards.forEach(function(card) {
+        const cardCategory = (card.dataset.category || "").toLowerCase();
+
+        if (category === "all" || cardCategory === category) {
+            card.style.display = "";
+        } else {
+            card.style.display = "none";
+        }
+    });
+}
+</script>
+
+
+
+
+
+
+
+<section id="DRACK-YOUTUBE-AUTO" class="youtube-section">
+
+    <div class="section-title">
+        <span>🎬</span>
+        <h2>𝚟𝚒𝚍𝚎𝚘 𝚣𝚒𝚗𝚊𝚣𝚘 𝚣𝚊𝚖𝚒𝚗𝚒𝚠𝚊 𝚗𝚊 𝚍𝚛𝚊𝚌𝚔</h2>
+    </div>
+
+    <div class="youtube-controls">
+        <button class="yt-filter active" data-query="Tanzania sports">
+            ⚽ SPORTS
+        </button>
+
+        <button class="yt-filter" data-query="Tanzania music">
+            🎵 MUZIKI
+        </button>
+
+        <button class="yt-filter" data-query="Tanzania series">
+            🎬 SERIES
+        </button>
+
+        <button id="yt-refresh">
+            🔄 REFRESH
+        </button>
+    </div>
+
+    <!-- PLAYER YA NDANI YA DRACK HUB -->
+    <div id="drack-youtube-player" class="drack-youtube-player">
+        <div class="drack-player-empty">
+            🎬 Bonyeza video yoyote hapa chini kuanza kuicheza.
+        </div>
+    </div>
+
+    <div id="youtube-videos" class="cards">
+        <div class="empty">
+            ⏳ Inapakia video...
+        </div>
+    </div>
+
+</section>
+
+<style>
+.drack-youtube-player {
+    width: 100%;
+    background: #000;
+    border-radius: 14px;
+    overflow: hidden;
+    margin: 15px 0 25px;
+    box-shadow: 0 5px 25px rgba(0,0,0,.35);
+}
+
+.drack-youtube-player iframe {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 0;
+    display: block;
+}
+
+.drack-player-empty {
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+    padding: 30px;
+}
+
+.youtube-card {
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.youtube-card:hover {
+    transform: translateY(-2px);
+}
+
+.youtube-thumb {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #111;
+}
+
+.youtube-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.youtube-thumb .play-button {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,0,0,.9);
+    color: white;
+    font-size: 25px;
+    pointer-events: none;
+}
+
+.youtube-channel {
+    font-weight: bold;
+}
+
+.youtube-date {
+    font-size: 13px;
+    opacity: .75;
+}
+</style>
+
+<script>
+(function () {
+
+    const box = document.getElementById("youtube-videos");
+    const player = document.getElementById("drack-youtube-player");
+    const refresh = document.getElementById("yt-refresh");
+    const filters = document.querySelectorAll(".yt-filter");
+
+    if (!box || !player) return;
+
+    let currentQuery = "Tanzania sports";
+    let currentVideos = [];
+
+    function playInsideDrack(video) {
+
+        if (!video || !video.id) {
+            console.error("Video ID haipo.");
+            return;
+        }
+
+        const safeId = encodeURIComponent(video.id);
+        const title = video.title || "DRACK HUB VIDEO";
+
+        player.innerHTML = `
+            <iframe
+                src="https://www.youtube.com/embed/${safeId}?autoplay=1&mute=1&controls=1&playsinline=1&rel=0"
+                title="${title.replace(/"/g, "&quot;")}"
+                allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+                allowfullscreen>
+            </iframe>
+
+            <div style="
+                background:#111;
+                color:white;
+                padding:14px;
+            ">
+                <strong>${title}</strong>
+                <br>
+                <small>📺 ${video.channel || "YouTube"}</small>
+            </div>
+        `;
+
+        player.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    }
+
+    async function loadYouTube(query) {
+
+        box.innerHTML =
+            '<div class="empty">⏳ Inapakia video...</div>';
+
+        try {
+
+            const response = await fetch(
+                "/api/youtube-videos?q=" +
+                encodeURIComponent(query) +
+                "&limit=12"
+            );
+
+            const data = await response.json();
+
+            if (
+                !data.success ||
+                !data.videos ||
+                !data.videos.length
+            ) {
+                box.innerHTML =
+                    '<div class="empty">🎬 Hakuna video zilizopatikana.</div>';
+                return;
+            }
+
+            currentVideos = data.videos;
+
+            box.innerHTML = currentVideos.map((video, index) => `
+
+                <article
+                    class="card youtube-card"
+                    data-video-index="${index}"
+                >
+
+                    <div class="youtube-thumb">
+
+                        <img
+                            src="${video.thumbnail || ""}"
+                            alt="YouTube video"
+                            loading="lazy"
+                        >
+
+                        <span class="play-button">
+                            ▶
+                        </span>
+
+                    </div>
+
+                    <div class="tag">
+                        ▶ YOUTUBE
+                    </div>
+
+                    <h3>
+                        ${video.title || "Video"}
+                    </h3>
+
+                    <p class="youtube-channel">
+                        📺 ${video.channel || "YouTube"}
+                    </p>
+
+                    <p class="youtube-date">
+                        🕒
+                        ${video.publishedAt
+                            ? new Date(video.publishedAt).toLocaleString("sw-TZ")
+                            : ""}
+                    </p>
+
+                    <div class="news-link">
+                        ▶ CHEZA NDANI YA DRACK HUB
+                    </div>
+
+                </article>
+
+            `).join("");
+
+            box.querySelectorAll(".youtube-card")
+                .forEach(function(card) {
+
+                    card.addEventListener("click", function() {
+
+                        const index =
+                            Number(this.dataset.videoIndex);
+
+                        playInsideDrack(currentVideos[index]);
+
+                    });
+
+                });
+
+        } catch (error) {
+
+            console.error(
+                "YOUTUBE ERROR:",
+                error
+            );
+
+            box.innerHTML =
+                '<div class="empty">❌ Imeshindwa kupakia video.</div>';
+        }
+    }
+
+    filters.forEach(function(button) {
+
+        button.addEventListener("click", function() {
+
+            filters.forEach(function(b) {
+                b.classList.remove("active");
+            });
+
+            this.classList.add("active");
+
+            currentQuery =
+                this.dataset.query;
+
+            loadYouTube(currentQuery);
+
+        });
+
+    });
+
+    if (refresh) {
+
+        refresh.addEventListener("click", function() {
+
+            loadYouTube(currentQuery);
+
+        });
+
+    }
+
+    loadYouTube(currentQuery);
+
+    setInterval(function() {
+
+        loadYouTube(currentQuery);
+
+    }, 10 * 60 * 1000);
+
+})();
+</script>
+
+
+
+
+
+<script id="drack-music-js">
+(function(){
+  const search=document.getElementById("music-search");
+  const searchBtn=document.getElementById("music-search-btn");
+  const refresh=document.getElementById("music-refresh");
+  const results=document.getElementById("music-results");
+  const player=document.getElementById("music-player");
+  const filters=document.querySelectorAll(".music-filter");
+
+  if(!search||!results||!player)return;
+
+  let query="Tanzania music";
+  let videos=[];
+
+  function esc(v){
+    return String(v||"")
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;");
+  }
+
+  function play(video){
+    if(!video||!video.id)return;
+
+    player.innerHTML=
+      '<iframe src="https://www.youtube.com/embed/'+
+      encodeURIComponent(video.id)+
+      '?autoplay=1&controls=1&playsinline=1&rel=0" '+
+      'allow="autoplay; encrypted-media; picture-in-picture; fullscreen" '+
+      'allowfullscreen></iframe>'+
+      '<div><strong>'+esc(video.title||"Music Video")+
+      '</strong></div>';
+
+    player.scrollIntoView({behavior:"smooth",block:"start"});
+  }
+
+  async function load(q){
+    results.innerHTML='<div class="empty">⏳ Inapakia music...</div>';
+
+    try{
+      const r=await fetch("/api/youtube-videos?q="+encodeURIComponent(q)+"&limit=12");
+      const data=await r.json();
+
+      if(!data.success||!data.videos||!data.videos.length){
+        results.innerHTML='<div class="empty">🎵 Hakuna music iliyopatikana.</div>';
+        return;
+      }
+
+      videos=data.videos;
+
+      results.innerHTML=videos.map(function(v,i){
+        const download=v.download_url
+          ? '<a class="music-download" href="'+esc(v.download_url)+'" download>📥 DOWNLOAD</a>'
+          : '<span class="music-download" style="opacity:.5">📥 DOWNLOAD HAIPATIKANI</span>';
+
+        return '<article class="card music-card" data-i="'+i+'">'+
+          '<div class="music-thumb">'+
+          '<img src="'+esc(v.thumbnail||"")+'" loading="lazy">'+
+          '<span class="music-play">▶</span></div>'+
+          '<div class="tag">🎵 MUSIC</div>'+
+          '<h3>'+esc(v.title||"Music Video")+'</h3>'+
+          '<p>🎤 '+esc(v.channel||"YouTube")+'</p>'+
+          '<div class="news-link">▶ CHEZA NDANI YA DRACK HUB</div>'+
+          download+
+          '</article>';
+      }).join("");
+
+      results.querySelectorAll(".music-card").forEach(function(card){
+        card.addEventListener("click",function(e){
+          if(e.target.closest(".music-download"))return;
+          play(videos[Number(card.dataset.i)]);
+        });
+      });
+
+    }catch(e){
+      console.error("MUSIC ERROR:",e);
+      results.innerHTML='<div class="empty">❌ Imeshindwa kupakia music.</div>';
+    }
+  }
+
+  searchBtn.onclick=function(){
+    query=search.value.trim()||"Tanzania music";
+    load(query);
+  };
+
+  search.onkeydown=function(e){
+    if(e.key==="Enter")searchBtn.click();
+  };
+
+  filters.forEach(function(btn){
+    btn.onclick=function(){
+      filters.forEach(function(x){x.classList.remove("active")});
+      btn.classList.add("active");
+      query=btn.dataset.query;
+      search.value="";
+      load(query);
+    };
+  });
+
+  refresh.onclick=function(){load(query)};
+
+  load(query);
+})();
+</script>
+
+<footer class="drack-footer">
+© 2026 DRACK HUB — All Rights Reserved
+</footer>
+
+<script id="DRACK_VISITOR_TRACKER">
+(function(){
+
+    let visitorId = localStorage.getItem("drack_visitor_id");
+
+    if(!visitorId){
+
+        visitorId =
+            "drack-" +
+            Date.now().toString(36) +
+            "-" +
+            Math.random().toString(36).substring(2, 12);
+
+        localStorage.setItem(
+            "drack_visitor_id",
+            visitorId
+        );
+    }
+
+    fetch("/api/visitor/track", {
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+            visitorId:visitorId
+        })
+    }).catch(function(error){
+        console.error("VISITOR TRACK ERROR:", error);
+    });
+
+})();
+</script>
+\n</body>
 </html>
+
+<style id="drack-comments-style">
+
+.drack-comments{
+    margin-top:12px;
+    padding-top:10px;
+    border-top:1px solid rgba(255,255,255,.12);
+}
+
+.drack-comments-title{
+    font-family:"Courier New",monospace;
+    font-size:13px;
+    font-weight:bold;
+    margin-bottom:8px;
+}
+
+.drack-comment-form{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    margin-bottom:12px;
+}
+
+.drack-comment-form input,
+.drack-comment-form textarea,
+.drack-reply-form input,
+.drack-reply-form textarea{
+    width:100%;
+    box-sizing:border-box;
+    background:#111;
+    color:#fff;
+    border:1px solid #333;
+    border-radius:5px;
+    padding:8px;
+    font-family:"Courier New",monospace;
+    font-size:11px;
+}
+
+.drack-comment-form textarea,
+.drack-reply-form textarea{
+    min-height:55px;
+    resize:vertical;
+}
+
+.drack-comment-form button,
+.drack-reply-form button{
+    border:1px solid #333;
+    background:#181818;
+    color:#fff;
+    padding:7px 10px;
+    border-radius:5px;
+    font-family:"Courier New",monospace;
+    font-size:10px;
+    cursor:pointer;
+}
+
+.drack-comment{
+    padding:8px 0;
+    border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.drack-comment-name{
+    font-size:11px;
+    font-weight:bold;
+}
+
+.drack-comment-text{
+    font-size:11px;
+    line-height:1.4;
+    margin:4px 0;
+    word-break:break-word;
+}
+
+.drack-comment-actions{
+    display:flex;
+    gap:6px;
+    align-items:center;
+    flex-wrap:wrap;
+}
+
+.drack-comment-actions button{
+    background:transparent;
+    color:#ccc;
+    border:0;
+    padding:3px 5px;
+    font-family:"Courier New",monospace;
+    font-size:10px;
+    cursor:pointer;
+}
+
+.drack-replies{
+    margin-left:15px;
+    margin-top:7px;
+    border-left:2px solid rgba(255,255,255,.1);
+    padding-left:8px;
+}
+
+.drack-reply-form{
+    display:none;
+    flex-direction:column;
+    gap:5px;
+    margin-top:7px;
+}
+
+.drack-reply-form.show{
+    display:flex;
+}
+
+.drack-comments-empty{
+    font-size:10px;
+    opacity:.65;
+}
+
+</style>
+
+<script id="drack-comments-engine">
+
+(function(){
+
+    function escapeHTML(value){
+        return String(value || "")
+            .replace(/&/g,"&amp;")
+            .replace(/</g,"&lt;")
+            .replace(/>/g,"&gt;")
+            .replace(/"/g,"&quot;")
+            .replace(/'/g,"&#039;");
+    }
+
+    function getUserName(){
+        let name = localStorage.getItem("drack_comment_name");
+
+        if(!name){
+            name = prompt("Andika jina lako:");
+
+            if(!name){
+                return null;
+            }
+
+            name = name.trim();
+
+            if(!name){
+                return null;
+            }
+
+            localStorage.setItem("drack_comment_name", name);
+        }
+
+        return name;
+    }
+
+    async function loadComments(container){
+
+        const postId = container.dataset.postId;
+
+        if(!postId) return;
+
+        const list = container.querySelector(".drack-comments-list");
+
+        try{
+
+            const response =
+                await fetch("/api/posts/" + postId + "/comments-full");
+
+            const data = await response.json();
+
+            if(!data.success){
+                list.innerHTML =
+                    '<div class="drack-comments-empty">❌ Imeshindwa kupata comments.</div>';
+                return;
+            }
+
+            if(!data.comments || !data.comments.length){
+                list.innerHTML =
+                    '<div class="drack-comments-empty">💬 Hakuna comments bado.</div>';
+                return;
+            }
+
+            list.innerHTML = data.comments.map(function(comment){
+
+                const replies =
+                    (comment.replies || []).map(function(reply){
+
+                        return `
+                            <div class="drack-comment">
+                                <div class="drack-comment-name">
+                                    👤 ${escapeHTML(reply.name)}
+                                </div>
+
+                                <div class="drack-comment-text">
+                                    ${escapeHTML(reply.content)}
+                                </div>
+                            </div>
+                        `;
+
+                    }).join("");
+
+                return `
+                    <div class="drack-comment" data-comment-id="${comment.id}">
+
+                        <div class="drack-comment-name">
+                            👤 ${escapeHTML(comment.name)}
+                        </div>
+
+                        <div class="drack-comment-text">
+                            ${escapeHTML(comment.content)}
+                        </div>
+
+                        <div class="drack-comment-actions">
+
+                            <button class="drack-like">
+                                👍 ${Number(comment.likes || 0)}
+                            </button>
+
+                            <button class="drack-dislike">
+                                👎 ${Number(comment.dislikes || 0)}
+                            </button>
+
+                            <button class="drack-reply-toggle">
+                                ↩️ REPLY
+                            </button>
+
+                        </div>
+
+                        <div class="drack-reply-form">
+
+                            <input
+                                class="drack-reply-name"
+                                placeholder="Jina lako"
+                                maxlength="50"
+                            >
+
+                            <textarea
+                                class="drack-reply-text"
+                                placeholder="Andika reply..."
+                                maxlength="1000"
+                            ></textarea>
+
+                            <button class="drack-send-reply">
+                                ↩️ TUMA REPLY
+                            </button>
+
+                        </div>
+
+                        <div class="drack-replies">
+                            ${replies}
+                        </div>
+
+                    </div>
+                `;
+
+            }).join("");
+
+            attachCommentEvents(container);
+
+        }catch(error){
+
+            console.error("DRACK COMMENTS ERROR:",error);
+
+            list.innerHTML =
+                '<div class="drack-comments-empty">❌ Imeshindwa kupakia comments.</div>';
+        }
+    }
+
+
+    function attachCommentEvents(container){
+
+        container.querySelectorAll(".drack-like").forEach(function(button){
+
+            button.onclick = async function(){
+
+                const comment =
+                    button.closest(".drack-comment");
+
+                const commentId =
+                    comment.dataset.commentId;
+
+                const name = getUserName();
+
+                if(!name) return;
+
+                const response = await fetch(
+                    "/api/comments/" +
+                    commentId +
+                    "/reaction",
+                    {
+                        method:"POST",
+                        headers:{
+                            "Content-Type":"application/json"
+                        },
+                        body:JSON.stringify({
+                            name:name,
+                            reaction:"like"
+                        })
+                    }
+                );
+
+                const data = await response.json();
+
+                if(data.success){
+
+                    button.innerHTML =
+                        "👍 " + data.likes;
+
+                    const dislike =
+                        comment.querySelector(".drack-dislike");
+
+                    if(dislike){
+                        dislike.innerHTML =
+                            "👎 " + data.dislikes;
+                    }
+                }
+
+            };
+
+        });
+
+
+        container.querySelectorAll(".drack-dislike").forEach(function(button){
+
+            button.onclick = async function(){
+
+                const comment =
+                    button.closest(".drack-comment");
+
+                const commentId =
+                    comment.dataset.commentId;
+
+                const name = getUserName();
+
+                if(!name) return;
+
+                const response = await fetch(
+                    "/api/comments/" +
+                    commentId +
+                    "/reaction",
+                    {
+                        method:"POST",
+                        headers:{
+                            "Content-Type":"application/json"
+                        },
+                        body:JSON.stringify({
+                            name:name,
+                            reaction:"dislike"
+                        })
+                    }
+                );
+
+                const data = await response.json();
+
+                if(data.success){
+
+                    button.innerHTML =
+                        "👎 " + data.dislikes;
+
+                    const like =
+                        comment.querySelector(".drack-like");
+
+                    if(like){
+                        like.innerHTML =
+                            "👍 " + data.likes;
+                    }
+                }
+
+            };
+
+        });
+
+
+        container.querySelectorAll(".drack-reply-toggle")
+        .forEach(function(button){
+
+            button.onclick = function(){
+
+                const comment =
+                    button.closest(".drack-comment");
+
+                const form =
+                    comment.querySelector(".drack-reply-form");
+
+                form.classList.toggle("show");
+
+                if(form.classList.contains("show")){
+
+                    const name =
+                        getUserName();
+
+                    if(name){
+
+                        const input =
+                            form.querySelector(".drack-reply-name");
+
+                        input.value = name;
+
+                    }
+
+                }
+
+            };
+
+        });
+
+
+        container.querySelectorAll(".drack-send-reply")
+        .forEach(function(button){
+
+            button.onclick = async function(){
+
+                const comment =
+                    button.closest(".drack-comment");
+
+                const commentId =
+                    comment.dataset.commentId;
+
+                const form =
+                    comment.querySelector(".drack-reply-form");
+
+                const name =
+                    form.querySelector(".drack-reply-name")
+                    .value.trim();
+
+                const content =
+                    form.querySelector(".drack-reply-text")
+                    .value.trim();
+
+                if(!name || !content){
+
+                    alert("Andika jina na reply.");
+
+                    return;
+                }
+
+                button.disabled = true;
+
+                try{
+
+                    const response = await fetch(
+                        "/api/comments/" +
+                        commentId +
+                        "/replies",
+                        {
+                            method:"POST",
+                            headers:{
+                                "Content-Type":"application/json"
+                            },
+                            body:JSON.stringify({
+                                name:name,
+                                content:content
+                            })
+                        }
+                    );
+
+                    const data =
+                        await response.json();
+
+                    if(data.success){
+
+                        form.querySelector(
+                            ".drack-reply-text"
+                        ).value = "";
+
+                        form.classList.remove("show");
+
+                        await loadComments(container);
+
+                    }else{
+
+                        alert(
+                            data.message ||
+                            "Imeshindwa kutuma reply."
+                        );
+
+                    }
+
+                }catch(error){
+
+                    console.error(error);
+
+                    alert("Tatizo la connection.");
+
+                }
+
+                button.disabled = false;
+
+            };
+
+        });
+
+    }
+
+
+    async function submitComment(container){
+
+        const form =
+            container.querySelector(".drack-comment-form");
+
+        const name =
+            form.querySelector(".drack-comment-name-input")
+            .value.trim();
+
+        const content =
+            form.querySelector(".drack-comment-content")
+            .value.trim();
+
+        if(!name || !content){
+
+            alert("Andika jina na comment.");
+
+            return;
+        }
+
+        const button =
+            form.querySelector("button");
+
+        button.disabled = true;
+
+        try{
+
+            const response = await fetch(
+                "/api/posts/" +
+                container.dataset.postId +
+                "/comments",
+                {
+                    method:"POST",
+                    headers:{
+                        "Content-Type":"application/json"
+                    },
+                    body:JSON.stringify({
+                        name:name,
+                        content:content
+                    })
+                }
+            );
+
+            const data =
+                await response.json();
+
+            if(data.success){
+
+                localStorage.setItem(
+                    "drack_comment_name",
+                    name
+                );
+
+                form.querySelector(
+                    ".drack-comment-content"
+                ).value = "";
+
+                await loadComments(container);
+
+            }else{
+
+                alert(
+                    data.message ||
+                    "Imeshindwa kutuma comment."
+                );
+
+            }
+
+        }catch(error){
+
+            console.error(error);
+
+            alert("Tatizo la connection.");
+
+        }
+
+        button.disabled = false;
+    }
+
+
+    function createComments(postId){
+
+        const box =
+            document.createElement("div");
+
+        box.className =
+            "drack-comments";
+
+        box.dataset.postId =
+            postId;
+
+        box.innerHTML = `
+
+            <div class="drack-comments-title">
+                💬 COMMENTS
+            </div>
+
+            <div class="drack-comment-form">
+
+                <input
+                    class="drack-comment-name-input"
+                    placeholder="Jina lako"
+                    maxlength="50"
+                >
+
+                <textarea
+                    class="drack-comment-content"
+                    placeholder="Andika comment..."
+                    maxlength="1000"
+                ></textarea>
+
+                <button>
+                    💬 TUMA COMMENT
+                </button>
+
+            </div>
+
+            <div class="drack-comments-list">
+                <div class="drack-comments-empty">
+                    🔄 Inapakia comments...
+                </div>
+            </div>
+
+        `;
+
+        const savedName =
+            localStorage.getItem("drack_comment_name");
+
+        if(savedName){
+
+            box.querySelector(
+                ".drack-comment-name-input"
+            ).value = savedName;
+
+        }
+
+        box.querySelector(
+            ".drack-comment-form button"
+        ).onclick = function(){
+
+            submitComment(box);
+
+        };
+
+        loadComments(box);
+
+        return box;
+    }
+
+
+    function attachToNewsCards(){
+
+        const cards =
+            document.querySelectorAll(
+                ".news-card"
+            );
+
+        cards.forEach(function(card){
+
+            if(card.querySelector(".drack-comments")){
+                return;
+            }
+
+            /*
+             * Tunatumia data ya habari iliyopo
+             * kwenye card. Kama card haina ID,
+             * itaongezwa na renderer yetu baadaye.
+             */
+
+            const postId =
+                card.dataset.postId;
+
+            if(!postId){
+                return;
+            }
+
+            card.appendChild(
+                createComments(postId)
+            );
+
+        });
+
+    }
+
+
+    function watchNewsCards(){
+
+        attachToNewsCards();
+
+        const observer =
+            new MutationObserver(function(){
+
+                attachToNewsCards();
+
+            });
+
+        observer.observe(
+            document.body,
+            {
+                childList:true,
+                subtree:true
+            }
+        );
+
+    }
+
+
+    if(document.readyState === "loading"){
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            watchNewsCards
+        );
+
+    }else{
+
+        watchNewsCards();
+
+    }
+
+})();
+
+</script>

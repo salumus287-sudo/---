@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>DRACK HUB ADMIN</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    font-family:"Courier New","Lucida Console",monospace !important;
+}
+
+html,body{
+    margin:0;
+    padding:0;
+    min-height:100%;
+    background:#080808;
+    color:#eee;
+}
+
+body{
+    font-size:13px;
+}
+
+.admin-wrap{
+    width:100%;
+    max-width:1200px;
+    margin:auto;
+    padding:12px;
+}
+
+.admin-header{
+    border:1px solid #444;
+    padding:12px;
+    margin-bottom:12px;
+}
+
+.admin-title{
+    font-size:20px;
+    font-weight:bold;
+    letter-spacing:1px;
+}
+
+.admin-subtitle{
+    margin-top:4px;
+    font-size:11px;
+    opacity:.7;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+}
+
+.stat{
+    border:1px solid #444;
+    padding:12px;
+    min-height:75px;
+}
+
+.stat-label{
+    font-size:10px;
+    opacity:.65;
+}
+
+.stat-value{
+    margin-top:7px;
+    font-size:20px;
+    font-weight:bold;
+}
+
+.admin-menu{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:8px;
+    margin:12px 0;
+}
+
+.admin-menu button{
+    background:#111;
+    color:#eee;
+    border:1px solid #444;
+    padding:10px;
+    font-family:"Courier New",monospace !important;
+    font-size:11px;
+    cursor:pointer;
+}
+
+.admin-menu button:hover{
+    background:#1b1b1b;
+}
+
+.panel{
+    border:1px solid #444;
+    padding:12px;
+    margin-top:10px;
+}
+
+.panel-title{
+    font-size:15px;
+    font-weight:bold;
+    margin-bottom:10px;
+}
+
+.status{
+    font-size:11px;
+    opacity:.7;
+}
+
+@media(max-width:600px){
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="admin-wrap">
+
+    <header class="admin-header">
+        <div class="admin-title">🔥 DRACK HUB ADMIN</div>
+        <div class="admin-subtitle">
+            𝚜𝚢𝚜𝚝𝚎𝚖 𝚖𝚊𝚗𝚊𝚐𝚎𝚖𝚎𝚗𝚝
+        </div>
+    </header>
+
+    <section class="stats">
+
+        <div class="stat">
+            <div class="stat-label">👥 VISITORS</div>
+            <div class="stat-value" id="totalVisitors">0</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">🟢 ACTIVE</div>
+            <div class="stat-value" id="activeVisitors">0</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">📰 POSTS</div>
+            <div class="stat-value" id="totalPosts">0</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">💬 COMMENTS</div>
+            <div class="stat-value" id="totalComments">0</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">↩️ REPLIES</div>
+            <div class="stat-value" id="totalReplies">0</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">👍 LIKES</div>
+            <div class="stat-value" id="totalLikes">0</div>
+        </div>
+
+    </section>
+
+    <nav class="admin-menu">
+        <button>📊 DASHBOARD</button>
+        <button>📰 POSTS</button>
+        <button>💬 COMMENTS</button>
+        <button>👥 VISITORS</button>
+        <button>📈 ANALYTICS</button>
+        <button>⚙️ SETTINGS</button>
+    </nav>
+
+    <section class="panel">
+        <div class="panel-title">📊 ADMIN DASHBOARD</div>
+        <div class="status">
+            DRACK HUB management system — ONLINE
+        </div>
+    </section>
+
+</div>
+
+
+<script id="DRACK_ADMIN_STATS_ENGINE">
+async function loadAdminStats(){
+
+    try{
+
+        const response = await fetch("/api/admin/stats");
+        const data = await response.json();
+
+        if(!data.success){
+            console.error("ADMIN STATS:", data.message);
+            return;
+        }
+
+        const stats = data.stats;
+
+        document.getElementById("totalVisitors").textContent =
+            stats.visitors;
+
+        document.getElementById("activeVisitors").textContent =
+            stats.activeVisitors;
+
+        document.getElementById("totalPosts").textContent =
+            stats.posts;
+
+        document.getElementById("totalComments").textContent =
+            stats.comments;
+
+        document.getElementById("totalReplies").textContent =
+            stats.replies;
+
+        document.getElementById("totalLikes").textContent =
+            stats.likes;
+
+    }catch(error){
+
+        console.error("ADMIN STATS ERROR:", error);
+
+    }
+}
+
+loadAdminStats();
+
+setInterval(loadAdminStats, 30000);
+</script>
+\n</body>
+</html>
