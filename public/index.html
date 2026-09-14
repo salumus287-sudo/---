@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>DRACK HUB</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+font-family:Arial,sans-serif;
+background:#080c11;
+color:#fff;
+min-height:100vh;
+}
+
+header{
+position:sticky;
+top:0;
+z-index:20;
+background:#10161e;
+padding:15px;
+border-bottom:1px solid #222c37;
+}
+
+.logo{
+font-size:26px;
+font-weight:800;
+}
+
+.logo span{color:#00d9ff}
+
+.search{
+width:100%;
+margin-top:12px;
+padding:13px 15px;
+border:0;
+outline:0;
+border-radius:12px;
+background:#202a35;
+color:#fff;
+font-size:14px;
+}
+
+.menu{
+padding:13px;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:8px;
+}
+
+.menu button{
+border:0;
+background:#151d26;
+color:#dce4eb;
+border-radius:12px;
+padding:12px 4px;
+font-size:11px;
+min-height:60px;
+}
+
+.menu button.active{
+background:#00c8e8;
+color:#001015;
+font-weight:bold;
+}
+
+.container{
+padding:0 14px 35px;
+}
+
+.page{
+display:none;
+animation:fade .2s ease;
+}
+
+.page.active{display:block}
+
+@keyframes fade{
+from{opacity:0;transform:translateY(5px)}
+to{opacity:1;transform:translateY(0)}
+}
+
+.title{
+font-size:22px;
+margin:12px 0 15px;
+}
+
+.hero{
+background:linear-gradient(135deg,#12394b,#111820);
+border-radius:17px;
+padding:22px;
+margin-bottom:18px;
+}
+
+.hero .blue{color:#00d9ff;font-weight:bold}
+
+.hero h1{
+font-size:27px;
+margin:8px 0;
+}
+
+.hero p{
+color:#aab6c1;
+line-height:1.5;
+}
+
+.cards{
+display:grid;
+gap:12px;
+}
+
+.card{
+background:#141c25;
+border:1px solid #202b36;
+border-radius:15px;
+padding:16px;
+}
+
+.card h3{margin:7px 0}
+
+.card p{
+color:#9ba8b5;
+font-size:13px;
+line-height:1.5;
+}
+
+.tag{
+font-size:12px;
+font-weight:bold;
+color:#00d9ff;
+}
+
+.live{
+border-left:4px solid #ff1744;
+}
+
+.red{color:#ff1744}
+
+.empty{
+text-align:center;
+background:#111820;
+border-radius:15px;
+padding:30px 15px;
+color:#8f9ba7;
+}
+
+.match{
+background:#141c25;
+border-radius:14px;
+padding:15px;
+margin-bottom:10px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.team{text-align:center;min-width:80px}
+
+.score{
+font-size:20px;
+font-weight:bold;
+}
+
+.table{
+width:100%;
+border-collapse:collapse;
+background:#141c25;
+border-radius:12px;
+overflow:hidden;
+}
+
+.table th,.table td{
+padding:11px 7px;
+text-align:center;
+border-bottom:1px solid #26313c;
+font-size:12px;
+}
+
+.table th{
+background:#1c2630;
+color:#00d9ff;
+}
+
+footer{
+text-align:center;
+color:#66727e;
+padding:25px 10px;
+font-size:12px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">DRACK <span>HUB</span></div>
+
+<input
+class="search"
+id="search"
+type="search"
+placeholder="🔎 Tafuta habari, timu, ligi..."
+>
+
+</header>
+
+<nav class="menu">
+
+<button class="active" onclick="openPage('home',this)">🏠<br>HOME</button>
+<button onclick="openPage('habari',this)">📰<br>HABARI</button>
+<button onclick="openPage('sports',this)">⚽<br>SPORTS</button>
+
+<button onclick="openPage('scores',this)">🔴<br>LIVE SCORES</button>
+<button onclick="openPage('table',this)">📊<br>LIVE TABLE</button>
+<button onclick="openPage('ligi',this)">🏆<br>LIGI</button>
+
+<button onclick="openPage('fixtures',this)">📅<br>FIXTURES</button>
+<button onclick="openPage('series',this)">🎬<br>SERIES</button>
+<button onclick="openPage('muziki',this)">🎵<br>MUZIKI</button>
+
+<button onclick="openPage('dunia',this)">🌍<br>DUNIA</button>
+<button onclick="openPage('updates',this)">📢<br>UPDATES</button>
+<button onclick="openPage('sportslive',this)">🔴<br>SPORTS LIVE</button>
+
+</nav>
+
+<main class="container">
+
+<!-- HOME -->
+
+<section id="home" class="page active">
+
+<div class="hero">
+<div class="blue">🔥 DRACK HUB</div>
+<h1>Habari zote sehemu moja.</h1>
+<p>
+Sports • Habari • Live Scores • Ligi • Burudani
+</p>
+</div>
+
+<h2 class="title">🔥 Habari Mpya</h2>
+
+<div class="cards">
+
+<div class="card">
+<div class="tag">📰 HABARI</div>
+<h3>Karibu DRACK HUB</h3>
+<p>
+Jukwaa lako la habari, michezo na burudani.
+</p>
+</div>
+
+<div class="card live">
+<div class="red">🔴 LIVE</div>
+<h3>Live Scores</h3>
+<p>
+Mechi zinazoendelea zitaonekana hapa.
+</p>
+</div>
+
+<div class="card">
+<div class="tag">📊 LIVE TABLE</div>
+<h3>Misimamo ya ligi</h3>
+<p>
+Msimamo wa timu utaonyeshwa hapa.
+</p>
+</div>
+
+</div>
+</section>
+
+
+<!-- HABARI -->
+
+<section id="habari" class="page">
+
+<h2 class="title">📰 HABARI</h2>
+
+<div class="cards">
+
+<div class="card">
+<div class="tag">BREAKING NEWS</div>
+<h3>Habari mpya zitaonekana hapa</h3>
+<p>
+DRACK HUB itakusanya na kuonyesha habari mpya.
+</p>
+</div>
+
+<div class="card">
+<div class="tag">TOP STORIES</div>
+<h3>Habari zinazofuatiliwa zaidi</h3>
+<p>
+Sehemu hii itaonyesha habari maarufu.
+</p>
+</div>
+
+</div>
+</section>
+
+
+<!-- SPORTS -->
+
+<section id="sports" class="page">
+
+<h2 class="title">⚽ SPORTS</h2>
+
+<div class="cards">
+
+<div class="card">
+<div class="tag">⚽ FOOTBALL</div>
+<h3>Habari za mpira</h3>
+<p>
+Matokeo, usajili, taarifa za timu na habari nyingine za mpira.
+</p>
+</div>
+
+<div class="card">
+<div class="tag">🏆 COMPETITIONS</div>
+<h3>Mashindano</h3>
+<p>
+Ligi na mashindano mbalimbali yataonekana hapa.
+</p>
+</div>
+
+</div>
+</section>
+
+
+<!-- LIVE SCORES -->
+
+<section id="scores" class="page">
+
+<h2 class="title">🔴 LIVE SCORES</h2>
+
+<div class="match">
+<div class="team">TEAM A</div>
+<div class="score">0 - 0</div>
+<div class="team">TEAM B</div>
+</div>
+
+<div class="empty">
+🔴 Hakuna live match iliyounganishwa bado.
+<br><br>
+Tutaiunganisha na live scores data.
+</div>
+
+</section>
+
+
+<!-- LIVE TABLE -->
+
+<section id="table" class="page">
+
+<h2 class="title">📊 LIVE TABLE</h2>
+
+<table class="table">
+
+<tr>
+<th>#</th>
+<th>TEAM</th>
+<th>P</th>
+<th>W</th>
+<th>D</th>
+<th>L</th>
+<th>PTS</th>
+</tr>
+
+<tr>
+<td>1</td>
+<td>Team A</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+
+<tr>
+<td>2</td>
+<td>Team B</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+
+</table>
+
+<div class="empty" style="margin-top:15px">
+📊 Live league table itaunganishwa na data halisi.
+</div>
+
+</section>
+
+
+<!-- LIGI -->
+
+<section id="ligi" class="page">
+
+<h2 class="title">🏆 LIGI</h2>
+
+<div class="cards">
+
+<div class="card">
+<h3>🇹🇿 Tanzania</h3>
+<p>Ratiba, matokeo na msimamo wa ligi.</p>
+</div>
+
+<div class="card">
+<h3>🇬🇧 Premier League</h3>
+<p>Habari, fixtures, scores na table.</p>
+</div>
+
+<div class="card">
+<h3>🇪🇸 La Liga</h3>
+<p>Habari na matokeo ya ligi.</p>
+</div>
+
+<div class="card">
+<h3>🇪🇺 UEFA Champions League</h3>
+<p>Ratiba na matokeo ya mashindano.</p>
+</div>
+
+</div>
+</section>
+
+
+<!-- FIXTURES -->
+
+<section id="fixtures" class="page">
+
+<h2 class="title">📅 FIXTURES</h2>
+
+<div class="empty">
+📅 Ratiba za mechi zitaonekana hapa.
+</div>
+
+</section>
+
+
+<!-- SERIES -->
+
+<section id="series" class="page">
+
+<h2 class="title">🎬 SERIES</h2>
+
+<div class="cards">
+
+<div class="card">
+<h3>🎬 Series mpya</h3>
+<p>
+Sehemu ya series na burudani.
+</p>
+</div>
+
+</div>
+</section>
+
+
+<!-- MUZIKI -->
+
+<section id="muziki" class="page">
+
+<h2 class="title">🎵 MUZIKI</h2>
+
+<div class="cards">
+
+<div class="card">
+<h3>🎵 Music Updates</h3>
+<p>
+Habari za muziki, releases na updates.
+</p>
+</div>
+
+</div>
+</section>
+
+
+<!-- DUNIA -->
+
+<section id="dunia" class="page">
+
+<h2 class="title">🌍 DUNIA</h2>
+
+<div class="cards">
+
+<div class="card">
+<h3>🌍 World News</h3>
+<p>
+Habari muhimu kutoka duniani.
+</p>
+</div>
+
+</div>
+</section>
+
+
+<!-- UPDATES -->
+
+<section id="updates" class="page">
+
+<h2 class="title">📢 UPDATES</h2>
+
+<div class="card">
+<h3>📢 DRACK HUB Updates</h3>
+<p>
+Updates za mfumo na taarifa muhimu zitaonekana hapa.
+</p>
+</div>
+
+</section>
+
+
+<!-- SPORTS LIVE -->
+
+<section id="sportslive" class="page">
+
+<h2 class="title">🔴 SPORTS LIVE</h2>
+
+<div class="hero">
+<div class="red">🔴 SPORTS LIVE</div>
+<h1>Watch Live Sports</h1>
+<p>
+Links za matangazo ya michezo zitawekwa hapa.
+</p>
+</div>
+
+<div class="empty">
+🎬 Hakuna stream iliyowekwa bado.
+</div>
+
+</section>
+
+<footer>
+© 2026 DRACK HUB — All Rights Reserved
+</footer>
+
+</main>
+
+<script>
+
+function openPage(id,button){
+
+document.querySelectorAll('.page').forEach(page=>{
+page.classList.remove('active');
+});
+
+document.getElementById(id).classList.add('active');
+
+document.querySelectorAll('.menu button').forEach(btn=>{
+btn.classList.remove('active');
+});
+
+button.classList.add('active');
+
+window.scrollTo({
+top:0,
+behavior:'smooth'
+});
+
+}
+
+document.getElementById('search').addEventListener('input',function(){
+
+let query=this.value.toLowerCase().trim();
+
+document.querySelectorAll('.card').forEach(card=>{
+
+let text=card.innerText.toLowerCase();
+
+card.style.display=
+!query || text.includes(query)
+?'block'
+:'none';
+
+});
+
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,27 @@
+[
+  {
+    "name": "ping",
+    "category": "General",
+    "description": "Check bot response"
+  },
+  {
+    "name": "menu",
+    "category": "General",
+    "description": "Show bot menu"
+  },
+  {
+    "name": "calc",
+    "category": "Math",
+    "description": "Calculate numbers"
+  },
+  {
+    "name": "joke",
+    "category": "Fun",
+    "description": "Tell a joke"
+  },
+  {
+    "name": "groupinfo",
+    "category": "Group",
+    "description": "Show group information"
+  }
+]
