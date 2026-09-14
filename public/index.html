@@ -630,21 +630,17 @@ card.style.display=
 
 
 async function loadNews(){
-
     const newsList = document.getElementById("news-list");
 
     if(!newsList) return;
 
     try{
-
         const response = await fetch("/api/posts");
         const data = await response.json();
 
         if(!data.success || !data.posts || data.posts.length === 0){
-
             newsList.innerHTML =
                 '<div class="empty">📰 Hakuna habari bado.</div>';
-
             return;
         }
 
@@ -659,13 +655,17 @@ async function loadNews(){
                     '" alt="Habari">';
             }
 
-            let source = "";
+            let content = post.content || "";
 
-            if(post.source_name){
-                source =
-                    '<div class="news-source">📰 Chanzo: ' +
-                    post.source_name +
-                    '</div>';
+            if(content.length > 220){
+                content = content.substring(0, 220) + "...";
+            }
+
+            let date = "";
+
+            if(post.created_at){
+                date = new Date(post.created_at)
+                    .toLocaleString("sw-TZ");
             }
 
             let link = "";
@@ -675,24 +675,26 @@ async function loadNews(){
                     '<a class="news-link" href="' +
                     post.source_url +
                     '" target="_blank" rel="noopener noreferrer">' +
-                    'SOMA CHANZO ↗</a>';
+                    '🔗 SOMA ZAIDI ↗' +
+                    '</a>';
             }
 
-            let date = "";
-
-            if(post.created_at){
-                date = new Date(post.created_at).toLocaleString("sw-TZ");
-            }
-
-            return '<article class="card">' +
+            return '<article class="card news-card">' +
                 '<div class="tag">' +
-                (post.category ? post.category.toUpperCase() : "HABARI") +
+                (post.category
+                    ? post.category.toUpperCase()
+                    : "HABARI") +
                 '</div>' +
                 image +
-                '<h3>' + (post.title || "Habari") + '</h3>' +
-                '<p>' + (post.content || "") + '</p>' +
-                source +
-                '<div class="news-meta">🕐 ' + date + '</div>' +
+                '<h3>' +
+                (post.title || "Habari") +
+                '</h3>' +
+                '<p>' +
+                content +
+                '</p>' +
+                '<div class="news-meta">🕒 ' +
+                date +
+                '</div>' +
                 link +
                 '</article>';
 
