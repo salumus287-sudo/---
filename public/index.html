@@ -189,6 +189,40 @@ color:#66727e;
 padding:25px 10px;
 font-size:12px;
 }
+
+.news-image{
+width:100%;
+height:190px;
+object-fit:cover;
+border-radius:12px;
+margin:10px 0;
+}
+
+.news-meta{
+color:#7f8b96;
+font-size:11px;
+margin-top:10px;
+}
+
+.news-source{
+color:#00d9ff;
+font-size:12px;
+font-weight:bold;
+margin-top:8px;
+}
+
+.news-link{
+display:inline-block;
+margin-top:12px;
+padding:9px 13px;
+background:#00c8e8;
+color:#001015;
+border-radius:9px;
+text-decoration:none;
+font-size:12px;
+font-weight:bold;
+}
+
 </style>
 </head>
 
@@ -278,25 +312,10 @@ Msimamo wa timu utaonyeshwa hapa.
 
 <h2 class="title">📰 HABARI</h2>
 
-<div class="cards">
-
-<div class="card">
-<div class="tag">BREAKING NEWS</div>
-<h3>Habari mpya zitaonekana hapa</h3>
-<p>
-DRACK HUB itakusanya na kuonyesha habari mpya.
-</p>
+<div id="news-list" class="cards">
+<div class="empty">⏳ Inapakia habari...</div>
 </div>
 
-<div class="card">
-<div class="tag">TOP STORIES</div>
-<h3>Habari zinazofuatiliwa zaidi</h3>
-<p>
-Sehemu hii itaonyesha habari maarufu.
-</p>
-</div>
-
-</div>
 </section>
 
 
@@ -579,6 +598,89 @@ card.style.display=
 });
 
 });
+
+
+async function loadNews(){
+
+    const newsList = document.getElementById("news-list");
+
+    if(!newsList) return;
+
+    try{
+
+        const response = await fetch("/api/posts");
+        const data = await response.json();
+
+        if(!data.success || !data.posts || data.posts.length === 0){
+
+            newsList.innerHTML =
+                '<div class="empty">📰 Hakuna habari bado.</div>';
+
+            return;
+        }
+
+        newsList.innerHTML = data.posts.map(function(post){
+
+            let image = "";
+
+            if(post.image_url){
+                image =
+                    '<img class="news-image" src="' +
+                    post.image_url +
+                    '" alt="Habari">';
+            }
+
+            let source = "";
+
+            if(post.source_name){
+                source =
+                    '<div class="news-source">📰 Chanzo: ' +
+                    post.source_name +
+                    '</div>';
+            }
+
+            let link = "";
+
+            if(post.source_url){
+                link =
+                    '<a class="news-link" href="' +
+                    post.source_url +
+                    '" target="_blank" rel="noopener noreferrer">' +
+                    'SOMA CHANZO ↗</a>';
+            }
+
+            let date = "";
+
+            if(post.created_at){
+                date = new Date(post.created_at).toLocaleString("sw-TZ");
+            }
+
+            return '<article class="card">' +
+                '<div class="tag">' +
+                (post.category ? post.category.toUpperCase() : "HABARI") +
+                '</div>' +
+                image +
+                '<h3>' + (post.title || "Habari") + '</h3>' +
+                '<p>' + (post.content || "") + '</p>' +
+                source +
+                '<div class="news-meta">🕐 ' + date + '</div>' +
+                link +
+                '</article>';
+
+        }).join("");
+
+    }catch(error){
+
+        console.error("NEWS ERROR:", error);
+
+        newsList.innerHTML =
+            '<div class="empty">❌ Imeshindwa kupakia habari.</div>';
+    }
+}
+
+loadNews();
+
+setInterval(loadNews, 60000);
 
 </script>
 
