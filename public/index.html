@@ -107,8 +107,37 @@ line-height:1.5;
 }
 
 .cards{
-display:grid;
+display:flex;
+flex-direction:column;
+width:100%;
 gap:12px;
+margin:0;
+padding:0;
+}
+
+.card{
+width:100%;
+max-width:none;
+min-width:0;
+background:#141c25;
+border:1px solid #202b36;
+border-radius:12px;
+padding:16px;
+overflow:hidden;
+}
+
+.card h3{
+margin:7px 0;
+font-size:18px;
+line-height:1.35;
+word-break:break-word;
+}
+
+.card p{
+color:#9ba8b5;
+font-size:14px;
+line-height:1.55;
+word-break:break-word;
 }
 
 .card{
