@@ -1,7 +1,10 @@
 const { Pool } = require("pg");
+const Parser = require("rss-parser");
 
-const API_URL =
-    "https://dailynews.co.tz/wp-json/wp/v2/posts?per_page=5";
+const FEED_URL =
+    "https://dailynews.co.tz/?format=feed&type=rss";
+
+const parser = new Parser();
 
 async function importDailyNews() {
     if (!process.env.DATABASE_URL) {
@@ -17,37 +20,34 @@ async function importDailyNews() {
 
     try {
         console.log("=================================");
-        console.log("   📰 DAILY NEWS AUTO IMPORT");
+        console.log("   📰 DAILY NEWS RSS IMPORT");
         console.log("=================================");
 
-        const response = await fetch(API_URL);
+        const feed = await parser.parseURL(FEED_URL);
 
-        if (!response.ok) {
-            throw new Error(`Daily News API: ${response.status}`);
-        }
+        const items = (feed.items || []).slice(0, 5);
 
-        const posts = await response.json();
+        console.log(`📡 Zimepatikana: ${items.length} habari`);
 
-        console.log(`📡 Zimepatikana: ${posts.length} habari`);
+        for (const item of items) {
+            const title = item.title || "Bila kichwa";
+            const sourceUrl = item.link || "";
 
-        for (const post of posts) {
-            const title = post.title?.rendered || "Bila kichwa";
-            const content = post.content?.rendered || "";
-            const sourceUrl = post.link || "";
-            const createdAt = post.date_gmt || post.date;
+            const content =
+                item["content:encoded"] ||
+                item.content ||
+                item.contentSnippet ||
+                item.summary ||
+                "";
 
-            const imageMatch = content.match(
-                /<img[^>]+src=["']([^"']+)["']/i
-            );
-
-            const imageUrl = imageMatch ? imageMatch[1] : null;
+            if (!sourceUrl) continue;
 
             const exists = await pool.query(
                 `SELECT id FROM posts WHERE source_url = $1 LIMIT 1`,
                 [sourceUrl]
             );
 
-            if (exists.rows.length) {
+            if (exists.rows.length > 0) {
                 console.log(`⏭️ Tayari ipo: ${title}`);
                 continue;
             }
@@ -61,19 +61,17 @@ async function importDailyNews() {
                     category,
                     image_url,
                     source_name,
-                    source_url,
-                    created_at
+                    source_url
                 )
-                VALUES ($1,$2,$3,$4,$5,$6,$7)
+                VALUES ($1,$2,$3,$4,$5,$6)
                 `,
                 [
                     title,
                     content,
                     "news",
-                    imageUrl,
+                    null,
                     "Daily News",
-                    sourceUrl,
-                    createdAt
+                    sourceUrl
                 ]
             );
 
@@ -81,7 +79,7 @@ async function importDailyNews() {
         }
 
         console.log("=================================");
-        console.log("✅ DAILY NEWS IMPORT IMEKAMILIKA");
+        console.log("✅ DAILY NEWS RSS IMPORT IMEKAMILIKA");
         console.log("=================================");
 
     } finally {
