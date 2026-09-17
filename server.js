@@ -1,5 +1,7 @@
 require("dotenv").config();
 const registerMusic = require("./music");
+const registerDrackPlusMusic = require("./drack-plus-music");
+const registerDrackPlusDownloads = require("./drack-plus-downloads");
 
 const express = require("express");
 const path = require("path");
@@ -998,23 +1000,16 @@ app.get("/api/admin/stats", async (req, res) => {
     try {
         const result = await pool.query(`
             SELECT
-                (SELECT COUNT(*) FROM posts) AS posts,
-                (SELECT COUNT(*) FROM comments) AS comments,
-                (SELECT COUNT(*) FROM comment_replies) AS replies,
-                (SELECT COUNT(*) FROM comment_reactions WHERE reaction = 'like') AS likes,
-                (SELECT COUNT(*) FROM visitors) AS visitors,
-                (SELECT COUNT(*)
-                 FROM visitors
-                 WHERE last_seen >= CURRENT_TIMESTAMP - INTERVAL '5 minutes') AS active_visitors
+                COUNT(*) AS visitors,
+                COUNT(*) FILTER (
+                    WHERE last_seen >= CURRENT_TIMESTAMP - INTERVAL '5 minutes'
+                ) AS active_visitors
+            FROM visitors
         `);
 
         res.json({
             success: true,
             stats: {
-                posts: Number(result.rows[0].posts),
-                comments: Number(result.rows[0].comments),
-                replies: Number(result.rows[0].replies),
-                likes: Number(result.rows[0].likes),
                 visitors: Number(result.rows[0].visitors),
                 activeVisitors: Number(result.rows[0].active_visitors)
             }
@@ -1028,7 +1023,7 @@ app.get("/api/admin/stats", async (req, res) => {
             message: "Imeshindwa kupata admin statistics."
         });
     }
-});
+});;
 
 
 
@@ -1321,6 +1316,8 @@ app.get("/music-test", (req, res) => {
 });
 
 registerMusic(app);
+registerDrackPlusMusic(app);
+registerDrackPlusDownloads(app);
 
 app.listen(PORT, HOST, () => {
     console.log("");
