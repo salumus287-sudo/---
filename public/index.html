@@ -3,7 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>DRACK HUB</title>
+<title>DRACK HUB - Habari, Sports, Muziki na Burudani</title>
+<meta name="description" content="DRACK HUB ni tovuti ya habari, michezo, muziki, series na taarifa mbalimbali kutoka Tanzania na duniani.">
+<meta name="keywords" content="DRACK HUB, habari Tanzania, sports Tanzania, mpira, muziki Tanzania, series, habari za dunia">
+<meta name="robots" content="index, follow">
+<meta name="author" content="DRACK HUB">
+<link rel="canonical" href="https://drack-hub-gldg.onrender.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="DRACK HUB - Habari, Sports, Muziki na Burudani">
+<meta property="og:description" content="Habari, michezo, muziki, series na taarifa mbalimbali kutoka Tanzania na duniani.">
+<meta property="og:url" content="https://drack-hub-gldg.onrender.com/">
+<meta property="og:site_name" content="DRACK HUB">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="DRACK HUB - Habari, Sports, Muziki na Burudani">
+<meta name="twitter:description" content="Habari, michezo, muziki, series na taarifa mbalimbali kutoka Tanzania na duniani.">
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -840,6 +853,7 @@ th {
 <button onclick="openPage('scores',this)">🔴<br>LIVE SCORES</button>
 
 <button onclick="openPage('muziki',this)">🎵<br>MUZIKI</button>
+    <button onclick="openPage('tvradio',this)">📺<br>TV/RADIO</button>
 
 
 
@@ -1067,6 +1081,18 @@ Updates za mfumo na taarifa muhimu zitaonekana hapa.
 
 <!-- SPORTS LIVE -->
 
+<section id="tvradio" class="page">
+  <h2 class="title">📺 LIVE TV & RADIO</h2>
+  <div class="tv-radio-tabs">
+    <button class="tv-tab active" onclick="showTVRadio('tv',this)">📺 LIVE TV</button>
+    <button class="tv-tab" onclick="showTVRadio('radio',this)">📻 LIVE RADIO</button>
+  </div>
+  <div id="tv-radio-player" class="tv-radio-player">
+    <div class="empty">📺 Chagua channel kuanza kuangalia.</div>
+  </div>
+  <div id="tv-channels" class="tv-radio-grid"></div>
+  <div id="radio-stations" class="tv-radio-grid" style="display:none;"></div>
+</section>
 <section id="sportslive" class="page">
 
 <h2 class="title">🔴 SPORTS LIVE</h2>
@@ -2493,6 +2519,7 @@ function filterNews(category) {
 
 })();
 </script>
+\n
 \n</body>
 </html>
 
@@ -3208,3 +3235,326 @@ function filterNews(category) {
 })();
 
 </script>
+
+<style>
+/* ===== DRACK HUB LIVE TV / RADIO ===== */
+
+.tv-radio-tabs{
+  display:flex;
+  gap:10px;
+  margin:15px 0;
+}
+
+.tv-tab{
+  flex:1;
+  padding:13px 8px;
+  border:1px solid #333;
+  border-radius:10px;
+  background:#111;
+  color:#fff;
+  font-weight:bold;
+}
+
+.tv-tab.active{
+  background:#d00000;
+  border-color:#ff3030;
+}
+
+.tv-radio-player{
+  width:100%;
+  min-height:220px;
+  background:#050505;
+  border:1px solid #333;
+  border-radius:14px;
+  overflow:hidden;
+  margin-bottom:15px;
+}
+
+.tv-radio-player iframe,
+.tv-radio-player video{
+  width:100%;
+  height:360px;
+  border:0;
+  display:block;
+  background:#000;
+}
+
+.tv-radio-player audio{
+  width:94%;
+  margin:25px 3%;
+}
+
+.tv-radio-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:12px;
+}
+
+.tv-radio-card{
+  background:#111;
+  border:1px solid #292929;
+  border-radius:12px;
+  padding:15px;
+  text-align:center;
+}
+
+.tv-radio-card .channel-icon{
+  font-size:38px;
+}
+
+.tv-radio-card h3{
+  margin:7px 0;
+  font-size:16px;
+}
+
+.tv-radio-card p{
+  color:#aaa;
+  font-size:12px;
+}
+
+.tv-radio-card button{
+  width:100%;
+  padding:10px;
+  border:0;
+  border-radius:8px;
+  background:#e00000;
+  color:#fff;
+  font-weight:bold;
+}
+
+.live-dot{
+  color:#ff2020;
+}
+
+@media(max-width:600px){
+  .tv-radio-player iframe,
+  .tv-radio-player video{
+    height:230px;
+  }
+}
+</style>
+
+<script>
+/* ===== DRACK HUB TV/RADIO ENGINE ===== */
+
+const DRACK_TV_CHANNELS = [
+  {
+    name:"DRACK TV",
+    description:"Channel mpya",
+    type:"message"
+  }
+];
+
+const DRACK_RADIO_STATIONS = [
+  {
+    name:"DRACK RADIO",
+    description:"Radio mpya",
+    type:"message"
+  }
+];
+
+function showTVRadio(type,button){
+
+  document.querySelectorAll(".tv-tab").forEach(function(btn){
+    btn.classList.remove("active");
+  });
+
+  if(button){
+    button.classList.add("active");
+  }
+
+  const tv=document.getElementById("tv-channels");
+  const radio=document.getElementById("radio-stations");
+
+  if(type==="tv"){
+    if(tv) tv.style.display="grid";
+    if(radio) radio.style.display="none";
+    renderTVChannels();
+  }else{
+    if(tv) tv.style.display="none";
+    if(radio) radio.style.display="grid";
+    renderRadioStations();
+  }
+}
+
+function renderTVChannels(){
+
+  const box=document.getElementById("tv-channels");
+
+  if(!box) return;
+
+  box.innerHTML=DRACK_TV_CHANNELS.map(function(channel,index){
+
+    return `
+      <article class="tv-radio-card">
+        <div class="channel-icon">📺</div>
+        <h3>${channel.name}</h3>
+        <p><span class="live-dot">●</span> ${channel.description}</p>
+        <button onclick="playTVChannel(${index})">
+          ▶ TAZAMA LIVE
+        </button>
+      </article>
+    `;
+
+  }).join("");
+}
+
+function renderRadioStations(){
+
+  const box=document.getElementById("radio-stations");
+
+  if(!box) return;
+
+  box.innerHTML=DRACK_RADIO_STATIONS.map(function(station,index){
+
+    return `
+      <article class="tv-radio-card">
+        <div class="channel-icon">📻</div>
+        <h3>${station.name}</h3>
+        <p><span class="live-dot">●</span> ${station.description}</p>
+        <button onclick="playRadioStation(${index})">
+          ▶ SIKILIZA LIVE
+        </button>
+      </article>
+    `;
+
+  }).join("");
+}
+
+function playTVChannel(index){
+
+  const channel=DRACK_TV_CHANNELS[index];
+  const player=document.getElementById("tv-radio-player");
+
+  if(!player || !channel) return;
+
+  player.innerHTML=`
+    <div class="empty">
+      📺 ${channel.name}<br><br>
+      Stream itawekwa hapa.
+    </div>
+  `;
+}
+
+function playRadioStation(index){
+
+  const station=DRACK_RADIO_STATIONS[index];
+  const player=document.getElementById("tv-radio-player");
+
+  if(!player || !station) return;
+
+  player.innerHTML=`
+    <div class="empty">
+      📻 ${station.name}<br><br>
+      Radio stream itawekwa hapa.
+    </div>
+  `;
+}
+
+renderTVChannels();
+renderRadioStations();
+</script>
+
+<style>
+/* ===== DRACK HUB PREMIUM MENU BUTTONS ===== */
+
+.menu{
+  display:flex !important;
+  gap:8px !important;
+  padding:10px !important;
+  overflow-x:auto !important;
+  scrollbar-width:none !important;
+  background:rgba(10,10,18,.96) !important;
+  border-bottom:1px solid rgba(255,255,255,.08) !important;
+}
+
+.menu::-webkit-scrollbar{
+  display:none;
+}
+
+.menu button{
+  min-width:78px !important;
+  height:68px !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  border-radius:16px !important;
+  background:linear-gradient(145deg,#191923,#0d0d14) !important;
+  color:#aaa !important;
+  font-size:11px !important;
+  font-weight:800 !important;
+  letter-spacing:.4px !important;
+  padding:8px 7px !important;
+  box-shadow:
+    0 5px 14px rgba(0,0,0,.35),
+    inset 0 1px 0 rgba(255,255,255,.05) !important;
+  transition:
+    transform .18s ease,
+    background .18s ease,
+    color .18s ease,
+    box-shadow .18s ease !important;
+  white-space:nowrap !important;
+}
+
+.menu button:first-line{
+  font-size:21px !important;
+}
+
+.menu button:hover{
+  transform:translateY(-2px) !important;
+  color:#fff !important;
+  background:linear-gradient(145deg,#242432,#12121b) !important;
+  box-shadow:
+    0 8px 20px rgba(0,0,0,.45),
+    0 0 12px rgba(0,140,255,.18) !important;
+}
+
+.menu button:active{
+  transform:scale(.94) !important;
+}
+
+.menu button.active{
+  color:#fff !important;
+  border-color:#168cff !important;
+  background:linear-gradient(145deg,#126ed0,#07356b) !important;
+  box-shadow:
+    0 6px 18px rgba(0,100,255,.35),
+    inset 0 1px 0 rgba(255,255,255,.15) !important;
+}
+
+/* Special button */
+.menu button:last-child{
+  border-color:rgba(255,50,50,.25) !important;
+}
+
+.menu button:last-child:hover{
+  background:linear-gradient(145deg,#6b1717,#260b0b) !important;
+  border-color:#ff3b3b !important;
+}
+
+/* Mobile */
+@media(max-width:600px){
+  .menu{
+    gap:7px !important;
+    padding:8px !important;
+  }
+
+  .menu button{
+    min-width:72px !important;
+    height:64px !important;
+    border-radius:14px !important;
+    font-size:10px !important;
+  }
+}
+</style>
+
+<script>
+/* ===== DRACK HUB BUTTON FEEDBACK ===== */
+document.querySelectorAll('.menu button').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.menu button').forEach(b=>{
+      b.classList.remove('active');
+    });
+    btn.classList.add('active');
+  });
+});
+</script>
+

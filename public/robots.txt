@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://drack-hub-gldg.onrender.com/sitemap.xml
