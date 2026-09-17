@@ -2379,107 +2379,137 @@ function filterNews(category) {
 
 <script id="drack-music-js">
 (function(){
-  const search=document.getElementById("music-search");
-  const searchBtn=document.getElementById("music-search-btn");
-  const refresh=document.getElementById("music-refresh");
-  const results=document.getElementById("music-results");
-  const player=document.getElementById("music-player");
-  const filters=document.querySelectorAll(".music-filter");
+  const search = document.getElementById("music-search");
+  const searchBtn = document.getElementById("music-search-btn");
+  const refresh = document.getElementById("music-refresh");
+  const results = document.getElementById("music-results");
+  const player = document.getElementById("music-player");
+  const filters = document.querySelectorAll(".music-filter");
 
-  if(!search||!results||!player)return;
+  if(!search || !results || !player) return;
 
-  let query="Tanzania music";
-  let videos=[];
+  let query = "";
+  let songs = [];
 
   function esc(v){
-    return String(v||"")
+    return String(v || "")
       .replace(/&/g,"&amp;")
       .replace(/</g,"&lt;")
       .replace(/>/g,"&gt;")
-      .replace(/"/g,"&quot;");
+      .replace(/"/g,"&quot;")
+      .replace(/'/g,"&#039;");
   }
 
-  function play(video){
-    if(!video||!video.id)return;
+  function slug(title, artist){
+    return String(artist + " " + title)
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g,"")
+      .replace(/[^a-z0-9]+/g,"-")
+      .replace(/^-+|-+$/g,"");
+  }
 
-    player.innerHTML=
-      '<iframe src="https://www.youtube.com/embed/'+
-      encodeURIComponent(video.id)+
-      '?autoplay=1&controls=1&playsinline=1&rel=0" '+
-      'allow="autoplay; encrypted-media; picture-in-picture; fullscreen" '+
-      'allowfullscreen></iframe>'+
-      '<div><strong>'+esc(video.title||"Music Video")+
-      '</strong></div>';
+  
+function musicSlug(title, artist) {
+  return String(artist + " " + title)
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\\u0300-\\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
 
-    player.scrollIntoView({behavior:"smooth",block:"start"});
+function play(song) {
+  const slug = musicSlug(song.title, song.artist);
+  window.location.href = "/music/" + slug;
+}
+
+function render(list){
+    if(!list.length){
+      results.innerHTML =
+        '<div class="empty">🎵 Hakuna music iliyopatikana.</div>';
+      return;
+    }
+
+    results.innerHTML = list.map(function(song, i){
+      return '<article class="card music-card" data-i="' + i + '">' +
+        '<div class="music-thumb" style="display:flex;align-items:center;justify-content:center;font-size:48px;background:linear-gradient(135deg,#111,#222);">' +
+        '🎵</div>' +
+        '<div class="tag">🎵 MUSIC</div>' +
+        '<h3>' + esc(song.title) + '</h3>' +
+        '<p>🎤 ' + esc(song.artist) + '</p>' +
+        '<p>🎼 ' + esc(song.genre || "Music") +
+        (song.year ? ' • ' + esc(song.year) : '') +
+        '</p>' +
+        '<div class="news-link">▶ CHEZA / ANGALIA</div>' +
+        '</article>';
+    }).join("");
+
+    results.querySelectorAll(".music-card").forEach(function(card){
+      card.addEventListener("click", function(){
+        play(list[Number(card.dataset.i)]);
+      });
+    });
   }
 
   async function load(q){
-    results.innerHTML='<div class="empty">⏳ Inapakia music...</div>';
+    results.innerHTML =
+      '<div class="empty">⏳ Inapakia DRACK MUSIC...</div>';
 
     try{
-      const r=await fetch("/api/youtube-videos?q="+encodeURIComponent(q)+"&limit=12");
-      const data=await r.json();
+      const url = "/api/music" +
+        (q ? "?q=" + encodeURIComponent(q) : "");
 
-      if(!data.success||!data.videos||!data.videos.length){
-        results.innerHTML='<div class="empty">🎵 Hakuna music iliyopatikana.</div>';
-        return;
+      const r = await fetch(url);
+      const data = await r.json();
+
+      if(!data.success){
+        throw new Error("Music API error");
       }
 
-      videos=data.videos;
+      songs = data.songs || [];
+      render(songs);
 
-      results.innerHTML=videos.map(function(v,i){
-        const download=v.download_url
-          ? '<a class="music-download" href="'+esc(v.download_url)+'" download>📥 DOWNLOAD</a>'
-          : '<span class="music-download" style="opacity:.5">📥 DOWNLOAD HAIPATIKANI</span>';
+    }catch(error){
+      console.error("DRACK MUSIC ERROR:", error);
 
-        return '<article class="card music-card" data-i="'+i+'">'+
-          '<div class="music-thumb">'+
-          '<img src="'+esc(v.thumbnail||"")+'" loading="lazy">'+
-          '<span class="music-play">▶</span></div>'+
-          '<div class="tag">🎵 MUSIC</div>'+
-          '<h3>'+esc(v.title||"Music Video")+'</h3>'+
-          '<p>🎤 '+esc(v.channel||"YouTube")+'</p>'+
-          '<div class="news-link">▶ CHEZA NDANI YA DRACK HUB</div>'+
-          download+
-          '</article>';
-      }).join("");
-
-      results.querySelectorAll(".music-card").forEach(function(card){
-        card.addEventListener("click",function(e){
-          if(e.target.closest(".music-download"))return;
-          play(videos[Number(card.dataset.i)]);
-        });
-      });
-
-    }catch(e){
-      console.error("MUSIC ERROR:",e);
-      results.innerHTML='<div class="empty">❌ Imeshindwa kupakia music.</div>';
+      results.innerHTML =
+        '<div class="empty">❌ DRACK MUSIC imeshindwa kupakia.</div>';
     }
   }
 
-  searchBtn.onclick=function(){
-    query=search.value.trim()||"Tanzania music";
+  searchBtn.onclick = function(){
+    query = search.value.trim();
     load(query);
   };
 
-  search.onkeydown=function(e){
-    if(e.key==="Enter")searchBtn.click();
+  search.onkeydown = function(e){
+    if(e.key === "Enter"){
+      searchBtn.click();
+    }
   };
 
   filters.forEach(function(btn){
-    btn.onclick=function(){
-      filters.forEach(function(x){x.classList.remove("active")});
+    btn.onclick = function(){
+      filters.forEach(function(x){
+        x.classList.remove("active");
+      });
+
       btn.classList.add("active");
-      query=btn.dataset.query;
-      search.value="";
+
+      query = btn.dataset.query || "";
+      search.value = "";
+
       load(query);
     };
   });
 
-  refresh.onclick=function(){load(query)};
+  refresh.onclick = function(){
+    load(query);
+  };
 
-  load(query);
+  load("");
+
 })();
 </script>
 

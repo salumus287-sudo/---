@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DRACK HUB • Tazama Mpira Live</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at top,#17233d 0,#080b12 42%,#050609 100%);
+  color:#fff;
+  font-family:Arial,sans-serif;
+}
+
+.header{
+  height:64px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  background:rgba(5,7,12,.88);
+  backdrop-filter:blur(12px);
+}
+
+.logo{
+  font-size:22px;
+  font-weight:900;
+  letter-spacing:1px;
+}
+
+.logo span{
+  color:#168cff;
+}
+
+.container{
+  width:min(94%,460px);
+  margin:35px auto;
+}
+
+.back{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  color:#aaa;
+  text-decoration:none;
+  font-size:14px;
+  margin-bottom:20px;
+}
+
+.card{
+  background:linear-gradient(145deg,rgba(25,29,42,.97),rgba(9,11,18,.97));
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:24px;
+  padding:25px;
+  box-shadow:0 20px 50px rgba(0,0,0,.45);
+}
+
+.icon{
+  width:72px;
+  height:72px;
+  margin:0 auto 16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:22px;
+  background:linear-gradient(145deg,#126ed0,#07356b);
+  font-size:36px;
+  box-shadow:0 10px 30px rgba(0,110,255,.25);
+}
+
+h1{
+  text-align:center;
+  font-size:25px;
+  margin-bottom:8px;
+}
+
+.subtitle{
+  text-align:center;
+  color:#9da4b2;
+  font-size:14px;
+  line-height:1.5;
+  margin-bottom:24px;
+}
+
+.price{
+  text-align:center;
+  font-size:38px;
+  font-weight:900;
+  margin:10px 0 4px;
+}
+
+.duration{
+  text-align:center;
+  color:#40d98b;
+  font-weight:800;
+  margin-bottom:24px;
+}
+
+.features{
+  display:grid;
+  gap:10px;
+  margin-bottom:24px;
+}
+
+.feature{
+  padding:13px;
+  border-radius:13px;
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.06);
+  color:#d9dde5;
+  font-size:14px;
+}
+
+.payment-box{
+  padding:16px;
+  border-radius:16px;
+  background:rgba(16,142,255,.08);
+  border:1px solid rgba(22,140,255,.25);
+  margin-bottom:20px;
+}
+
+.payment-title{
+  font-weight:900;
+  margin-bottom:8px;
+}
+
+.payment-info{
+  color:#cbd3df;
+  font-size:14px;
+  line-height:1.7;
+}
+
+.phone{
+  font-size:20px;
+  font-weight:900;
+  color:#fff;
+  letter-spacing:1px;
+}
+
+.name{
+  color:#55aaff;
+  font-weight:800;
+}
+
+.notice{
+  margin-top:14px;
+  color:#8e98a8;
+  font-size:12px;
+  line-height:1.5;
+}
+
+.btn{
+  width:100%;
+  border:0;
+  border-radius:15px;
+  padding:16px;
+  background:linear-gradient(135deg,#168cff,#0755b8);
+  color:#fff;
+  font-size:16px;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:0 10px 25px rgba(0,100,255,.25);
+  transition:.18s;
+}
+
+.btn:active{
+  transform:scale(.97);
+}
+
+.btn.secondary{
+  margin-top:10px;
+  background:#202532;
+  box-shadow:none;
+}
+
+.status{
+  display:none;
+  margin-top:18px;
+  padding:15px;
+  border-radius:14px;
+  background:rgba(255,193,7,.08);
+  border:1px solid rgba(255,193,7,.25);
+  color:#ffd86b;
+  text-align:center;
+  font-size:13px;
+}
+
+.match-page{
+  display:none;
+}
+
+.match{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:16px;
+  margin-top:12px;
+  border-radius:15px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.match button{
+  border:0;
+  padding:9px 13px;
+  border-radius:10px;
+  background:#168cff;
+  color:#fff;
+  font-weight:800;
+}
+
+.small{
+  color:#9099aa;
+  font-size:12px;
+  margin-top:4px;
+}
+
+@media(max-width:420px){
+  .card{
+    padding:20px;
+  }
+
+  h1{
+    font-size:22px;
+  }
+
+  .price{
+    font-size:34px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+  <div class="logo">DRACK <span>HUB</span></div>
+</header>
+
+<main class="container">
+
+<a class="back" href="/">← Rudi DRACK HUB</a>
+
+<!-- PAYMENT PAGE -->
+<section id="paymentPage" class="card">
+
+  <div class="icon">⚽</div>
+
+  <h1>TAZAMA MPIRA LIVE</h1>
+
+  <p class="subtitle">
+    Fungua huduma ya Live Match na uchague mechi unayotaka kutazama.
+  </p>
+
+  <div class="price">SH 500</div>
+
+  <div class="duration">✓ ACCESS YA SIKU 14</div>
+
+  <div class="features">
+    <div class="feature">⚽ ✓ Chagua mechi unayotaka</div>
+    <div class="feature">🔴 ✓ Tazama Live</div>
+    <div class="feature">📅 ✓ Access kwa siku 14</div>
+  </div>
+
+  <div class="payment-box">
+    <div class="payment-title">💳 TAARIFA ZA MALIPO</div>
+
+    <div class="payment-info">
+      Lipa <b>Sh 500</b> kupitia namba ya malipo.
+      <br><br>
+
+      📱 <span class="phone">0793869770</span>
+      <br>
+
+      👤 Jina: <span class="name">Juma Iddy</span>
+    </div>
+
+    <div class="notice">
+      Hii ni UI/demo. Kitufe cha kuthibitisha hapa hakifanyi
+      muamala wa pesa wala hakihakikishi malipo.
+    </div>
+  </div>
+
+  <button class="btn" onclick="showDemoStatus()">
+    💰 NIMELIPA SH 500
+  </button>
+
+  <div id="status" class="status">
+    ⏳ Demo: Tunahitaji uthibitisho wa malipo kabla ya kufungua mechi.
+  </div>
+
+</section>
+
+<!-- MATCH PAGE -->
+<section id="matchPage" class="card match-page">
+
+  <div class="icon">🔴</div>
+
+  <h1>LIVE MATCH</h1>
+
+  <p class="subtitle">
+    Chagua mechi unayotaka kutazama.
+  </p>
+
+  <div class="match">
+    <div>
+      ⚽ Simba SC
+      <div class="small">Live Match</div>
+    </div>
+    <button>TAZAMA</button>
+  </div>
+
+  <div class="match">
+    <div>
+      ⚽ Yanga SC
+      <div class="small">Live Match</div>
+    </div>
+    <button>TAZAMA</button>
+  </div>
+
+  <div class="match">
+    <div>
+      🌍 CAF Match
+      <div class="small">Live Match</div>
+    </div>
+    <button>TAZAMA</button>
+  </div>
+
+  <button class="btn secondary" onclick="backPayment()">
+    ← RUDI KWENYE MALIPO
+  </button>
+
+</section>
+
+</main>
+
+<script>
+function showDemoStatus(){
+  const status=document.getElementById("status");
+  status.style.display="block";
+}
+
+function backPayment(){
+  document.getElementById("matchPage").style.display="none";
+  document.getElementById("paymentPage").style.display="block";
+}
+</script>
+
+</body>
+</html>

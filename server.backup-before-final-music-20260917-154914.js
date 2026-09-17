@@ -1,5 +1,4 @@
 require("dotenv").config();
-const registerMusic = require("./music");
 
 const express = require("express");
 const path = require("path");
@@ -1319,8 +1318,6 @@ app.get("/music/:slug", (req, res) => {
 app.get("/music-test", (req, res) => {
   res.send("DRACK MUSIC ROUTE WORKS");
 });
-
-registerMusic(app);
 
 app.listen(PORT, HOST, () => {
     console.log("");

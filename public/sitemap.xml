@@ -2,7 +2,14 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://drack-hub-gldg.onrender.com/</loc>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://drack-hub-gldg.onrender.com/music</loc>
+  </url>
+  <url>
+    <loc>https://drack-hub-gldg.onrender.com/music/mbosso-ft-chley-sele</loc>
+  </url>
+  <url>
+    <loc>https://drack-hub-gldg.onrender.com/music/stamina-ft-christian-bella-bado</loc>
   </url>
 </urlset>
