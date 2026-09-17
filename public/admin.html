@@ -130,37 +130,15 @@ body{
     </header>
 
     <section class="stats">
-
         <div class="stat">
-            <div class="stat-label">👥 VISITORS</div>
+            <div class="stat-label">👤 JUMLA YA VISITORS</div>
             <div class="stat-value" id="totalVisitors">0</div>
         </div>
 
         <div class="stat">
-            <div class="stat-label">🟢 ACTIVE</div>
+            <div class="stat-label">🟢 VISITORS WALIOPO SASA</div>
             <div class="stat-value" id="activeVisitors">0</div>
         </div>
-
-        <div class="stat">
-            <div class="stat-label">📰 POSTS</div>
-            <div class="stat-value" id="totalPosts">0</div>
-        </div>
-
-        <div class="stat">
-            <div class="stat-label">💬 COMMENTS</div>
-            <div class="stat-value" id="totalComments">0</div>
-        </div>
-
-        <div class="stat">
-            <div class="stat-label">↩️ REPLIES</div>
-            <div class="stat-value" id="totalReplies">0</div>
-        </div>
-
-        <div class="stat">
-            <div class="stat-label">👍 LIKES</div>
-            <div class="stat-value" id="totalLikes">0</div>
-        </div>
-
     </section>
 
     <nav class="admin-menu">
@@ -184,10 +162,11 @@ body{
 
 <script id="DRACK_ADMIN_STATS_ENGINE">
 async function loadAdminStats(){
-
     try{
+        const response = await fetch("/api/admin/stats", {
+            cache: "no-store"
+        });
 
-        const response = await fetch("/api/admin/stats");
         const data = await response.json();
 
         if(!data.success){
@@ -198,32 +177,17 @@ async function loadAdminStats(){
         const stats = data.stats;
 
         document.getElementById("totalVisitors").textContent =
-            stats.visitors;
+            stats.visitors ?? 0;
 
         document.getElementById("activeVisitors").textContent =
-            stats.activeVisitors;
-
-        document.getElementById("totalPosts").textContent =
-            stats.posts;
-
-        document.getElementById("totalComments").textContent =
-            stats.comments;
-
-        document.getElementById("totalReplies").textContent =
-            stats.replies;
-
-        document.getElementById("totalLikes").textContent =
-            stats.likes;
+            stats.activeVisitors ?? 0;
 
     }catch(error){
-
         console.error("ADMIN STATS ERROR:", error);
-
     }
 }
 
 loadAdminStats();
-
 setInterval(loadAdminStats, 30000);
 </script>
 \n</body>
