@@ -1,5 +1,3 @@
-const crypto = require("crypto");
-
 module.exports = function registerLiveMatch(app, pool) {
   app.get("/api/live-match", async (req, res) => {
     if (!pool) {
@@ -17,21 +15,7 @@ module.exports = function registerLiveMatch(app, pool) {
   });
 
   app.post("/api/admin/live-match", async (req, res) => {
-    const expected = process.env.DRACK_MATCH_ADMIN_KEY || "";
-    const supplied = req.get("x-drack-admin-key") || "";
-
-    if (!expected || !supplied) {
-      return res.status(403).json({success:false, message:"Ufunguo wa admin haujawekwa au si sahihi."});
-    }
-
-    const expectedBuffer = Buffer.from(expected);
-    const suppliedBuffer = Buffer.from(supplied);
-    if (expectedBuffer.length !== suppliedBuffer.length ||
-        !crypto.timingSafeEqual(expectedBuffer, suppliedBuffer)) {
-      return res.status(403).json({success:false, message:"Ufunguo wa admin si sahihi."});
-    }
-
-    if (!pool) {
+if (!pool) {
       return res.status(503).json({success:false, message:"Database haijaunganishwa."});
     }
 
