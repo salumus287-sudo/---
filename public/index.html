@@ -268,6 +268,39 @@ font-size:12px;
 font-weight:bold;
 }
 
+
+/* DRACK HUB LIVE TV tools */
+.drack-tv-tools {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+  gap: 10px;
+  margin: 14px 0;
+}
+.drack-tv-tools input,
+.drack-tv-tools select,
+.drack-tv-tools button {
+  min-width: 0;
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #444;
+  background: #171717;
+  color: #fff;
+  font: inherit;
+}
+.drack-tv-tools button {
+  background: #b90000;
+  cursor: pointer;
+}
+#drack-tv-status {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 13px;
+}
+.tv-radio-card button {
+  margin: 5px 3px 0 0;
+}
+
 </style>
 
 <style id="drack-live-score-style">
@@ -849,17 +882,6 @@ th {
 
 <nav class="menu">
 
-<button class="active" onclick="openPage('home',this)">🏠<br>HOME</button>
-<button onclick="openPage('habari',this)">📰<br>HABARI</button>
-<button onclick="openPage('sports',this)">⚽<br>SPORTS</button>
-
-<button onclick="openPage('scores',this)">🔴<br>LIVE SCORES</button>
-
-<button onclick="openPage('muziki',this)">🎵<br>MUZIKI</button>
-    <button onclick="openPage('tvradio',this)">📺<br>TV/RADIO</button>
-
-
-
 <button type="button" onclick="window.location.href='/nbc-drack-news'">🏆<br>NBC DRACK NEWS</button>
 </nav>
 
@@ -1103,7 +1125,24 @@ Updates za mfumo na taarifa muhimu zitaonekana hapa.
   <div id="tv-radio-player" class="tv-radio-player">
     <div class="empty">📺 Chagua channel kuanza kuangalia.</div>
   </div>
-  <div id="tv-channels" class="tv-radio-grid"></div>
+  
+<div class="drack-tv-tools">
+  <input id="drack-tv-search" type="search"
+    placeholder="🔎 Tafuta channel..." aria-label="Tafuta channel">
+
+  <select id="drack-tv-country" aria-label="Chagua nchi">
+    <option value="">🌍 Nchi zote</option>
+  </select>
+
+  <select id="drack-tv-category" aria-label="Chagua category">
+    <option value="">📂 Categories zote</option>
+  </select>
+
+  <button type="button" id="drack-tv-favorites">❤️ Favorites zangu</button>
+  <button type="button" id="drack-tv-all">📺 Channels zote</button>
+  <p id="drack-tv-status">Inapakia channels...</p>
+</div>
+<div id="tv-channels" class="tv-radio-grid"></div>
   <div id="radio-stations" class="tv-radio-grid" style="display:none;"></div>
 </section>
 <section id="sportslive" class="page">
@@ -2563,7 +2602,55 @@ function render(list){
 })();
 </script>
 \n
-\n</body>
+\n
+<script id="drack-remove-unwanted-buttons">
+(function () {
+  function clean(text) {
+    return String(text || "")
+      .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, "")
+      .replace(/[^a-zA-Z0-9+& ]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase();
+  }
+
+  function removeUnwantedButtons() {
+    const unwanted = [
+      /^live scores$/,
+      /^live tv$/,
+      /^live radio$/,
+      /^tv\s*(and|&)\s*radio$/,
+      /^tv\s*\/\s*radio$/,
+      /^drack\s*\+?\s*music\s*download$/,
+      /^music\s*download$/,
+      /^sports$/
+    ];
+
+    document.querySelectorAll("button, nav a, .nav-link, .nav-item").forEach(function (el) {
+      const label = clean(el.innerText || el.textContent);
+
+      if (!unwanted.some(function (pattern) { return pattern.test(label); })) {
+        return;
+      }
+
+      const holder = el.closest("li, .nav-item");
+      if (holder && holder !== el) {
+        holder.remove();
+      } else {
+        el.remove();
+      }
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", removeUnwantedButtons);
+  } else {
+    removeUnwantedButtons();
+  }
+})();
+</script>
+
+</body>
 </html>
 
 <style id="drack-comments-style">
@@ -3331,142 +3418,312 @@ function render(list){
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
   gap:12px;
+}/* ===== DRACK HUB TV/RADIO ENGINE ===== */
+let DRACK_TV_CHANNELS = [];
+let DRACK_TV_FAVORITES = [];
+let DRACK_TV_SHOW_FAVORITES = false;
+let DRACK_TV_CURRENT = null;
+let DRACK_HLS = null;
+
+try {
+  DRACK_TV_FAVORITES = JSON.parse(localStorage.getItem("drack_tv_favorites") || "[]");
+} catch (e) {
+  DRACK_TV_FAVORITES = [];
 }
 
-.tv-radio-card{
-  background:#111;
-  border:1px solid #292929;
-  border-radius:12px;
-  padding:15px;
-  text-align:center;
+function drackTVEscape(value) {
+  return String(value ?? "").replace(/[&<>"']/g, function (char) {
+    return {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    }[char];
+  });
 }
 
-.tv-radio-card .channel-icon{
-  font-size:38px;
+function drackTVStatus(message) {
+  const box = document.getElementById("drack-tv-status");
+  if (box) box.textContent = message;
 }
 
-.tv-radio-card h3{
-  margin:7px 0;
-  font-size:16px;
-}
-
-.tv-radio-card p{
-  color:#aaa;
-  font-size:12px;
-}
-
-.tv-radio-card button{
-  width:100%;
-  padding:10px;
-  border:0;
-  border-radius:8px;
-  background:#e00000;
-  color:#fff;
-  font-weight:bold;
-}
-
-.live-dot{
-  color:#ff2020;
-}
-
-@media(max-width:600px){
-  .tv-radio-player iframe,
-  .tv-radio-player video{
-    height:230px;
+function drackTVFavorite(id) {
+  if (DRACK_TV_FAVORITES.includes(id)) {
+    DRACK_TV_FAVORITES = DRACK_TV_FAVORITES.filter(item => item !== id);
+  } else {
+    DRACK_TV_FAVORITES.push(id);
   }
+
+  localStorage.setItem("drack_tv_favorites", JSON.stringify(DRACK_TV_FAVORITES));
+  renderTVChannels();
 }
-</style>
 
-<script>
-/* ===== DRACK HUB TV/RADIO ENGINE ===== */
+function drackTVPopulateFilters() {
+  const countryBox = document.getElementById("drack-tv-country");
+  const categoryBox = document.getElementById("drack-tv-category");
+  if (!countryBox || !categoryBox) return;
 
-const DRACK_TV_CHANNELS = [
-  {
-    name:"DRACK TV",
-    description:"Channel mpya",
-    type:"message"
+  const countries = [...new Set(DRACK_TV_CHANNELS.map(c => c.country).filter(Boolean))].sort();
+  const categories = [...new Set(DRACK_TV_CHANNELS.flatMap(c => c.categories || []))].sort();
+
+  countryBox.innerHTML = '<option value="">🌍 Nchi zote</option>' +
+    countries.map(code => '<option value="' + drackTVEscape(code) + '">' +
+      drackTVEscape(code) + '</option>').join("");
+
+  categoryBox.innerHTML = '<option value="">📂 Categories zote</option>' +
+    categories.map(category => '<option value="' + drackTVEscape(category) + '">' +
+      drackTVEscape(category.charAt(0).toUpperCase() + category.slice(1)) +
+      '</option>').join("");
+}
+
+function drackTVFiltered() {
+  const search = (document.getElementById("drack-tv-search")?.value || "").trim().toLowerCase();
+  const country = document.getElementById("drack-tv-country")?.value || "";
+  const category = document.getElementById("drack-tv-category")?.value || "";
+
+  return DRACK_TV_CHANNELS.filter(channel => {
+    const matchesSearch = !search ||
+      channel.name.toLowerCase().includes(search) ||
+      channel.country.toLowerCase().includes(search);
+
+    const matchesCountry = !country || channel.country === country;
+    const matchesCategory = !category || (channel.categories || []).includes(category);
+    const matchesFavorite = !DRACK_TV_SHOW_FAVORITES ||
+      DRACK_TV_FAVORITES.includes(channel.id);
+
+    return matchesSearch && matchesCountry && matchesCategory && matchesFavorite;
+  });
+}
+
+function renderTVChannels() {
+  const box = document.getElementById("tv-channels");
+  if (!box) return;
+
+  const list = drackTVFiltered();
+
+  if (!list.length) {
+    box.innerHTML = '<div class="empty">Hakuna channel inayolingana na utafutaji wako.</div>';
+    drackTVStatus("Hakuna channel iliyopatikana.");
+    return;
   }
-];
+
+  box.innerHTML = list.map(channel => {
+    const index = DRACK_TV_CHANNELS.indexOf(channel);
+    const favorite = DRACK_TV_FAVORITES.includes(channel.id);
+    const categories = (channel.categories || []).slice(0, 3).join(", ");
+
+    return '<article class="tv-radio-card">' +
+      '<div class="channel-icon">📺</div>' +
+      '<h3>' + drackTVEscape(channel.name) + '</h3>' +
+      '<p>🌍 ' + drackTVEscape(channel.country || "Nchi haijatajwa") + '</p>' +
+      '<p>' + drackTVEscape(categories) + '</p>' +
+      '<p>📡 Streams: ' + channel.streams.length + '</p>' +
+      '<button type="button" onclick="playTVChannel(' + index + ')">▶ JARIBU KUTAZAMA</button>' +
+      '<button type="button" onclick="drackTVFavorite(' + JSON.stringify(channel.id).replace(/</g, "\\u003c") + ')">' +
+      (favorite ? "💔 Ondoa Favorites" : "❤️ Favorite") + '</button>' +
+      '</article>';
+  }).join("");
+
+  drackTVStatus("Channels zilizoonyeshwa: " + list.length +
+    " / " + DRACK_TV_CHANNELS.length +
+    ". Upatikanaji wa stream haujahakikishwa.");
+}
+
+function drackTVLoadHls(callback) {
+  if (window.Hls) {
+    callback();
+    return;
+  }
+
+  const existing = document.getElementById("drack-hls-library");
+  if (existing) {
+    existing.addEventListener("load", callback, { once: true });
+    return;
+  }
+
+  const script = document.createElement("script");
+  script.id = "drack-hls-library";
+  script.src = "https://cdn.jsdelivr.net/npm/hls.js@1/dist/hls.min.js";
+  script.onload = callback;
+  script.onerror = function () {
+    const message = document.getElementById("drack-tv-playback-message");
+    if (message) message.textContent =
+      "Player ya HLS haijapakia. Jaribu tena ukiwa na intaneti au tumia browser inayounga mkono stream hii.";
+  };
+  document.head.appendChild(script);
+}
+
+function playTVChannel(index) {
+  const channel = DRACK_TV_CHANNELS[index];
+  const player = document.getElementById("tv-radio-player");
+  if (!channel || !player || !channel.streams || !channel.streams.length) return;
+
+  DRACK_TV_CURRENT = channel;
+  if (DRACK_HLS) {
+    try { DRACK_HLS.destroy(); } catch (e) {}
+    DRACK_HLS = null;
+  }
+
+  player.innerHTML =
+    '<div style="padding:12px">' +
+    '<h3>' + drackTVEscape(channel.name) + '</h3>' +
+    '<video id="drack-tv-video" controls playsinline ' +
+    'style="width:100%;max-height:65vh;background:#000;border-radius:12px"></video>' +
+    '<p id="drack-tv-playback-message">Inajaribu stream ya kwanza...</p>' +
+    '<button type="button" id="drack-tv-next-stream">🔁 Jaribu stream nyingine</button>' +
+    '<p style="font-size:12px">Streams za watu wengine zinaweza kutofanya kazi au kuhitaji ruhusa maalumu.</p>' +
+    '</div>';
+
+  let streamIndex = 0;
+
+  function tryStream() {
+    const video = document.getElementById("drack-tv-video");
+    const message = document.getElementById("drack-tv-playback-message");
+    if (!video || !message) return;
+
+    if (DRACK_HLS) {
+      try { DRACK_HLS.destroy(); } catch (e) {}
+      DRACK_HLS = null;
+    }
+
+    if (streamIndex >= channel.streams.length) {
+      message.textContent = "Streams zote zilizojaribiwa hazijaanza kucheza. Huenda hazipatikani au zimezuiwa.";
+      return;
+    }
+
+    const stream = channel.streams[streamIndex++];
+    let url;
+
+    try {
+      url = new URL(stream.url);
+      if (url.protocol !== "https:") throw new Error("HTTPS pekee");
+    } catch (e) {
+      tryStream();
+      return;
+    }
+
+    message.textContent = "Inajaribu stream " + streamIndex + " / " + channel.streams.length + "...";
+
+    if (video.canPlayType("application/vnd.apple.mpegurl")) {
+      video.src = url.href;
+      video.play().catch(() => {
+        message.textContent = "Bonyeza Play. Ikiwa haifanyi kazi, jaribu stream nyingine.";
+      });
+    } else {
+      drackTVLoadHls(function () {
+        if (!window.Hls || !window.Hls.isSupported()) {
+          message.textContent = "Browser hii haiungi mkono aina hii ya stream.";
+          return;
+        }
+
+        DRACK_HLS = new window.Hls();
+        DRACK_HLS.loadSource(url.href);
+        DRACK_HLS.attachMedia(video);
+
+        DRACK_HLS.on(window.Hls.Events.MANIFEST_PARSED, function () {
+          message.textContent = "Stream imefunguliwa. Bonyeza Play ikiwa haijaanza.";
+          video.play().catch(() => {});
+        });
+
+        DRACK_HLS.on(window.Hls.Events.ERROR, function (event, data) {
+          if (data && data.fatal) {
+            message.textContent = "Stream hii haijaanza. Unaweza kujaribu nyingine.";
+          }
+        });
+      });
+    }
+  }
+
+  document.getElementById("drack-tv-next-stream").onclick = tryStream;
+  tryStream();
+}
 
 const DRACK_RADIO_STATIONS = [
-  {
-    name:"DRACK RADIO",
-    description:"Radio mpya",
-    type:"message"
-  }
+  { name: "DRACK RADIO", description: "Radio stream itaongezwa kutoka chanzo kilichoidhinishwa." }
 ];
 
-function showTVRadio(type,button){
+function showTVRadio(type, button) {
+  document.querySelectorAll(".tv-tab").forEach(btn => btn.classList.remove("active"));
+  if (button) button.classList.add("active");
 
-  document.querySelectorAll(".tv-tab").forEach(function(btn){
-    btn.classList.remove("active");
-  });
+  const tv = document.getElementById("tv-channels");
+  const radio = document.getElementById("radio-stations");
+  const tools = document.querySelector(".drack-tv-tools");
 
-  if(button){
-    button.classList.add("active");
-  }
-
-  const tv=document.getElementById("tv-channels");
-  const radio=document.getElementById("radio-stations");
-
-  if(type==="tv"){
-    if(tv) tv.style.display="grid";
-    if(radio) radio.style.display="none";
+  if (type === "tv") {
+    if (tv) tv.style.display = "grid";
+    if (radio) radio.style.display = "none";
+    if (tools) tools.style.display = "block";
     renderTVChannels();
-  }else{
-    if(tv) tv.style.display="none";
-    if(radio) radio.style.display="grid";
+  } else {
+    if (tv) tv.style.display = "none";
+    if (radio) radio.style.display = "grid";
+    if (tools) tools.style.display = "none";
     renderRadioStations();
   }
 }
 
-function renderTVChannels(){
+function renderRadioStations() {
+  const box = document.getElementById("radio-stations");
+  if (!box) return;
 
-  const box=document.getElementById("tv-channels");
-
-  if(!box) return;
-
-  box.innerHTML=DRACK_TV_CHANNELS.map(function(channel,index){
-
-    return `
-      <article class="tv-radio-card">
-        <div class="channel-icon">📺</div>
-        <h3>${channel.name}</h3>
-        <p><span class="live-dot">●</span> ${channel.description}</p>
-        <button onclick="playTVChannel(${index})">
-          ▶ TAZAMA LIVE
-        </button>
-      </article>
-    `;
-
-  }).join("");
+  box.innerHTML = DRACK_RADIO_STATIONS.map(station =>
+    '<article class="tv-radio-card"><div class="channel-icon">📻</div>' +
+    '<h3>' + drackTVEscape(station.name) + '</h3><p>' +
+    drackTVEscape(station.description) + '</p></article>'
+  ).join("");
 }
 
-function renderRadioStations(){
+async function drackTVInit() {
+  const search = document.getElementById("drack-tv-search");
+  const country = document.getElementById("drack-tv-country");
+  const category = document.getElementById("drack-tv-category");
+  const favorites = document.getElementById("drack-tv-favorites");
+  const all = document.getElementById("drack-tv-all");
 
-  const box=document.getElementById("radio-stations");
+  if (search) search.addEventListener("input", renderTVChannels);
+  if (country) country.addEventListener("change", renderTVChannels);
+  if (category) category.addEventListener("change", renderTVChannels);
 
-  if(!box) return;
+  if (favorites) favorites.addEventListener("click", function () {
+    DRACK_TV_SHOW_FAVORITES = true;
+    renderTVChannels();
+  });
 
-  box.innerHTML=DRACK_RADIO_STATIONS.map(function(station,index){
+  if (all) all.addEventListener("click", function () {
+    DRACK_TV_SHOW_FAVORITES = false;
+    renderTVChannels();
+  });
 
-    return `
-      <article class="tv-radio-card">
-        <div class="channel-icon">📻</div>
-        <h3>${station.name}</h3>
-        <p><span class="live-dot">●</span> ${station.description}</p>
-        <button onclick="playRadioStation(${index})">
-          ▶ SIKILIZA LIVE
-        </button>
-      </article>
-    `;
+  try {
+    const response = await fetch("/data/tv-catalog.json", { cache: "no-cache" });
+    if (!response.ok) throw new Error("HTTP " + response.status);
 
-  }).join("");
+    const data = await response.json();
+
+    DRACK_TV_CHANNELS = data.filter(channel =>
+      channel &&
+      typeof channel.id === "string" &&
+      typeof channel.name === "string" &&
+      Array.isArray(channel.streams) &&
+      channel.streams.some(stream => {
+        try { return new URL(stream.url).protocol === "https:"; }
+        catch (e) { return false; }
+      })
+    );
+
+    drackTVPopulateFilters();
+    renderTVChannels();
+  } catch (error) {
+    drackTVStatus("Imeshindwa kupakia katalogi. Hakikisha tovuti ina data/tv-catalog.json.");
+    const box = document.getElementById("tv-channels");
+    if (box) box.innerHTML = '<div class="empty">Katalogi haijapakia. Jaribu tena baadaye.</div>';
+  }
 }
 
-function playTVChannel(index){
-
-  const channel=DRACK_TV_CHANNELS[index];
+drackTVInit();
+renderRadioStations();HANNELS[index];
   const player=document.getElementById("tv-radio-player");
 
   if(!player || !channel) return;
