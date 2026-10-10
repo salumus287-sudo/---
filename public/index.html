@@ -884,12 +884,11 @@ th {
 
 <button type="button" onclick="window.location.href='/nbc-drack-news'">🏆<br>NBC DRACK NEWS</button>
 
-<a id="drack-tazama-mpira-live" class="nav-link"
-   href="http://www.fawanews.sc/index.html"
-   target="_blank"
-   rel="noopener noreferrer">
-   ⚽ TAZAMA MPIRA LIVE
-</a>
+
+<button type="button" id="drack-tazama-mpira-live" class="nav-link"
+onclick="drackOpenFootballLive()">
+⚽ TAZAMA MPIRA LIVE
+</button>
 </nav>
 
 <main class="container">
@@ -2655,6 +2654,70 @@ function render(list){
     removeUnwantedButtons();
   }
 })();
+</script>
+
+
+<section id="drack-fawanews-embedded" style="
+display:none;
+padding:15px;
+background:#080808;
+color:white;
+min-height:80vh;
+">
+  <div style="
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:12px;
+  ">
+    <h2 style="margin:0">⚽ TAZAMA MPIRA LIVE</h2>
+
+    <button type="button"
+    onclick="drackCloseFootballLive()"
+    style="padding:10px 16px;cursor:pointer">
+    ✖ FUNGA
+    </button>
+  </div>
+
+  <p style="color:#ddd">
+    Ratiba na orodha ya mechi kutoka FawaNews.
+  </p>
+
+  <iframe
+    title="FawaNews Football Schedule"
+    src="https://www.fawanews.sc/index.html"
+    style="width:100%;height:80vh;border:0;background:white"
+    loading="lazy"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen>
+  </iframe>
+
+  <p>
+    Ikiwa ukurasa hauonekani,
+    <a href="https://www.fawanews.sc/index.html"
+       target="_blank"
+       rel="noopener noreferrer"
+       style="color:#00ff80">
+       Fungua FawaNews kwenye ukurasa mpya
+    </a>.
+  </p>
+</section>
+
+<script id="drack-fawanews-embed-functions">
+function drackOpenFootballLive() {
+  const section = document.getElementById("drack-fawanews-embedded");
+  if (!section) return;
+
+  section.style.display = "block";
+  section.scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+function drackCloseFootballLive() {
+  const section = document.getElementById("drack-fawanews-embedded");
+  if (section) section.style.display = "none";
+}
 </script>
 
 </body>
