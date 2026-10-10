@@ -2736,10 +2736,21 @@ min-height:80vh;
 
 <script id="drack-fawanews-embed-functions">
 function drackOpenFootballLive() {
-  const section = document.getElementById("drack-fawanews-embedded");
-  if (!section) return;
+  const section = document.getElementById("sportslive");
+  if (!section) {
+    alert("Sehemu ya SPORTS LIVE haijapatikana.");
+    return;
+  }
 
-  section.style.display = "block";
+  if (typeof showPage === "function") {
+    showPage("sportslive", null);
+  } else {
+    document.querySelectorAll(".page").forEach(page => {
+      page.classList.remove("active");
+    });
+    section.classList.add("active");
+  }
+
   section.scrollIntoView({behavior:"smooth", block:"start"});
 }
 
