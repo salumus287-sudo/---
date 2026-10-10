@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#07111f">
+<title>NBC DRACK NEWS | DRACK HUB</title>
+<meta name="description" content="Habari, ratiba, matokeo na misimamo ya NBC Premier League na NBC Championship kupitia DRACK HUB.">
+<style>
+:root{color-scheme:dark;--bg:#07111f;--panel:#101f32;--blue:#168cff;--text:#f5f8ff;--muted:#a9b8ca;--green:#16c784}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+header{padding:20px 15px;background:linear-gradient(135deg,#0c2340,#0759a8);text-align:center}
+header h1{margin:0;font-size:25px}
+header p{margin:9px 0 0;color:#e0efff;font-size:14px}
+.wrap{max-width:1050px;margin:auto;padding:15px}
+.back,.refresh,.tab{border:1px solid #2b4765;border-radius:10px;background:#13263c;color:white;padding:11px 14px;font-weight:bold;cursor:pointer}
+.back{display:inline-block;text-decoration:none;margin-bottom:14px}
+.status{padding:12px;background:var(--panel);border-radius:10px;margin:12px 0;color:var(--muted);font-size:13px}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:5px 0 13px}
+.tab{white-space:nowrap}
+.tab.active{background:var(--blue);border-color:var(--blue)}
+h2{font-size:19px;margin:20px 0 12px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid #203951;border-radius:13px;padding:15px;min-width:0}
+.card h3{font-size:16px;line-height:1.45;margin:0 0 10px}
+.card p{font-size:13px;color:var(--muted);line-height:1.6}
+.card a{color:#6bb8ff;text-decoration:none;font-weight:bold}
+.card a:hover{text-decoration:underline}
+.badge{display:inline-block;background:#123d35;color:#7ef0c1;padding:5px 8px;border-radius:6px;font-size:11px;margin-bottom:9px}
+.empty{color:var(--muted);padding:18px;background:var(--panel);border-radius:10px}
+.table-wrap{overflow-x:auto;background:var(--panel);border-radius:10px}
+table{border-collapse:collapse;width:100%;min-width:550px;font-size:13px}
+th,td{text-align:left;padding:11px;border-bottom:1px solid #26394d;white-space:nowrap}
+th{background:#152b43;color:#9fd0ff}
+.score{font-weight:bold;color:#7ef0c1}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:25px 12px;line-height:1.8}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<header>
+<h1>🏆 NBC DRACK NEWS</h1>
+<p>Habari • Ratiba • Matokeo • Msimamo wa Ligi</p>
+</header>
+
+<main class="wrap">
+<a class="back" href="/">← RUDI DRACK HUB</a>
+<button class="refresh" id="refresh" type="button">🔄 SASISHA TAARIFA</button>
+
+<div class="status" id="status">Inaunganisha na mfumo wa taarifa za ligi...</div>
+
+<nav class="tabs" aria-label="Sehemu za habari za ligi">
+<button class="tab active" data-view="news">📰 HABARI</button>
+<button class="tab" data-view="premier">🏆 PREMIER LEAGUE</button>
+<button class="tab" data-view="championship">🥇 CHAMPIONSHIP</button>
+<button class="tab" data-view="fixtures">📅 RATIBA</button>
+<button class="tab" data-view="results">⚽ MATOKEO</button>
+</nav>
+
+<section id="news"><h2>📰 HABARI ZA LIGI</h2><div id="news-list" class="cards"></div></section>
+<section id="premier" class="hidden"><h2>🏆 NBC PREMIER LEAGUE 2026/2027</h2><div id="premier-table"></div></section>
+<section id="championship" class="hidden"><h2>🥇 NBC CHAMPIONSHIP 2026/2027</h2><div id="championship-table"></div></section>
+<section id="fixtures" class="hidden"><h2>📅 RATIBA ZA MECHI</h2><div id="fixture-list" class="cards"></div></section>
+<section id="results" class="hidden"><h2>⚽ MATOKEO YA MECHI</h2><div id="result-list" class="cards"></div></section>
+
+<footer>
+Taarifa zinachukuliwa kutoka kwenye mfumo wa umma wa Ligi Kuu Tanzania.<br>
+DRACK HUB si tovuti rasmi ya TPLB. Taarifa zinaweza kuchelewa au kubadilika.<br>
+Chanzo: <a href="https://ligikuu.co.tz/" target="_blank" rel="noopener">ligikuu.co.tz</a><br>
+© 2026 DRACK HUB
+</footer>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+let currentData = null;
+
+function esc(value) {
+  return String(value ?? '').replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+function cleanHtml(value) {
+  const d = document.createElement('div');
+  d.innerHTML = value || '';
+  return (d.textContent || '').trim();
+}
+function showEmpty(id, message) {
+  $(id).innerHTML = '<div class="empty">' + esc(message) + '</div>';
+}
+function dateText(value) {
+  if (!value) return 'Tarehe haijatajwa';
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return esc(value);
+  return d.toLocaleString('sw-TZ',{dateStyle:'medium',timeStyle:'short'});
+}
+function renderNews(posts) {
+  if (!posts?.length) return showEmpty('news-list','Hakuna habari zilizopatikana kwa sasa.');
+  $('news-list').innerHTML = posts.map(p => `
+    <article class="card">
+      <span class="badge">HABARI ZA LIGI</span>
+      <h3>${esc(cleanHtml(p.title?.rendered || p.title))}</h3>
+      <p>${esc(cleanHtml(p.excerpt?.rendered || p.excerpt || 'Soma habari kamili kwenye chanzo.')).slice(0,320)}</p>
+      <p>📅 ${dateText(p.date)}</p>
+      <a href="${esc(p.link)}" target="_blank" rel="noopener">SOMA HABARI KAMILI ↗</a>
+    </article>`).join('');
+}
+function renderTable(id, table) {
+  if (!table) return showEmpty(id,'Msimamo haujapatikana kwa sasa.');
+  const data = table.data;
+  if (!data || typeof data !== 'object') {
+    return showEmpty(id,'Jedwali la msimamo halina data inayoweza kuonyeshwa kwa sasa.');
+  }
+  const rows = Object.entries(data).filter(([key,v]) =>
+    key !== '0' && v && typeof v === 'object' && !Array.isArray(v)
+  );
+  if (!rows.length) return showEmpty(id,'Taarifa za timu kwenye msimamo hazijapatikana.');
+  const first = rows[0][1];
+  const cols = Object.keys(first);
+  const label = v => {
+    if (v && typeof v === 'object') return cleanHtml(v.name || v.label || v.rendered || '');
+    return String(v ?? '');
+  };
+  const teamCol = cols.find(c => /team|name|club|squad/i.test(c)) || cols[0];
+  const preferred = [teamCol,...cols.filter(c => c !== teamCol)];
+  $('' + id).innerHTML = `
+    <p class="status">${esc(cleanHtml(table.title?.rendered || table.title || 'Msimamo wa ligi'))}</p>
+    <div class="table-wrap"><table><thead><tr>${preferred.map(c=>`<th>${esc(c.replace(/_/g,' ').toUpperCase())}</th>`).join('')}</tr></thead>
+    <tbody>${rows.map(([key,row])=>'<tr>'+preferred.map(c=>'<td>'+esc(label(row[c] ?? (c===teamCol?key:'')))+'</td>').join('')+'</tr>').join('')}</tbody>
+    </table></div>`;
+}
+function eventCard(e) {
+  const title = cleanHtml(e.title?.rendered || e.title || 'Mechi');
+  const results = Array.isArray(e.main_results) ? e.main_results : [];
+  const hasScore = results.length >= 2 && results[0] !== '' && results[1] !== '';
+  return `<article class="card">
+    <span class="badge">${hasScore?'MATOKEO':'RATIBA'}</span>
+    <h3>${esc(title)}</h3>
+    <p>${hasScore?`Matokeo: <span class="score">${esc(results[0])} - ${esc(results[1])}</span>`:'Mechi iliyopangwa'}</p>
+    <p>📅 ${dateText(e.date)}</p>
+  </article>`;
+}
+function renderEvents(events) {
+  const now = Date.now();
+  const valid = (events || []).filter(e => e.title && (e.title.rendered || e.title) && e.date)
+    .sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const upcoming = valid.filter(e=>new Date(e.date).getTime() > now);
+  const results = valid.filter(e=>{
+    const d = new Date(e.date).getTime();
+    const r = e.main_results;
+    return d <= now && Array.isArray(r) && r.length >= 2 && r[0] !== '' && r[1] !== '';
+  }).reverse();
+  $('fixture-list').innerHTML = upcoming.length ? upcoming.map(eventCard).join('') : '<div class="empty">Hakuna ratiba za baadaye zilizopatikana kwenye data ya chanzo kwa sasa.</div>';
+  $('result-list').innerHTML = results.length ? results.map(eventCard).join('') : '<div class="empty">Hakuna matokeo yaliyopatikana kwa sasa.</div>';
+}
+async function loadData() {
+  $('status').textContent = 'Inapakia habari, misimamo, ratiba na matokeo...';
+  $('refresh').disabled = true;
+  try {
+    const response = await fetch('/api/nbc-drack-news',{cache:'no-store'});
+    if (!response.ok) throw new Error('HTTP '+response.status);
+    const data = await response.json();
+    if (!data.ok) throw new Error(data.error || 'Chanzo hakijajibu vizuri.');
+    currentData = data;
+    renderNews(data.posts || []);
+    renderTable('premier-table',data.premierTable);
+    renderTable('championship-table',data.championshipTable);
+    renderEvents([...(data.premierEvents||[]),...(data.championshipEvents||[])]);
+    $('status').textContent = 'Taarifa zimepakiwa. Ukaguzi wa taarifa mpya hufanyika kila dakika 5. Mwisho: ' + new Date().toLocaleTimeString('sw-TZ');
+  } catch (e) {
+    $('status').textContent = 'Imeshindikana kupata taarifa kwa sasa. ' + e.message + '. Jaribu tena baadaye.';
+    if (!currentData) {
+      ['news-list','premier-table','championship-table','fixture-list','result-list'].forEach(id=>showEmpty(id,'Taarifa hazijapatikana kwa sasa.'));
+    }
+  } finally {
+    $('refresh').disabled = false;
+  }
+}
+document.querySelectorAll('.tab').forEach(button=>button.addEventListener('click',()=>{
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b===button));
+  document.querySelectorAll('main section').forEach(s=>s.classList.toggle('hidden',s.id!==button.dataset.view));
+}));
+$('refresh').addEventListener('click',loadData);
+loadData();
+setInterval(loadData,300000);
+</script>
+</body>
+</html>

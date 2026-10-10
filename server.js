@@ -628,6 +628,120 @@ app.get("/api/youtube-videos", async (req, res) => {
     }
 });
 
+
+let nbcDrackNewsCache = null;
+let nbcDrackNewsCacheAt = 0;
+
+app.get("/api/nbc-drack-news", async (req, res) => {
+  try {
+    if (nbcDrackNewsCache &&
+        Date.now() - nbcDrackNewsCacheAt < 240000) {
+      return res.json(nbcDrackNewsCache);
+    }
+
+    const root = "https://ligikuu.co.tz/wp-json/";
+
+    async function getJson(url) {
+      const response = await fetch(url, {
+        headers: {
+          "Accept": "application/json",
+          "User-Agent": "DRACK-HUB-NBC-DRACK-NEWS/1.0"
+        },
+        signal: AbortSignal.timeout(15000)
+      });
+
+      if (!response.ok) {
+        throw new Error("HTTP " + response.status);
+      }
+
+      return response.json();
+    }
+
+    const urls = [
+      root + "wp/v2/posts?per_page=15&_fields=date,link,title,excerpt",
+      root + "sportspress/v2/tables?per_page=10&leagues=432&seasons=431",
+      root + "sportspress/v2/tables?per_page=10&leagues=445&seasons=431",
+      root + "sportspress/v2/events?per_page=100&leagues=432&seasons=431&orderby=date&order=desc",
+      root + "sportspress/v2/events?per_page=100&leagues=432&seasons=431&orderby=date&order=asc",
+      root + "sportspress/v2/events?per_page=100&leagues=445&seasons=431&orderby=date&order=desc",
+      root + "sportspress/v2/events?per_page=100&leagues=445&seasons=431&orderby=date&order=asc"
+    ];
+
+    const responses = await Promise.allSettled(urls.map(getJson));
+
+    const value = (index) => {
+      const result = responses[index];
+      return result.status === "fulfilled" ? result.value : [];
+    };
+
+    function getEvents(indexA, indexB, leagueId) {
+      const map = new Map();
+
+      for (const item of [
+        ...(Array.isArray(value(indexA)) ? value(indexA) : []),
+        ...(Array.isArray(value(indexB)) ? value(indexB) : [])
+      ]) {
+        if (
+          Array.isArray(item.leagues) &&
+          item.leagues.includes(leagueId) &&
+          Array.isArray(item.seasons) &&
+          item.seasons.includes(431) &&
+          item.date &&
+          item.title &&
+          (item.title.rendered || item.title)
+        ) {
+          map.set(item.id, item);
+        }
+      }
+
+      return [...map.values()].sort(
+        (a, b) => new Date(a.date) - new Date(b.date)
+      );
+    }
+
+    const premierTables = value(1);
+    const championshipTables = value(2);
+
+    const result = {
+      ok: true,
+      source: "https://ligikuu.co.tz/",
+      updatedAt: new Date().toISOString(),
+      posts: Array.isArray(value(0)) ? value(0) : [],
+      premierTable: Array.isArray(premierTables)
+        ? premierTables.find(t =>
+            (t.leagues || []).includes(432) &&
+            (t.seasons || []).includes(431)
+          ) || null
+        : null,
+      championshipTable: Array.isArray(championshipTables)
+        ? championshipTables.find(t =>
+            (t.leagues || []).includes(445) &&
+            (t.seasons || []).includes(431)
+          ) || null
+        : null,
+      premierEvents: getEvents(3, 4, 432),
+      championshipEvents: getEvents(5, 6, 445),
+      warnings: responses
+        .map((r, i) => r.status === "rejected" ? "Chanzo " + (i + 1) + " hakikupatikana." : null)
+        .filter(Boolean)
+    };
+
+    nbcDrackNewsCache = result;
+    nbcDrackNewsCacheAt = Date.now();
+    res.json(result);
+  } catch (error) {
+    console.error("NBC DRACK NEWS:", error.message);
+    res.status(502).json({
+      ok: false,
+      error: "Imeshindikana kupata taarifa za ligi kwa sasa."
+    });
+  }
+});
+
+app.get("/nbc-drack-news", (req, res) => {
+  res.sendFile(require("path").join(__dirname, "public", "nbc-drack-news.html"));
+});
+
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "index.html"));
 });
