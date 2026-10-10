@@ -1152,22 +1152,51 @@ Updates za mfumo na taarifa muhimu zitaonekana hapa.
   <div id="radio-stations" class="tv-radio-grid" style="display:none;"></div>
 </section>
 <section id="sportslive" class="page">
-
 <h2 class="title">🔴 SPORTS LIVE</h2>
-
 <div class="hero">
-<div class="red">🔴 SPORTS LIVE</div>
-<h1>Watch Live Sports</h1>
-<p>
-Links za matangazo ya michezo zitawekwa hapa.
-</p>
+  <div class="red">🔴 DRACK HUB SPORTS LIVE</div>
+  <h1 id="drackLiveMatchTitle">Inatafuta mechi...</h1>
+  <p id="drackLiveMatchStatus">Taarifa za mechi zitajionyesha hapa.</p>
+  <a id="drackLiveMatchButton" href="#" target="_blank" rel="noopener noreferrer"
+     style="display:none;background:#e11d2e;color:white;padding:14px 22px;border-radius:10px;text-decoration:none;font-weight:bold;">
+     🔴 TAZAMA MECHI LIVE
+  </a>
 </div>
-
-<div class="empty">
-🎬 Hakuna stream iliyowekwa bado.
+<div class="empty" id="drackLiveMatchEmpty" style="display:none;">
+  🎬 Kwa sasa hakuna mechi iliyowekwa. Rudi baadaye.
 </div>
-
 </section>
+<script id="DRACK_LIVE_MATCH_PUBLIC">
+(async function loadDrackLiveMatch(){
+  const title = document.getElementById("drackLiveMatchTitle");
+  const status = document.getElementById("drackLiveMatchStatus");
+  const button = document.getElementById("drackLiveMatchButton");
+  const empty = document.getElementById("drackLiveMatchEmpty");
+
+  try {
+    const response = await fetch("/api/live-match", {cache:"no-store"});
+    const data = await response.json();
+
+    if (!response.ok || !data.success || !data.match) {
+      title.textContent = "Hakuna mechi kwa sasa";
+      status.textContent = "Taarifa za mechi mpya zitawekwa hapa.";
+      empty.style.display = "block";
+      button.style.display = "none";
+      return;
+    }
+
+    title.textContent = data.match.title;
+    status.textContent = "Mechi inayopatikana sasa kupitia DRACK HUB.";
+    button.href = data.match.url;
+    button.style.display = "inline-block";
+    empty.style.display = "none";
+  } catch (error) {
+    title.textContent = "Mechi haipatikani kwa sasa";
+    status.textContent = "Tafadhali jaribu tena baadaye.";
+    button.style.display = "none";
+  }
+})();
+</script>
 
 <footer>
 

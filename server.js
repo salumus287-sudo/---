@@ -7,6 +7,7 @@ const express = require("express");
 const path = require("path");
 const { importAllNews } = require("./dailynews-import");
 const { Pool } = require("pg");
+const registerLiveMatch = require("./live-match");
 
 const app = express();
 
@@ -37,6 +38,7 @@ if (process.env.DATABASE_URL) {
 // ===============================
 
 app.use(express.static(path.join(__dirname, "public")));
+registerLiveMatch(app, pool);
 
 // ===============================
 // API HEALTH

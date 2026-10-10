@@ -190,5 +190,91 @@ async function loadAdminStats(){
 loadAdminStats();
 setInterval(loadAdminStats, 30000);
 </script>
-\n</body>
+\n
+<section class="panel" id="DRACK_LIVE_MATCH_ADMIN">
+  <div class="panel-title">⚽ DRACK HUB — BADILISHA MECHI LIVE</div>
+  <p>Weka jina la mechi na link ya kuitazama. Mechi hii itaonekana kwenye SPORTS LIVE.</p>
+  <label for="drackMatchKey">🔐 Ufunguo wa admin</label>
+  <input id="drackMatchKey" type="password" autocomplete="off"
+    placeholder="Ingiza ufunguo wako wa siri"
+    style="width:100%;padding:12px;margin:8px 0 14px;">
+  <label for="drackMatchTitle">Jina la mechi</label>
+  <input id="drackMatchTitle" type="text" maxlength="180"
+    placeholder="Mfano: ARSENAL VS LEEDS UNITED"
+    style="width:100%;padding:12px;margin:8px 0 14px;">
+  <label for="drackMatchUrl">Link ya mechi (URL)</label>
+  <input id="drackMatchUrl" type="url" maxlength="2000"
+    placeholder="https://..."
+    style="width:100%;padding:12px;margin:8px 0 14px;">
+  <button id="drackMatchSave" type="button"
+    style="padding:12px 18px;cursor:pointer;">💾 HIFADHI MECHI</button>
+  <p id="drackMatchMessage" role="status"></p>
+  <p id="drackMatchCurrent">Inapakia taarifa za mechi ya sasa...</p>
+</section>
+<script id="DRACK_LIVE_MATCH_ADMIN_ENGINE">
+(function(){
+  const key = document.getElementById("drackMatchKey");
+  const title = document.getElementById("drackMatchTitle");
+  const url = document.getElementById("drackMatchUrl");
+  const message = document.getElementById("drackMatchMessage");
+  const current = document.getElementById("drackMatchCurrent");
+  const save = document.getElementById("drackMatchSave");
+
+  async function loadCurrent(){
+    try {
+      const response = await fetch("/api/live-match", {cache:"no-store"});
+      const data = await response.json();
+      if (data.success && data.match) {
+        title.value = data.match.title;
+        url.value = data.match.url;
+        current.textContent = "Mechi ya sasa: " + data.match.title;
+      } else {
+        current.textContent = "Bado hakuna mechi iliyohifadhiwa.";
+      }
+    } catch (error) {
+      current.textContent = "Imeshindwa kusoma taarifa za mechi.";
+    }
+  }
+
+  save.addEventListener("click", async function(){
+    message.textContent = "";
+    const matchTitle = title.value.trim();
+    const matchUrl = url.value.trim();
+
+    if (!key.value.trim() || !matchTitle || !matchUrl) {
+      message.textContent = "Jaza ufunguo, jina la mechi na link.";
+      return;
+    }
+
+    save.disabled = true;
+    message.textContent = "Inahifadhi mechi...";
+
+    try {
+      const response = await fetch("/api/admin/live-match", {
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json",
+          "x-drack-admin-key":key.value.trim()
+        },
+        body:JSON.stringify({title:matchTitle,url:matchUrl})
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        message.textContent = data.message || "Imeshindwa kuhifadhi. Hakiki ufunguo na database.";
+        return;
+      }
+      message.textContent = "✅ Mechi imehifadhiwa. SPORTS LIVE itasasishwa.";
+      current.textContent = "Mechi ya sasa: " + data.match.title;
+    } catch (error) {
+      message.textContent = "Hitilafu ya mtandao. Jaribu tena.";
+    } finally {
+      save.disabled = false;
+    }
+  });
+
+  loadCurrent();
+})();
+</script>
+
+</body>
 </html>

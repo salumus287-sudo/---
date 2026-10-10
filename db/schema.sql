@@ -80,3 +80,11 @@ ON visitors(last_seen);
 CREATE INDEX IF NOT EXISTS idx_admin_actions_created_at
 ON admin_actions(created_at);
 
+
+
+CREATE TABLE IF NOT EXISTS live_match (
+    id INTEGER PRIMARY KEY CHECK (id = 1),
+    title TEXT NOT NULL,
+    url TEXT NOT NULL,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
