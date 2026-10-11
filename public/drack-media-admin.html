@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DRACK HUB — Media Upload</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101522;color:#fff;font-family:Arial,sans-serif;padding:18px}
+.container{max-width:650px;margin:25px auto;background:#1b2435;padding:22px;border-radius:16px}
+h1{color:#39e58c;font-size:25px}
+p{line-height:1.6;color:#d2d8e3}
+label{display:block;margin-top:18px;margin-bottom:8px}
+input,select,button{width:100%;padding:13px;border-radius:9px;border:1px solid #45516a;font-size:16px}
+input,select{background:#101522;color:#fff}
+button{margin-top:18px;background:#13b96b;color:#07130c;font-weight:bold;border:0;cursor:pointer}
+button:disabled{opacity:.5}
+#message{white-space:pre-wrap;overflow-wrap:anywhere;margin-top:18px}
+#result{overflow-wrap:anywhere}
+a{color:#39e58c}
+small{color:#b9c3d5}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🎵 DRACK HUB MEDIA UPLOAD</h1>
+<p>Pakia nyimbo au video kutoka kwenye simu yako. Faili litahifadhiwa Cloudinary na mfumo utakupa link yake.</p>
+
+<label for="adminKey">Ufunguo wa Admin</label>
+<input id="adminKey" type="password" autocomplete="off"
+placeholder="Weka ufunguo wa admin uliopo">
+<small>Ufunguo hautahifadhiwa kwenye ukurasa huu.</small>
+
+<label for="mediaType">Aina ya faili</label>
+<select id="mediaType">
+<option value="audio">🎵 Wimbo / Audio</option>
+<option value="video">🎬 Video ya muziki</option>
+</select>
+
+<label for="mediaFile">Chagua faili kutoka kwenye simu</label>
+<input id="mediaFile" type="file" accept="audio/*">
+
+<p id="fileInfo"></p>
+<button id="uploadBtn" type="button">☁️ PAKIA KWENYE CLOUDINARY</button>
+<p id="message" role="status"></p>
+<div id="result"></div>
+<p><a href="/admin.html">← Rudi Admin Dashboard</a></p>
+</div>
+
+<script>
+const typeSelect = document.getElementById("mediaType");
+const fileInput = document.getElementById("mediaFile");
+const uploadBtn = document.getElementById("uploadBtn");
+const message = document.getElementById("message");
+const resultBox = document.getElementById("result");
+const fileInfo = document.getElementById("fileInfo");
+
+typeSelect.addEventListener("change", () => {
+  fileInput.value = "";
+  fileInput.accept = typeSelect.value === "audio" ? "audio/*" : "video/*";
+  fileInfo.textContent = "";
+});
+
+fileInput.addEventListener("change", () => {
+  const file = fileInput.files[0];
+  fileInfo.textContent = file
+    ? "Faili: " + file.name + " | Ukubwa: " +
+      (file.size / 1024 / 1024).toFixed(2) + " MB"
+    : "";
+});
+
+uploadBtn.addEventListener("click", async () => {
+  const key = document.getElementById("adminKey").value;
+  const file = fileInput.files[0];
+  message.textContent = "";
+  resultBox.replaceChildren();
+
+  if (!key) {
+    message.textContent = "Weka ufunguo wa Admin kwanza.";
+    return;
+  }
+
+  if (!file) {
+    message.textContent = "Tafadhali chagua faili kwanza.";
+    return;
+  }
+
+  const expectedType = typeSelect.value;
+  if (!file.type.startsWith(expectedType + "/")) {
+    message.textContent = "Aina ya faili haifanani na uchaguzi wako.";
+    return;
+  }
+
+  if (file.size > 100 * 1024 * 1024) {
+    message.textContent = "Faili limezidi kikomo cha 100 MB.";
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("media", file);
+
+  uploadBtn.disabled = true;
+  message.textContent = "Inapakia... subiri hadi imalize.";
+
+  try {
+    const response = await fetch("/api/admin/drack-media/upload", {
+      method: "POST",
+      headers: {"x-drack-admin-key": key},
+      body: formData
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || "Upload imeshindwa.");
+    }
+
+    message.textContent = "UPLOAD IMEFANIKIWA! ✅";
+
+    const link = document.createElement("a");
+    link.href = data.media.url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = "Fungua faili lililopakiwa";
+
+    const copyButton = document.createElement("button");
+    copyButton.type = "button";
+    copyButton.textContent = "NAKILI LINK";
+    copyButton.onclick = async () => {
+      try {
+        await navigator.clipboard.writeText(data.media.url);
+        copyButton.textContent = "LINK IMENAKILIWA!";
+      } catch {
+        message.textContent += "\nNakili link kwa kuibonyeza na kuichagua.";
+      }
+    };
+
+    const urlText = document.createElement("p");
+    urlText.textContent = data.media.url;
+
+    resultBox.append(link, urlText, copyButton);
+    fileInfo.textContent += "\nPublic ID: " + data.media.publicId;
+  } catch (error) {
+    message.textContent = "HATUA IMESHINDWA: " + error.message;
+  } finally {
+    uploadBtn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
