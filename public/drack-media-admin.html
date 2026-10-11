@@ -1,151 +1,284 @@
 <!DOCTYPE html>
 <html lang="sw">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>DRACK HUB — Media Upload</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;background:#101522;color:#fff;font-family:Arial,sans-serif;padding:18px}
-.container{max-width:650px;margin:25px auto;background:#1b2435;padding:22px;border-radius:16px}
-h1{color:#39e58c;font-size:25px}
-p{line-height:1.6;color:#d2d8e3}
-label{display:block;margin-top:18px;margin-bottom:8px}
-input,select,button{width:100%;padding:13px;border-radius:9px;border:1px solid #45516a;font-size:16px}
-input,select{background:#101522;color:#fff}
-button{margin-top:18px;background:#13b96b;color:#07130c;font-weight:bold;border:0;cursor:pointer}
-button:disabled{opacity:.5}
-#message{white-space:pre-wrap;overflow-wrap:anywhere;margin-top:18px}
-#result{overflow-wrap:anywhere}
-a{color:#39e58c}
-small{color:#b9c3d5}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>DRACK HUB | Media Admin</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #08120e;
+      color: #f4fff8;
+      font-family: Arial, sans-serif;
+    }
+    .box {
+      width: 100%;
+      max-width: 520px;
+      margin: 35px auto;
+      padding: 24px;
+      background: #11231a;
+      border: 1px solid #244c36;
+      border-radius: 16px;
+    }
+    h1 { color: #35e887; margin-top: 0; }
+    p { line-height: 1.6; }
+    label {
+      display: block;
+      margin-top: 16px;
+      margin-bottom: 7px;
+      font-weight: bold;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 13px;
+      border-radius: 9px;
+      border: 1px solid #3a654b;
+      font-size: 16px;
+    }
+    input, select {
+      background: #08120e;
+      color: white;
+    }
+    button {
+      margin-top: 16px;
+      background: #24d879;
+      color: #07130c;
+      border: 0;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:disabled { opacity: .6; cursor: wait; }
+    .secondary {
+      background: #253b2e;
+      color: white;
+    }
+    .hidden { display: none; }
+    #message {
+      overflow-wrap: anywhere;
+      padding: 10px 0;
+    }
+    a { color: #53e99a; overflow-wrap: anywhere; }
+    small { color: #b7d4c2; }
+  </style>
 </head>
 <body>
-<div class="container">
-<h1>🎵 DRACK HUB MEDIA UPLOAD</h1>
-<p>Pakia nyimbo au video kutoka kwenye simu yako. Faili litahifadhiwa Cloudinary na mfumo utakupa link yake.</p>
+  <main class="box">
+    <h1>DRACK HUB</h1>
+    <p>🔐 Mfumo wa usimamizi wa nyimbo na video.</p>
 
-<label for="adminKey">Ufunguo wa Admin</label>
-<input id="adminKey" type="password" autocomplete="off"
-placeholder="Weka ufunguo wa admin uliopo">
-<small>Ufunguo hautahifadhiwa kwenye ukurasa huu.</small>
+    <section id="loginSection">
+      <h2>Ingia Admin</h2>
+      <form id="loginForm">
+        <label for="username">Username</label>
+        <input id="username" name="username"
+          autocomplete="username" required>
 
-<label for="mediaType">Aina ya faili</label>
-<select id="mediaType">
-<option value="audio">🎵 Wimbo / Audio</option>
-<option value="video">🎬 Video ya muziki</option>
-</select>
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password"
+          autocomplete="current-password" required>
 
-<label for="mediaFile">Chagua faili kutoka kwenye simu</label>
-<input id="mediaFile" type="file" accept="audio/*">
+        <button id="loginBtn" type="submit">INGIA</button>
+      </form>
+    </section>
 
-<p id="fileInfo"></p>
-<button id="uploadBtn" type="button">☁️ PAKIA KWENYE CLOUDINARY</button>
-<p id="message" role="status"></p>
-<div id="result"></div>
-<p><a href="/admin.html">← Rudi Admin Dashboard</a></p>
-</div>
+    <section id="uploadSection" class="hidden">
+      <h2>Pakia Nyimbo au Video</h2>
+      <p>Umeingia kikamilifu kwenye akaunti ya admin.</p>
 
-<script>
-const typeSelect = document.getElementById("mediaType");
-const fileInput = document.getElementById("mediaFile");
-const uploadBtn = document.getElementById("uploadBtn");
-const message = document.getElementById("message");
-const resultBox = document.getElementById("result");
-const fileInfo = document.getElementById("fileInfo");
+      <label for="mediaType">Aina ya faili</label>
+      <select id="mediaType">
+        <option value="audio">🎵 Wimbo / Audio</option>
+        <option value="video">🎬 Video</option>
+      </select>
 
-typeSelect.addEventListener("change", () => {
-  fileInput.value = "";
-  fileInput.accept = typeSelect.value === "audio" ? "audio/*" : "video/*";
-  fileInfo.textContent = "";
-});
+      <label for="mediaFile">Chagua faili</label>
+      <input id="mediaFile" type="file" required>
+      <small>Ukubwa wa juu: 100 MB. Ruhusiwa audio na video.</small>
 
-fileInput.addEventListener("change", () => {
-  const file = fileInput.files[0];
-  fileInfo.textContent = file
-    ? "Faili: " + file.name + " | Ukubwa: " +
-      (file.size / 1024 / 1024).toFixed(2) + " MB"
-    : "";
-});
+      <button id="uploadBtn" type="button">PAKIA FAILI</button>
+      <button id="logoutBtn" class="secondary" type="button">
+        TOKA KWENYE AKAUNTI
+      </button>
+    </section>
 
-uploadBtn.addEventListener("click", async () => {
-  const key = document.getElementById("adminKey").value;
-  const file = fileInput.files[0];
-  message.textContent = "";
-  resultBox.replaceChildren();
+    <p id="message" role="status" aria-live="polite"></p>
+    <div id="result"></div>
+    <p><a href="/">Rudi DRACK HUB</a></p>
+  </main>
 
-  if (!key) {
-    message.textContent = "Weka ufunguo wa Admin kwanza.";
-    return;
-  }
+  <script>
+    const loginSection = document.getElementById("loginSection");
+    const uploadSection = document.getElementById("uploadSection");
+    const loginForm = document.getElementById("loginForm");
+    const loginBtn = document.getElementById("loginBtn");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const fileInput = document.getElementById("mediaFile");
+    const typeSelect = document.getElementById("mediaType");
+    const message = document.getElementById("message");
+    const result = document.getElementById("result");
 
-  if (!file) {
-    message.textContent = "Tafadhali chagua faili kwanza.";
-    return;
-  }
-
-  const expectedType = typeSelect.value;
-  if (!file.type.startsWith(expectedType + "/")) {
-    message.textContent = "Aina ya faili haifanani na uchaguzi wako.";
-    return;
-  }
-
-  if (file.size > 100 * 1024 * 1024) {
-    message.textContent = "Faili limezidi kikomo cha 100 MB.";
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append("media", file);
-
-  uploadBtn.disabled = true;
-  message.textContent = "Inapakia... subiri hadi imalize.";
-
-  try {
-    const response = await fetch("/api/admin/drack-media/upload", {
-      method: "POST",
-      headers: {"x-drack-admin-key": key},
-      body: formData
-    });
-
-    const data = await response.json();
-
-    if (!response.ok || !data.success) {
-      throw new Error(data.message || "Upload imeshindwa.");
+    function showMessage(text) {
+      message.textContent = text;
     }
 
-    message.textContent = "UPLOAD IMEFANIKIWA! ✅";
+    function showLoggedIn(authenticated) {
+      loginSection.classList.toggle("hidden", authenticated);
+      uploadSection.classList.toggle("hidden", !authenticated);
+      if (!authenticated) result.replaceChildren();
+    }
 
-    const link = document.createElement("a");
-    link.href = data.media.url;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    link.textContent = "Fungua faili lililopakiwa";
-
-    const copyButton = document.createElement("button");
-    copyButton.type = "button";
-    copyButton.textContent = "NAKILI LINK";
-    copyButton.onclick = async () => {
+    async function checkSession() {
       try {
-        await navigator.clipboard.writeText(data.media.url);
-        copyButton.textContent = "LINK IMENAKILIWA!";
+        const response = await fetch("/api/admin/session", {
+          credentials: "same-origin"
+        });
+        const data = await response.json();
+        showLoggedIn(Boolean(data.authenticated));
       } catch {
-        message.textContent += "\nNakili link kwa kuibonyeza na kuichagua.";
+        showMessage("Imeshindikana kuangalia login. Jaribu tena.");
       }
-    };
+    }
 
-    const urlText = document.createElement("p");
-    urlText.textContent = data.media.url;
+    loginForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      loginBtn.disabled = true;
+      showMessage("Inakagua taarifa za login...");
+      result.replaceChildren();
 
-    resultBox.append(link, urlText, copyButton);
-    fileInfo.textContent += "\nPublic ID: " + data.media.publicId;
-  } catch (error) {
-    message.textContent = "HATUA IMESHINDWA: " + error.message;
-  } finally {
-    uploadBtn.disabled = false;
-  }
-});
-</script>
+      try {
+        const response = await fetch("/api/admin/login", {
+          method: "POST",
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: document.getElementById("username").value,
+            password: document.getElementById("password").value
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          showMessage(data.message || "Login imeshindwa.");
+          return;
+        }
+
+        document.getElementById("password").value = "";
+        showLoggedIn(true);
+        showMessage("Umeingia salama. Unaweza kupakia faili.");
+      } catch {
+        showMessage("Imeshindikana kuwasiliana na server.");
+      } finally {
+        loginBtn.disabled = false;
+      }
+    });
+
+    uploadBtn.addEventListener("click", async () => {
+      const file = fileInput.files[0];
+
+      if (!file) {
+        showMessage("Chagua faili kwanza.");
+        return;
+      }
+
+      if (file.size > 100 * 1024 * 1024) {
+        showMessage("Faili limezidi ukubwa wa 100 MB.");
+        return;
+      }
+
+      if (typeSelect.value === "audio" &&
+          !file.type.toLowerCase().startsWith("audio/")) {
+        showMessage("Chagua faili la audio.");
+        return;
+      }
+
+      if (typeSelect.value === "video" &&
+          !file.type.toLowerCase().startsWith("video/")) {
+        showMessage("Chagua faili la video.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("media", file);
+
+      uploadBtn.disabled = true;
+      result.replaceChildren();
+      showMessage("Inapakia faili. Subiri...");
+
+      try {
+        const response = await fetch("/api/admin/drack-media/upload", {
+          method: "POST",
+          credentials: "same-origin",
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (response.status === 401) {
+          showLoggedIn(false);
+          showMessage("Login imeisha muda wake. Ingia tena.");
+          return;
+        }
+
+        if (!response.ok || !data.success) {
+          showMessage(data.message || "Upload imeshindwa.");
+          return;
+        }
+
+        showMessage("SAWA! Faili limepakiwa Cloudinary.");
+
+        const name = document.createElement("p");
+        name.textContent = "Jina: " + data.media.name;
+        result.appendChild(name);
+
+        const link = document.createElement("a");
+        link.href = data.media.url;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = "Fungua faili lililopakiwa";
+        result.appendChild(link);
+
+        const copyBtn = document.createElement("button");
+        copyBtn.type = "button";
+        copyBtn.textContent = "NAKILI LINK";
+        copyBtn.addEventListener("click", async () => {
+          try {
+            await navigator.clipboard.writeText(data.media.url);
+            showMessage("Link imenakiliwa.");
+          } catch {
+            showMessage("Nakili link kwa kuifungua na kuinakili.");
+          }
+        });
+        result.appendChild(copyBtn);
+
+        fileInput.value = "";
+      } catch {
+        showMessage("Upload imeshindwa kuwasiliana na server.");
+      } finally {
+        uploadBtn.disabled = false;
+      }
+    });
+
+    logoutBtn.addEventListener("click", async () => {
+      logoutBtn.disabled = true;
+
+      try {
+        await fetch("/api/admin/logout", {
+          method: "POST",
+          credentials: "same-origin"
+        });
+      } finally {
+        showLoggedIn(false);
+        showMessage("Umetoka kwenye akaunti.");
+        logoutBtn.disabled = false;
+      }
+    });
+
+    checkSession();
+  </script>
 </body>
 </html>
