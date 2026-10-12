@@ -60,8 +60,8 @@ footer{text-align:center;padding:24px;color:#81978b;font-size:12px;border-top:1p
   </section>
 
   <nav class="tabs">
-    <a class="tab" href="?type=audio" id="audioTab">🎵 PAKUA NYIMBO MPYA</a>
-    <a class="tab" href="?type=video" id="videoTab">🎬 PAKUA VIDEO MPYA</a>
+    <a class="tab" href="?type=audio" id="audioTab">🎵 𝙿𝙰𝙺𝚄𝙰 𝙽𝚈𝙸𝙼𝙱𝙾 𝙼𝙿𝚈𝙰</a>
+    <a class="tab" href="?type=video" id="videoTab">🎬 𝙿𝙰𝙺𝚄𝙰 𝚅𝙸𝙳𝙴𝙾 𝙼𝙿𝚈𝙰</a>
   </nav>
 
   <section class="tools">
@@ -87,8 +87,8 @@ const statusBox = document.getElementById('status');
 const list = document.getElementById('list');
 const search = document.getElementById('search');
 
-heading.textContent = isVideo ? '🎬 Video zilizopakiwa' : '🎵 Nyimbo zilizopakiwa';
-document.getElementById('heroTitle').textContent = isVideo ? 'Tazama Video Mpya 🎬' : 'Sikiliza Muziki Mpya 🎵';
+heading.textContent = isVideo ? '🎬 𝚅𝚒𝚍𝚎𝚘 𝚣𝚒𝚕𝚒𝚣𝚘𝚙𝚊𝚔𝚒𝚠𝚊' : '🎵 𝙽𝚢𝚒𝚖𝚋𝚘 𝚣𝚒𝚕𝚒𝚣𝚘𝚙𝚊𝚔𝚒𝚠𝚊';
+document.getElementById('heroTitle').textContent = isVideo ? '𝚃𝚊𝚣𝚊𝚖𝚊 𝚅𝚒𝚍𝚎𝚘 𝙼𝚙𝚢𝚊 🎬' : '𝚂𝚒𝚔𝚒𝚕𝚒𝚣𝚊 𝙼𝚞𝚣𝚒𝚔𝚒 𝙼𝚙𝚢𝚊 🎵';
 document.getElementById(type + 'Tab').classList.add('active');
 
 function esc(value) {
@@ -127,7 +127,7 @@ function render() {
       '<div class="card-top"><div class="icon">' + icon + '</div><div><div class="number">DRACK HUB · ' +
       String(i + 1).padStart(2, '0') + '</div><h3>' + name + '</h3></div></div>' +
       player +
-      '<div class="actions"><a class="btn" href="' + url + '" download>⬇ PAKUA</a>' +
+      '<div class="actions"><a class="btn" href="' + url + '" download>⬇ 𝙿𝙰𝙺𝚄𝙰</a>' +
       '<a class="btn secondary" href="' + url + '" target="_blank" rel="noopener">↗ FUNGUA</a></div>' +
       '</article>';
   }).join('');
