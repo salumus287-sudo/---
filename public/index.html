@@ -1008,18 +1008,20 @@ nav.menu > a#drack-home-video-download {
   padding:7px 0;
 }
 #drack-home-greeting span {
-  display:inline-block;
-  white-space:nowrap;
-  padding-left:100%;
+  display:block;
+  width:100%;
+  white-space:normal;
+  padding:0 12px;
+  text-align:center;
   color:#fff;
   font-size:clamp(13px,3.2vw,20px);
   font-weight:800;
   text-shadow:0 0 5px rgba(0,180,255,.65);
-  animation:drackGreetingRun 22s linear infinite;
+  animation:drackGreetingGlow 5s ease-in-out infinite alternate;
 }
-@keyframes drackGreetingRun {
-  from {transform:translateX(0)}
-  to {transform:translateX(-100%)}
+@keyframes drackGreetingGlow {
+  from {opacity:.82;text-shadow:0 0 4px rgba(0,180,255,.45)}
+  to {opacity:1;text-shadow:0 0 8px rgba(100,220,255,.65)}
 }
 
 /* Kimondo cha WELCOME */
