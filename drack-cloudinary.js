@@ -246,7 +246,7 @@ function registerDrackCloudinary(app) {
       const originalExt = path.extname(req.file.originalname || "")
         .toLowerCase();
 
-      const ext = /^\\.[a-z0-9]{1,10}$/.test(originalExt)
+      const ext = /^\.[a-z0-9]{1,10}$/i.test(originalExt)
         ? originalExt
         : "";
 
