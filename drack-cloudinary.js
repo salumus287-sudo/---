@@ -294,6 +294,52 @@ function registerDrackCloudinary(app) {
       ? "DRACK SUPABASE STORAGE: CONFIGURED"
       : "DRACK SUPABASE STORAGE: WAITING FOR ENVIRONMENT VARIABLES"
   );
+
+  app.get('/api/drack-media/list', async (req, res) => {
+    try {
+      if (!configured || !supabase) {
+        return res.status(503).json({ success: false, message: 'Hifadhi ya media haijasanidiwa.' });
+      }
+
+      const type = req.query.type === 'video' ? 'video' : 'audio';
+      const { data, error } = await supabase.storage
+        .from(BUCKET)
+        .list('', { limit: 1000, sortBy: { column: 'created_at', order: 'desc' } });
+
+      if (error) throw error;
+
+      const audioExt = /\.(mp3|m4a|aac|ogg|wav|flac|opus|wma)$/i;
+      const videoExt = /\.(mp4|m4v|webm|mov|mkv|3gp|avi)$/i;
+
+      const files = (data || []).filter(file => {
+        if (!file.name || file.name.startsWith('.')) return false;
+        return type === 'video' ? videoExt.test(file.name) : audioExt.test(file.name);
+      });
+
+      const media = await Promise.all(files.map(async file => {
+        const { data: signed, error: signError } = await supabase.storage
+          .from(BUCKET)
+          .createSignedUrl(file.name, 3600, { download: file.name });
+
+        if (signError || !signed) return null;
+
+        return {
+          name: file.name,
+          type,
+          size: file.metadata && file.metadata.size ? file.metadata.size : 0,
+          createdAt: file.created_at || null,
+          url: signed.signedUrl
+        };
+      }));
+
+      const available = media.filter(Boolean);
+      res.json({ success: true, total: available.length, media: available });
+    } catch (error) {
+      console.error('DRACK media list error:', error.message);
+      res.status(500).json({ success: false, message: 'Imeshindikana kupata faili. Kagua mipangilio ya Supabase.' });
+    }
+  });
+
 }
 
 module.exports = registerDrackCloudinary;

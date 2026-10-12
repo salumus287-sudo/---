@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="sw">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DRACK HUB | Media</title>
+<style>
+body{margin:0;background:#0b1020;color:#fff;font-family:Arial,sans-serif;padding:18px}
+main{max-width:850px;margin:auto}
+h1{color:#40e0a0}
+nav{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
+a,button{background:#163c34;color:#fff;border:1px solid #40e0a0;padding:12px;border-radius:10px;text-decoration:none;cursor:pointer}
+.card{background:#151d30;padding:15px;border-radius:12px;margin:14px 0;overflow-wrap:anywhere}
+audio,video{width:100%;margin-top:12px}
+small{color:#bbc7d8}
+</style>
+</head>
+<body>
+<main>
+<h1>🎬 DRACK HUB MEDIA</h1>
+<p>Tazama na pakua muziki au video zilizowekwa na DRACK HUB.</p>
+<nav>
+<a href="?type=audio" id="audioTab">🎵 𝙿𝙰𝙺𝚄𝙰 𝙽𝚈𝙸𝙼𝙱𝙾 𝙼𝙿𝚈𝙰</a>
+<a href="?type=video" id="videoTab">🎬 𝙿𝙰𝙺𝚄𝙰 𝚅𝙸𝙳𝙴𝙾 𝙼𝙿𝚈𝙰</a>
+</nav>
+<h2 id="heading">Inapakia...</h2>
+<div id="status">Tafadhali subiri...</div>
+<div id="list"></div>
+</main>
+<script>
+const params = new URLSearchParams(location.search);
+const type = params.get('type') === 'video' ? 'video' : 'audio';
+document.getElementById('heading').textContent = type === 'video' ? '🎬 Video zilizopakiwa' : '🎵 Nyimbo zilizopakiwa';
+document.getElementById(type + 'Tab').style.background = '#087f5b';
+
+function esc(value) {
+  return String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+async function loadMedia() {
+  const status = document.getElementById('status');
+  const list = document.getElementById('list');
+  try {
+    const response = await fetch('/api/drack-media/list?type=' + type);
+    const result = await response.json();
+    if (!response.ok || !result.success) throw new Error(result.message || 'Imeshindikana kupakia media.');
+    if (!result.media.length) {
+      status.textContent = 'Bado hakuna faili za ' + (type === 'video' ? 'video' : 'muziki') + ' zinazoonekana hapa.';
+      return;
+    }
+    status.textContent = 'Faili zilizopatikana: ' + result.total;
+    list.innerHTML = result.media.map((item, i) => {
+      const name = esc(item.name);
+      const player = type === 'video'
+        ? '<video controls playsinline preload="metadata" src="' + esc(item.url) + '"></video>'
+        : '<audio controls preload="none" src="' + esc(item.url) + '"></audio>';
+      return '<article class="card"><h3>' + (i + 1) + '. ' + name + '</h3>' + player +
+        '<p><a href="' + esc(item.url) + '" download>⬇️ Pakua faili</a></p></article>';
+    }).join('');
+  } catch (error) {
+    status.textContent = 'Imeshindikana kupata media. Jaribu tena baadaye.';
+    console.error(error);
+  }
+}
+loadMedia();
+</script>
+</body>
+</html>
