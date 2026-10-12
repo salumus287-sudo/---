@@ -94,7 +94,15 @@
         <option value="video">🎬 Video</option>
       </select>
 
-      <label for="mediaFile">Chagua faili</label>
+      <label for="songTitle">Jina la wimbo au video</label>
+  <input id="songTitle" type="text" maxlength="120"
+         placeholder="Mfano: Mapenzi Ya Kweli" required>
+
+  <label for="artistName">Jina la msanii (si lazima kwa video)</label>
+  <input id="artistName" type="text" maxlength="100"
+         placeholder="Mfano: Msanii wa DRACK HUB">
+
+  <label for="mediaFile">Chagua faili</label>
       <input id="mediaFile" type="file" required>
       <small>Ukubwa wa juu: 100 MB. Ruhusiwa audio na video.</small>
 
@@ -118,6 +126,8 @@
     const logoutBtn = document.getElementById("logoutBtn");
     const fileInput = document.getElementById("mediaFile");
     const typeSelect = document.getElementById("mediaType");
+    const titleInput = document.getElementById("songTitle");
+    const artistInput = document.getElementById("artistName");
     const message = document.getElementById("message");
     const result = document.getElementById("result");
 
@@ -202,8 +212,19 @@
         return;
       }
 
+      const title = titleInput.value.trim();
+      const artist = artistInput.value.trim();
+
+      if (!title) {
+        showMessage("Andika jina la wimbo au video kwanza.");
+        titleInput.focus();
+        return;
+      }
+
       const formData = new FormData();
       formData.append("media", file);
+      formData.append("title", title);
+      formData.append("artist", artist);
 
       uploadBtn.disabled = true;
       result.replaceChildren();
@@ -229,7 +250,7 @@
           return;
         }
 
-        showMessage("SAWA! Faili limepakiwa Cloudinary.");
+        showMessage("SAWA! Faili limepakiwa.");
 
         const name = document.createElement("p");
         name.textContent = "Jina: " + data.media.name;

@@ -233,16 +233,46 @@ function registerDrackCloudinary(app) {
 
       const mime = String(req.file.mimetype || "").toLowerCase();
       const isVideo = mime.startsWith("video/");
+      const title = String(req.body.title || "").trim().slice(0, 120);
+      const artist = String(req.body.artist || "").trim().slice(0, 100);
+
+      if (!title) {
+        return res.status(400).json({
+          success: false,
+          message: "Andika jina la wimbo au video kwanza."
+        });
+      }
 
       const originalExt = path.extname(req.file.originalname || "")
         .toLowerCase();
 
-      const ext = /^\.[a-z0-9]{1,10}$/.test(originalExt)
+      const ext = /^\\.[a-z0-9]{1,10}$/.test(originalExt)
         ? originalExt
         : "";
 
+      const safeTitle = title
+        .normalize("NFKC")
+        .replace(/[\\/\\?#%:*|"<>\\x00-\\x1F]/g, "")
+        .replace(/\\s+/g, " ")
+        .trim()
+        .slice(0, 100) || "DRACK-MEDIA";
+
+      const safeArtist = artist
+        .normalize("NFKC")
+        .replace(/[\\/\\?#%:*|"<>\\x00-\\x1F]/g, "")
+        .replace(/\\s+/g, " ")
+        .trim()
+        .slice(0, 80);
+
+      const metadataToken = Buffer.from(
+        JSON.stringify({ title: safeTitle, artist: safeArtist })
+      ).toString("base64url");
+
       const storagePath =
-        `${Date.now()}-${crypto.randomUUID()}${ext}`;
+        `${Date.now()}-${crypto.randomUUID()}--${metadataToken}${ext}`;
+
+      const downloadName =
+        `${safeTitle}${safeArtist ? " - " + safeArtist : ""}${ext}`;
 
       try {
         const { data, error } = await supabase.storage
@@ -270,7 +300,10 @@ function registerDrackCloudinary(app) {
         return res.status(201).json({
           success: true,
           media: {
-            name: req.file.originalname,
+            name: `${safeTitle}${ext}`,
+            title: safeTitle,
+            artist: safeArtist,
+            downloadName,
             type: isVideo ? "video" : "audio",
             url: publicData.publicUrl,
             publicId: data.path,
@@ -317,14 +350,42 @@ function registerDrackCloudinary(app) {
       });
 
       const media = await Promise.all(files.map(async file => {
+        const ext = path.extname(file.name);
+        let title = "";
+        let artist = "";
+        let downloadName = file.name;
+
+        const marker = file.name.indexOf("--");
+
+        if (marker >= 0) {
+          const token = file.name.slice(marker + 2, file.name.length - ext.length);
+
+          try {
+            const metadata = JSON.parse(
+              Buffer.from(token, "base64url").toString("utf8")
+            );
+
+            if (metadata && typeof metadata.title === "string") {
+              title = metadata.title;
+              artist = typeof metadata.artist === "string" ? metadata.artist : "";
+              downloadName =
+                `${title}${artist ? " - " + artist : ""}${ext}`;
+            }
+          } catch {
+            // Faili za zamani zinaweza kuwa na muundo tofauti.
+          }
+        }
+
         const { data: signed, error: signError } = await supabase.storage
           .from(BUCKET)
-          .createSignedUrl(file.name, 3600, { download: file.name });
+          .createSignedUrl(file.name, 3600, { download: downloadName });
 
         if (signError || !signed) return null;
 
         return {
-          name: file.name,
+          name: title ? `${title}${ext}` : file.name,
+          title: title || "",
+          artist,
           type,
           size: file.metadata && file.metadata.size ? file.metadata.size : 0,
           createdAt: file.created_at || null,

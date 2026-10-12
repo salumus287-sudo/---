@@ -117,7 +117,8 @@ function render() {
 
   list.innerHTML = filtered.map((item, i) => {
     const url = esc(item.url);
-    const name = esc(displayName(item.name));
+    const name = esc(item.title || displayName(item.name));
+    const artist = esc(item.artist || "");
     const icon = isVideo ? '🎬' : '🎵';
     const player = isVideo
       ? '<video controls playsinline preload="metadata" src="' + url + '"></video>'
@@ -125,7 +126,9 @@ function render() {
 
     return '<article class="card">' +
       '<div class="card-top"><div class="icon">' + icon + '</div><div><div class="number">DRACK HUB · ' +
-      String(i + 1).padStart(2, '0') + '</div><h3>' + name + '</h3></div></div>' +
+      String(i + 1).padStart(2, '0') + '</div><h3>' + name + '</h3>' +
+      (artist ? '<p>👤 ' + artist + '</p>' : '') +
+      '</div></div>' +
       player +
       '<div class="actions"><a class="btn" href="' + url + '" download>⬇ 𝙿𝙰𝙺𝚄𝙰</a>' +
       '<a class="btn secondary" href="' + url + '" target="_blank" rel="noopener">↗ FUNGUA</a></div>' +
