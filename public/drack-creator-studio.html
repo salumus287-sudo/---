@@ -436,6 +436,44 @@ footer {
           </div>
         </div>
 
+        
+        <div class="tool-section">
+          <h3>🤖 DRACK AI POSTER</h3>
+          <p style="font-size:12px;color:var(--muted);line-height:1.6">
+            Eleza poster unayotaka. Generator hii ya bure itatumia maelekezo yako
+            kuchagua rangi, mtindo na kupanga maandishi ndani ya editor.
+          </p>
+
+          <div class="field">
+            <label>Maelekezo ya poster</label>
+            <textarea id="drackAiPrompt" rows="4"
+              placeholder="Mfano: Nitengenezee poster ya DRACK HUB, rangi nyeusi na dhahabu, yenye mtindo wa kisasa."
+              style="width:100%;box-sizing:border-box;padding:12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text);font:inherit;resize:vertical"></textarea>
+          </div>
+
+          <div class="field">
+            <label>Kichwa kikuu cha poster</label>
+            <input id="drackAiTitle" type="text" value="DRACK HUB"
+              placeholder="Andika kichwa cha poster">
+          </div>
+
+          <div class="field">
+            <label>Maandishi ya ziada</label>
+            <input id="drackAiSubtitle" type="text"
+              value="CREATE • DESIGN • DOWNLOAD"
+              placeholder="Maelezo ya ziada">
+          </div>
+
+          <button class="btn btn-primary full" id="drackAiGenerate" type="button">
+            ✨ TENGENEZA POSTER
+          </button>
+
+          <p style="font-size:11px;color:var(--muted);line-height:1.5">
+            Hufanya kazi bila API key. Huu ni mfumo wa kutengeneza design kwa
+            templates; hauhariri picha kwa AI halisi.
+          </p>
+        </div>
+
         <div class="tool-section">
           <h3>🖼️ Ongeza picha</h3>
 
@@ -685,6 +723,124 @@ footer {
     snapshot();
     render();
     status('Mandhari yamebadilishwa.');
+  });
+
+
+  $('drackAiGenerate').addEventListener('click', () => {
+    const prompt = $('drackAiPrompt').value.trim().toLowerCase();
+    const title = $('drackAiTitle').value.trim() || 'DRACK HUB';
+    const subtitle = $('drackAiSubtitle').value.trim();
+
+    if (!prompt && !title) {
+      status('Andika maelekezo au kichwa cha poster kwanza.', true);
+      return;
+    }
+
+    let bg = '#101d35';
+    let accent = '#f5c542';
+    let textColor = '#ffffff';
+
+    if (/nyeusi|black|dhahabu|gold|luxury|premium/.test(prompt)) {
+      bg = '#101010';
+      accent = '#d4af37';
+    } else if (/bluu|blue|bahari|technology|tech/.test(prompt)) {
+      bg = '#071d49';
+      accent = '#28c7fa';
+    } else if (/kijani|green|mazingira|nature/.test(prompt)) {
+      bg = '#103b2b';
+      accent = '#70e000';
+    } else if (/nyekundu|red|moto|energy/.test(prompt)) {
+      bg = '#510b18';
+      accent = '#ff4d4d';
+    } else if (/pink|waridi|mapenzi|love/.test(prompt)) {
+      bg = '#481d3d';
+      accent = '#ff8fcf';
+    } else if (/nyeupe|white|clean|simple/.test(prompt)) {
+      bg = '#f4f4f4';
+      accent = '#1769aa';
+      textColor = '#151515';
+    }
+
+    const oldBackground = background;
+    const oldObjects = objects.slice();
+
+    snapshot();
+    background = bg;
+    $('bgColor').value = bg;
+    $('textColor').value = textColor;
+    $('shapeColor').value = accent;
+
+    const w = canvas.width;
+    const h = canvas.height;
+
+    addObject({
+      type: 'rect',
+      x: w * 0.06,
+      y: h * 0.07,
+      w: w * 0.88,
+      h: h * 0.018,
+      color: accent
+    });
+
+    addObject({
+      type: 'circle',
+      x: w * 0.72,
+      y: h * 0.12,
+      w: w * 0.22,
+      h: w * 0.22,
+      color: accent,
+      opacity: 0.18
+    });
+
+    addObject({
+      type: 'text',
+      text: title,
+      x: w / 2,
+      y: h * 0.43,
+      size: Math.max(28, Math.min(110, w * (title.length > 18 ? 0.055 : 0.085))),
+      color: textColor,
+      font: 'Impact',
+      bold: true,
+      align: 'center'
+    });
+
+    if (subtitle) {
+      addObject({
+        type: 'text',
+        text: subtitle,
+        x: w / 2,
+        y: h * 0.53,
+        size: Math.max(18, Math.min(48, w * 0.035)),
+        color: accent,
+        font: 'Arial',
+        bold: true,
+        align: 'center'
+      });
+    }
+
+    addObject({
+      type: 'rect',
+      x: w * 0.12,
+      y: h * 0.68,
+      w: w * 0.76,
+      h: h * 0.008,
+      color: accent
+    });
+
+    addObject({
+      type: 'text',
+      text: 'DRACK CREATOR STUDIO',
+      x: w / 2,
+      y: h * 0.76,
+      size: Math.max(16, Math.min(30, w * 0.025)),
+      color: textColor,
+      font: 'Arial',
+      bold: false,
+      align: 'center'
+    });
+
+    render();
+    status('✨ Poster imeundwa! Unaweza kuburuta maandishi, kuyarekebisha na kupakua PNG.');
   });
 
   $('addText').addEventListener('click', () => {
