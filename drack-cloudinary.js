@@ -252,15 +252,17 @@ function registerDrackCloudinary(app) {
 
       const safeTitle = title
         .normalize("NFKC")
-        .replace(/[\\/\\?#%:*|"<>\\x00-\\x1F]/g, "")
-        .replace(/\\s+/g, " ")
+        .replace(/[\\/?#%:*|"<>]/g, "")
+        .replace(/[\x00-\x1F]/g, "")
+        .replace(/\s+/g, " ")
         .trim()
         .slice(0, 100) || "DRACK-MEDIA";
 
       const safeArtist = artist
         .normalize("NFKC")
-        .replace(/[\\/\\?#%:*|"<>\\x00-\\x1F]/g, "")
-        .replace(/\\s+/g, " ")
+        .replace(/[\\/?#%:*|"<>]/g, "")
+        .replace(/[\x00-\x1F]/g, "")
+        .replace(/\s+/g, " ")
         .trim()
         .slice(0, 80);
 
