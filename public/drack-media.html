@@ -3,65 +3,156 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DRACK HUB | Media</title>
+<meta name="theme-color" content="#07110e">
+<title>DRACK HUB MEDIA | Muziki na Video</title>
 <style>
-body{margin:0;background:#0b1020;color:#fff;font-family:Arial,sans-serif;padding:18px}
-main{max-width:850px;margin:auto}
-h1{color:#40e0a0}
-nav{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
-a,button{background:#163c34;color:#fff;border:1px solid #40e0a0;padding:12px;border-radius:10px;text-decoration:none;cursor:pointer}
-.card{background:#151d30;padding:15px;border-radius:12px;margin:14px 0;overflow-wrap:anywhere}
-audio,video{width:100%;margin-top:12px}
-small{color:#bbc7d8}
+:root{--bg:#07110e;--panel:#101e19;--panel2:#152720;--green:#35e69a;--muted:#a7b9b0;--line:#254438}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#f5fff9;font-family:system-ui,-apple-system,Arial,sans-serif}
+a{color:inherit;text-decoration:none}
+header{padding:18px 16px;border-bottom:1px solid var(--line);background:#0a1712;position:sticky;top:0;z-index:5}
+.top{max-width:1050px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-weight:900;font-size:20px;letter-spacing:1px}
+.brand span{color:var(--green)}
+.badge{font-size:11px;border:1px solid var(--line);padding:6px 9px;border-radius:20px;color:var(--green)}
+main{max-width:1050px;margin:auto;padding:22px 15px 50px}
+.hero{padding:25px 20px;border:1px solid var(--line);border-radius:22px;background:radial-gradient(ellipse at top right,#174b36 0,transparent 60%),linear-gradient(140deg,#12271d,#0b1511)}
+.kicker{font-size:12px;letter-spacing:2px;color:var(--green);font-weight:800}
+h1{font-size:clamp(27px,6vw,44px);line-height:1.12;margin:12px 0}
+.hero p{color:var(--muted);line-height:1.6;margin-bottom:0}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
+.tab{display:flex;align-items:center;justify-content:center;text-align:center;min-height:58px;padding:12px 8px;border:1px solid var(--line);border-radius:14px;background:var(--panel);font-size:13px;font-weight:800}
+.tab.active{background:var(--green);color:#062116;border-color:var(--green)}
+.tools{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:24px 0 14px}
+h2{font-size:21px;margin:0}
+.count{font-size:12px;color:var(--muted);margin-top:6px}
+.search{width:100%;max-width:340px;background:#0e1a15;border:1px solid var(--line);border-radius:12px;padding:13px;color:white;font-size:15px;outline:none}
+.search:focus{border-color:var(--green)}
+#status{padding:14px;border:1px solid var(--line);background:var(--panel);border-radius:12px;color:var(--muted);margin:14px 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.card{min-width:0;overflow:hidden;background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:13px}
+.card-top{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+.icon{width:43px;height:43px;flex-shrink:0;display:grid;place-items:center;background:#183c2c;border-radius:12px;font-size:22px}
+.number{font-size:11px;color:var(--green);font-weight:800}
+h3{font-size:14px;line-height:1.5;margin:3px 0 0;overflow-wrap:anywhere}
+audio,video{width:100%;display:block;margin:12px 0;border-radius:10px}
+video{background:#000;aspect-ratio:16/9;object-fit:contain}
+.actions{display:flex;gap:8px;margin-top:12px}
+.btn{flex:1;text-align:center;padding:11px 8px;border-radius:10px;background:var(--green);color:#062116;font-size:12px;font-weight:900}
+.btn.secondary{background:#1b3027;color:#e9fff3;border:1px solid var(--line)}
+.empty{text-align:center;padding:35px 15px;color:var(--muted);grid-column:1/-1}
+footer{text-align:center;padding:24px;color:#81978b;font-size:12px;border-top:1px solid var(--line)}
+@media(max-width:600px){main{padding:15px 12px 35px}.grid{grid-template-columns:1fr;gap:12px}.hero{padding:22px 16px}.search{max-width:none}.tools{align-items:stretch}.tabs{gap:8px}.tab{font-size:12px}.card{padding:12px}}
 </style>
 </head>
 <body>
+<header>
+  <div class="top">
+    <a class="brand" href="/">DRACK <span>HUB</span></a>
+    <span class="badge">● MEDIA CENTER</span>
+  </div>
+</header>
 <main>
-<h1>🎬 DRACK HUB MEDIA</h1>
-<p>Tazama na pakua muziki au video zilizowekwa na DRACK HUB.</p>
-<nav>
-<a href="?type=audio" id="audioTab">🎵 𝙿𝙰𝙺𝚄𝙰 𝙽𝚈𝙸𝙼𝙱𝙾 𝙼𝙿𝚈𝙰</a>
-<a href="?type=video" id="videoTab">🎬 𝙿𝙰𝙺𝚄𝙰 𝚅𝙸𝙳𝙴𝙾 𝙼𝙿𝚈𝙰</a>
-</nav>
-<h2 id="heading">Inapakia...</h2>
-<div id="status">Tafadhali subiri...</div>
-<div id="list"></div>
+  <section class="hero">
+    <div class="kicker">BURUDANI YAKO, SEHEMU MOJA</div>
+    <h1 id="heroTitle">DRACK HUB MEDIA 🎬</h1>
+    <p>Sikiliza muziki, tazama video na pakua faili unazopenda moja kwa moja kwenye simu yako.</p>
+  </section>
+
+  <nav class="tabs">
+    <a class="tab" href="?type=audio" id="audioTab">🎵 PAKUA NYIMBO MPYA</a>
+    <a class="tab" href="?type=video" id="videoTab">🎬 PAKUA VIDEO MPYA</a>
+  </nav>
+
+  <section class="tools">
+    <div>
+      <h2 id="heading">Inapakia...</h2>
+      <div class="count" id="count"></div>
+    </div>
+    <input class="search" id="search" type="search" placeholder="🔎 Tafuta jina la faili..." aria-label="Tafuta faili">
+  </section>
+
+  <div id="status">⏳ Inatafuta mafaili...</div>
+  <section class="grid" id="list"></section>
 </main>
+<footer>© DRACK HUB · Muziki na video sehemu moja</footer>
+
 <script>
 const params = new URLSearchParams(location.search);
 const type = params.get('type') === 'video' ? 'video' : 'audio';
-document.getElementById('heading').textContent = type === 'video' ? '🎬 Video zilizopakiwa' : '🎵 Nyimbo zilizopakiwa';
-document.getElementById(type + 'Tab').style.background = '#087f5b';
+const isVideo = type === 'video';
+const media = [];
+const heading = document.getElementById('heading');
+const statusBox = document.getElementById('status');
+const list = document.getElementById('list');
+const search = document.getElementById('search');
+
+heading.textContent = isVideo ? '🎬 Video zilizopakiwa' : '🎵 Nyimbo zilizopakiwa';
+document.getElementById('heroTitle').textContent = isVideo ? 'Tazama Video Mpya 🎬' : 'Sikiliza Muziki Mpya 🎵';
+document.getElementById(type + 'Tab').classList.add('active');
 
 function esc(value) {
-  return String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  return String(value).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
 }
 
+function displayName(filename) {
+  return filename.replace(/^\d{10,}-[a-f0-9-]+-/i, '')
+    .replace(/\.[^.]+$/, '')
+    .replace(/[_-]+/g, ' ')
+    .trim() || filename;
+}
+
+function render() {
+  const term = search.value.trim().toLowerCase();
+  const filtered = media.filter(item => displayName(item.name).toLowerCase().includes(term));
+  document.getElementById('count').textContent =
+    filtered.length + ' kati ya ' + media.length + ' faili';
+
+  if (!filtered.length) {
+    list.innerHTML = '<div class="empty">🔎 Hakuna faili linalolingana na utafutaji wako.</div>';
+    return;
+  }
+
+  list.innerHTML = filtered.map((item, i) => {
+    const url = esc(item.url);
+    const name = esc(displayName(item.name));
+    const icon = isVideo ? '🎬' : '🎵';
+    const player = isVideo
+      ? '<video controls playsinline preload="metadata" src="' + url + '"></video>'
+      : '<audio controls preload="none" src="' + url + '"></audio>';
+
+    return '<article class="card">' +
+      '<div class="card-top"><div class="icon">' + icon + '</div><div><div class="number">DRACK HUB · ' +
+      String(i + 1).padStart(2, '0') + '</div><h3>' + name + '</h3></div></div>' +
+      player +
+      '<div class="actions"><a class="btn" href="' + url + '" download>⬇ PAKUA</a>' +
+      '<a class="btn secondary" href="' + url + '" target="_blank" rel="noopener">↗ FUNGUA</a></div>' +
+      '</article>';
+  }).join('');
+}
+
+search.addEventListener('input', render);
+
 async function loadMedia() {
-  const status = document.getElementById('status');
-  const list = document.getElementById('list');
   try {
     const response = await fetch('/api/drack-media/list?type=' + type);
     const result = await response.json();
-    if (!response.ok || !result.success) throw new Error(result.message || 'Imeshindikana kupakia media.');
-    if (!result.media.length) {
-      status.textContent = 'Bado hakuna faili za ' + (type === 'video' ? 'video' : 'muziki') + ' zinazoonekana hapa.';
-      return;
+    if (!response.ok || !result.success) {
+      throw new Error(result.message || 'Imeshindikana kupata mafaili.');
     }
-    status.textContent = 'Faili zilizopatikana: ' + result.total;
-    list.innerHTML = result.media.map((item, i) => {
-      const name = esc(item.name);
-      const player = type === 'video'
-        ? '<video controls playsinline preload="metadata" src="' + esc(item.url) + '"></video>'
-        : '<audio controls preload="none" src="' + esc(item.url) + '"></audio>';
-      return '<article class="card"><h3>' + (i + 1) + '. ' + name + '</h3>' + player +
-        '<p><a href="' + esc(item.url) + '" download>⬇️ Pakua faili</a></p></article>';
-    }).join('');
+    media.push(...(result.media || []));
+    statusBox.textContent = media.length
+      ? '✅ Mafaili yamepatikana. Chagua kucheza au kupakua.'
+      : 'Bado hakuna mafaili ya ' + (isVideo ? 'video' : 'muziki') + ' yanayoonekana.';
+    render();
   } catch (error) {
-    status.textContent = 'Imeshindikana kupata media. Jaribu tena baadaye.';
-    console.error(error);
+    statusBox.textContent = '⚠️ Imeshindikana kupata mafaili kwa sasa. Jaribu tena baadaye.';
+    console.error('DRACK HUB MEDIA:', error);
   }
 }
+
 loadMedia();
 </script>
 </body>
