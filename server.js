@@ -5,6 +5,7 @@ const registerDrackPlusDownloads = require("./drack-plus-downloads");
 const registerDrackCloudinary = require("./drack-cloudinary");
 
 const express = require("express");
+const registerDynamicSitemap = require("./dynamic-sitemap");
 const path = require("path");
 const { importAllNews } = require("./dailynews-import");
 const { Pool } = require("pg");
@@ -38,6 +39,7 @@ if (process.env.DATABASE_URL) {
 // WEBSITE
 // ===============================
 
+registerDynamicSitemap(app);
 app.use(express.static(path.join(__dirname, "public")));
 registerLiveMatch(app, pool);
 
