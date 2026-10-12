@@ -48,9 +48,55 @@ footer{text-align:center;padding:18px 12px;color:#81978b;font-size:12px;border-t
 .footer-credit{width:100%;margin-top:5px;line-height:1.7}
 .footer-credit strong{color:var(--green)}
 @media(max-width:600px){main{padding:15px 12px 35px}.grid{grid-template-columns:1fr;gap:12px}.hero{padding:22px 16px}.search{max-width:none}.tools{align-items:stretch}.tabs{gap:8px}.tab{font-size:12px}.card{padding:12px}}
+
+body {
+  position: relative;
+  isolation: isolate;
+  background: transparent !important;
+}
+#drackSceneBackground {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background: #07110e;
+  pointer-events: none;
+}
+#drackSceneBackground img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1.5s ease;
+}
+#drackSceneBackground img.visible { opacity: 1; }
+#drackSceneBackground .shade {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 12, 8, .72);
+}
+header, footer {
+  background: rgba(5, 17, 12, .88) !important;
+}
+.hero, .tab, #status, .card, .search {
+  background-color: rgba(9, 24, 17, .82) !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  #drackSceneBackground img { transition: none; }
+}
+
 </style>
 </head>
 <body>
+
+<div id="drackSceneBackground" aria-hidden="true">
+  <img id="drackSceneA" class="visible" alt="">
+  <img id="drackSceneB" alt="">
+  <div class="shade"></div>
+</div>
+
 <header>
   <div class="top">
     <a class="brand" href="/">DRACK <span>HUB</span></a>
@@ -91,6 +137,54 @@ footer{text-align:center;padding:18px 12px;color:#81978b;font-size:12px;border-t
 </footer>
 
 <script>
+
+(function () {
+  const a = document.getElementById('drackSceneA');
+  const b = document.getElementById('drackSceneB');
+  if (!a || !b) return;
+
+  const photos = [
+    'https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80',
+    'https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1600&q=80'
+  ];
+
+  let index = 0;
+  let active = a;
+
+  function changePhoto() {
+    const next = active === a ? b : a;
+    const nextIndex = (index + 1) % photos.length;
+
+    next.onload = function () {
+      next.classList.add('visible');
+      active.classList.remove('visible');
+      active = next;
+      index = nextIndex;
+      next.onload = null;
+      next.onerror = null;
+    };
+
+    next.onerror = function () {
+      next.onload = null;
+      next.onerror = null;
+    };
+
+    next.src = photos[nextIndex];
+  }
+
+  a.onerror = function () {
+    a.style.display = 'none';
+  };
+  a.src = photos[0];
+
+  setInterval(changePhoto, 9000);
+})();
+
+
 const params = new URLSearchParams(location.search);
 const type = params.get('type') === 'video' ? 'video' : 'audio';
 const isVideo = type === 'video';
