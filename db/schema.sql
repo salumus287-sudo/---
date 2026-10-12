@@ -88,3 +88,33 @@ CREATE TABLE IF NOT EXISTS live_match (
     url TEXT NOT NULL,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+-- ============================================================
+-- DRACK HUB COMMENTS: REPLIES AND REACTIONS
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS comment_replies (
+    id SERIAL PRIMARY KEY,
+    comment_id INTEGER NOT NULL
+        REFERENCES comments(id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS comment_reactions (
+    id SERIAL PRIMARY KEY,
+    comment_id INTEGER NOT NULL
+        REFERENCES comments(id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
+    reaction TEXT NOT NULL
+        CHECK (reaction IN ('like', 'dislike')),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (comment_id, name)
+);
+
+CREATE INDEX IF NOT EXISTS idx_comment_replies_comment_id
+ON comment_replies(comment_id);
+
+CREATE INDEX IF NOT EXISTS idx_comment_reactions_comment_id
+ON comment_reactions(comment_id);
