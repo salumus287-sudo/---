@@ -869,6 +869,74 @@ th {
 }
 </style>
 
+
+<style id="drack-home-buttons-uniform">
+/* DRACK HUB: VITufe VYA JUU */
+nav.menu {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 10px !important;
+    align-items: stretch !important;
+}
+
+nav.menu > button,
+nav.menu > a {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 54px !important;
+    margin: 0 !important;
+    padding: 10px 6px !important;
+    border: 0 !important;
+    border-radius: 10px !important;
+    color: #fff !important;
+    font-family: "Courier New", monospace !important;
+    font-size: 11px !important;
+    font-weight: bold !important;
+    line-height: 1.35 !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    cursor: pointer !important;
+}
+
+nav.menu > button:first-child {
+    background: #174ea6 !important;
+}
+
+nav.menu > button#drack-tazama-mpira-live {
+    background: #c62828 !important;
+}
+
+nav.menu > a#drack-home-audio-download {
+    background: #087f5b !important;
+}
+
+nav.menu > a#drack-home-video-download {
+    background: #174ea6 !important;
+}
+
+@media (max-width: 360px) {
+    nav.menu {
+        gap: 6px !important;
+        padding: 8px !important;
+    }
+
+    nav.menu > button,
+    nav.menu > a {
+        font-size: 10px !important;
+        padding: 9px 4px !important;
+    }
+}
+</style>
+
 </head>
 
 <body>
