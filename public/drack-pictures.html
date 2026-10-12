@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#07130f">
+<title>DRACK PICTURES | DRACK HUB</title>
+<meta name="description" content="Gundua picha za wanyama, wasanii, timu, maeneo maarufu, magari, vyakula na maisha kutoka DRACK PICTURES.">
+<style>
+*{box-sizing:border-box}
+:root{color-scheme:dark}
+body{margin:0;background:#07130f;color:#f3fff8;font-family:Arial,sans-serif}
+header{padding:20px 14px;text-align:center;background:linear-gradient(135deg,#063d2d,#087f5b,#102c49);border-bottom:1px solid #ffffff25}
+.logo{font-size:27px;font-weight:900;letter-spacing:1px}
+.logo span{color:#8dffc5}
+header p{margin:8px 0 0;color:#d8f5e6;font-size:14px}
+.container{width:min(1100px,100%);margin:auto;padding:16px}
+.home{display:inline-block;background:#087f5b;color:white;padding:10px 15px;border-radius:9px;text-decoration:none;font-weight:bold;margin-bottom:15px}
+h1{font-size:clamp(24px,5vw,38px);margin:5px 0 8px}
+.intro{color:#c0d6ca;line-height:1.6;margin-bottom:16px}
+.categories{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.cat{border:1px solid #286b50;background:#10271e;color:#e8fff1;padding:10px 12px;border-radius:20px;cursor:pointer}
+.cat.active,.control.primary{background:#08a36e;color:white;border-color:#08a36e}
+.searchrow{display:flex;gap:8px;margin:12px 0}
+input{min-width:0;flex:1;background:#102019;color:white;border:1px solid #315844;border-radius:10px;padding:12px;font-size:16px}
+button{font:inherit}
+.control{background:#19392b;color:white;border:1px solid #37684f;border-radius:9px;padding:11px 13px;cursor:pointer}
+.feature{position:relative;overflow:hidden;border-radius:17px;background:#102019;border:1px solid #254c38;margin:16px 0}
+.feature img{display:block;width:100%;height:clamp(240px,60vw,570px);object-fit:contain;background:#030805}
+.caption{padding:12px 14px;line-height:1.5}
+.caption a{color:#8dffc5}
+.controls{display:flex;gap:8px;flex-wrap:wrap;padding:0 12px 14px}
+.small{font-size:12px;color:#aac7b6}
+.status{padding:10px 0;color:#a8f0ca;min-height:35px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:12px}
+.card{overflow:hidden;border:1px solid #214633;background:#102019;border-radius:12px;min-width:0}
+.card img{width:100%;height:155px;object-fit:cover;display:block;background:#030805}
+.card a{color:inherit;text-decoration:none}
+.card p{font-size:13px;line-height:1.4;padding:9px;margin:0;overflow-wrap:anywhere}
+.more{display:block;margin:20px auto}
+footer{text-align:center;padding:24px 12px;color:#a9c4b4;border-top:1px solid #254b38;margin-top:30px}
+@media(max-width:450px){.container{padding:12px}.searchrow{flex-wrap:wrap}.searchrow input{flex-basis:100%}.card img{height:130px}.controls .control{flex:1}}
+</style>
+</head>
+<body>
+<header>
+ <div class="logo">DRACK <span>PICTURES</span></div>
+ <p>Picha kali kutoka Tanzania na duniani 🌍</p>
+</header>
+
+<main class="container">
+<a class="home" href="/">← RUDI DRACK HUB HOME</a>
+<h1>📸 Dunia ya Picha</h1>
+<p class="intro">Gundua wanyama, wasanii, timu, maeneo maarufu, vyakula, magari, nyumba, lifestyle na mandhari ya kuvutia. Picha kuu hubadilika kila baada ya sekunde 40.</p>
+
+<div class="categories" id="categories">
+<button class="cat active" data-key="all">🌍 Zote</button>
+<button class="cat" data-key="animals">🦁 Wanyama</button>
+<button class="cat" data-key="artists">🎤 Wasanii</button>
+<button class="cat" data-key="teams">⚽ Timu</button>
+<button class="cat" data-key="places">🏙️ Maeneo</button>
+<button class="cat" data-key="food">🍔 Vyakula</button>
+<button class="cat" data-key="cars">🚘 Magari</button>
+<button class="cat" data-key="homes">🏡 Nyumba</button>
+<button class="cat" data-key="lifestyle">🌴 Lifestyle</button>
+<button class="cat" data-key="ocean">🌊 Bahari</button>
+</div>
+
+<div class="searchrow">
+<input id="search" type="search" placeholder="Tafuta picha, mfano: simba, Messi, Zanzibar...">
+<button class="control primary" id="searchBtn">🔎 Tafuta</button>
+</div>
+
+<section class="feature">
+<img id="featured" alt="Picha ya DRACK PICTURES" src="" hidden>
+<div class="caption">
+ <strong id="pictureTitle">Karibu DRACK PICTURES</strong>
+ <div id="pictureCredit" class="small">Picha zitaonekana hapa.</div>
+ <p class="small" id="timer">Muda wa kubadilika: sekunde 40</p>
+</div>
+<div class="controls">
+ <button class="control" id="previous">⏮️ PREVIOUS</button>
+ <button class="control primary" id="pause">⏸️ PAUSE</button>
+ <button class="control" id="next">⏭️ NEXT</button>
+</div>
+</section>
+
+<div class="status" id="status" role="status">Inaandaa picha...</div>
+<div class="grid" id="gallery"></div>
+<button class="control primary more" id="more">⬇️ PATA PICHA NYINGINE</button>
+<p class="small">Picha zinaweza kuwa na masharti tofauti ya leseni. Fungua ukurasa wa chanzo wa picha husika ili uone maelezo ya matumizi na attribution.</p>
+</main>
+
+<footer>© DRACK HUB · DRACK PICTURES</footer>
+
+<script>
+(() => {
+'use strict';
+
+const API = 'https://commons.wikimedia.org/w/api.php';
+const categories = {
+ all: ['wildlife photography','famous landmarks','food photography','sports teams','luxury cars','ocean beach','modern architecture','fashion lifestyle','musicians'],
+ animals: ['wild animals photography','African wildlife','lions in Africa','elephants','wild cats','birds photography'],
+ artists: ['musicians portrait','singers portrait','actors portrait','African musicians','Tanzanian musicians'],
+ teams: ['football teams','football players','football stadium','Tanzania football','international football'],
+ places: ['famous landmarks','Tanzania landscapes','Zanzibar','mountains landscape','famous cities','waterfalls'],
+ food: ['food photography','African food','Tanzanian food','fruit photography','desserts'],
+ cars: ['luxury cars','sports cars','classic cars','electric cars','supercars'],
+ homes: ['modern houses','luxury homes','architecture houses','interior design','modern buildings'],
+ lifestyle: ['fashion lifestyle','street fashion','travel photography','people daily life','fitness lifestyle'],
+ ocean: ['ocean photography','tropical beach','coral reef','islands landscape','waves sea']
+};
+
+const featured = document.getElementById('featured');
+const title = document.getElementById('pictureTitle');
+const credit = document.getElementById('pictureCredit');
+const timerText = document.getElementById('timer');
+const status = document.getElementById('status');
+const gallery = document.getElementById('gallery');
+const search = document.getElementById('search');
+const more = document.getElementById('more');
+
+let activeCategory = 'all';
+let queryOverride = '';
+let pool = [];
+let seen = new Set();
+let current = -1;
+let secondsLeft = 40;
+let paused = false;
+let busy = false;
+let termIndex = 0;
+let pageTokens = {};
+let activeRequest = 0;
+
+function setStatus(text) {
+ status.textContent = text;
+}
+
+function getTerm() {
+ if (queryOverride) return queryOverride;
+ const list = categories[activeCategory] || categories.all;
+ const term = list[termIndex % list.length];
+ termIndex++;
+ return term;
+}
+
+async function fetchImages() {
+ if (busy) return;
+ busy = true;
+ const requestId = activeRequest;
+ const term = getTerm();
+ try {
+  const params = new URLSearchParams({
+   action:'query',
+   format:'json',
+   origin:'*',
+   generator:'search',
+   gsrsearch:'filetype:bitmap ' + term,
+   gsrnamespace:'6',
+   gsrlimit:'20',
+   prop:'imageinfo',
+   iiprop:'url|extmetadata',
+   iiurlwidth:'900'
+  });
+  const token = pageTokens[term];
+  if (token) {
+   Object.entries(token).forEach(([k,v]) => params.set(k,v));
+  }
+  const response = await fetch(API + '?' + params.toString());
+  if (!response.ok) throw new Error('HTTP ' + response.status);
+  const data = await response.json();
+  if (requestId !== activeRequest) return;
+
+  if (data.continue) pageTokens[term] = data.continue;
+  else delete pageTokens[term];
+
+  const pages = Object.values(data.query?.pages || {});
+  let added = 0;
+  for (const page of pages) {
+   const info = page.imageinfo?.[0];
+   if (!info) continue;
+   const url = info.thumburl || info.url;
+   if (!url || !/^https?:\/\//i.test(url) || seen.has(page.pageid)) continue;
+   seen.add(page.pageid);
+   const meta = info.extmetadata || {};
+   const author = (meta.Artist?.value || 'Chanzo: Wikimedia Commons')
+     .replace(/<[^>]*>/g,' ')
+     .replace(/\s+/g,' ').trim().slice(0,180);
+   const license = (meta.LicenseShortName?.value || 'Angalia leseni kwenye chanzo')
+     .replace(/<[^>]*>/g,' ').trim();
+   const item = {
+    id:page.pageid,
+    title:(page.title || 'Picha').replace(/^File:/,''),
+    url,
+    pageUrl:page.fullurl || ('https://commons.wikimedia.org/wiki/' + encodeURIComponent(page.title || '').replace(/%20/g,'_')),
+    author,
+    license
+   };
+   pool.push(item);
+   addCard(item);
+   added++;
+  }
+
+  if (pool.length && current < 0) showPicture(0);
+  if (added) setStatus('Picha ' + pool.length + ' zimepatikana. Unaweza kuendelea kupata nyingine.');
+  else if (!pool.length) setStatus('Hakuna picha zilizopatikana kwa utafutaji huu. Jaribu neno jingine.');
+ } catch (error) {
+  if (requestId === activeRequest) {
+   setStatus('Imeshindikana kupata picha mtandaoni. Hakikisha intaneti inafanya kazi kisha bonyeza PATA PICHA NYINGINE.');
+  }
+ } finally {
+  busy = false;
+ }
+}
+
+function addCard(item) {
+ const card = document.createElement('article');
+ card.className = 'card';
+ const link = document.createElement('a');
+ link.href = item.pageUrl;
+ link.target = '_blank';
+ link.rel = 'noopener noreferrer';
+ const img = document.createElement('img');
+ img.loading = 'lazy';
+ img.src = item.url;
+ img.alt = item.title;
+ img.onerror = () => card.remove();
+ const p = document.createElement('p');
+ p.textContent = item.title;
+ link.append(img,p);
+ card.append(link);
+ gallery.append(card);
+}
+
+function showPicture(index) {
+ if (!pool.length) return;
+ current = (index + pool.length) % pool.length;
+ const item = pool[current];
+ featured.hidden = false;
+ featured.src = item.url;
+ featured.alt = item.title;
+ title.textContent = item.title;
+ credit.replaceChildren();
+ const authorText = document.createElement('span');
+ authorText.textContent = item.author + ' · Leseni: ' + item.license + ' · ';
+ const link = document.createElement('a');
+ link.href = item.pageUrl;
+ link.target = '_blank';
+ link.rel = 'noopener noreferrer';
+ link.textContent = 'Chanzo cha picha';
+ credit.append(authorText,link);
+ secondsLeft = 40;
+}
+
+async function moveNext() {
+ if (current + 1 >= pool.length) await fetchImages();
+ if (pool.length) showPicture(current + 1);
+}
+
+document.getElementById('next').addEventListener('click', moveNext);
+document.getElementById('previous').addEventListener('click', () => showPicture(current - 1));
+document.getElementById('pause').addEventListener('click', () => {
+ paused = !paused;
+ document.getElementById('pause').textContent = paused ? '▶️ ENDELEA' : '⏸️ PAUSE';
+ timerText.textContent = paused ? 'Slideshow imesitishwa.' : 'Muda wa kubadilika: sekunde ' + secondsLeft;
+});
+
+document.getElementById('categories').addEventListener('click', async (event) => {
+ const button = event.target.closest('button[data-key]');
+ if (!button) return;
+ document.querySelectorAll('.cat').forEach(b => b.classList.toggle('active', b === button));
+ activeCategory = button.dataset.key;
+ queryOverride = '';
+ search.value = '';
+ activeRequest++;
+ pool = [];
+ seen = new Set();
+ current = -1;
+ termIndex = 0;
+ pageTokens = {};
+ gallery.replaceChildren();
+ featured.hidden = true;
+ title.textContent = 'Inatafuta picha...';
+ setStatus('Inatafuta picha za aina uliyochagua...');
+ await fetchImages();
+});
+
+async function doSearch() {
+ const value = search.value.trim();
+ if (!value) {
+  setStatus('Andika neno la kutafuta kwanza.');
+  return;
+ }
+ activeRequest++;
+ activeCategory = 'all';
+ queryOverride = value;
+ termIndex = 0;
+ pageTokens = {};
+ pool = [];
+ seen = new Set();
+ current = -1;
+ gallery.replaceChildren();
+ featured.hidden = true;
+ document.querySelectorAll('.cat').forEach(b => b.classList.toggle('active', b.dataset.key === 'all'));
+ setStatus('Inatafuta: ' + value);
+ await fetchImages();
+}
+document.getElementById('searchBtn').addEventListener('click', doSearch);
+search.addEventListener('keydown', event => { if (event.key === 'Enter') doSearch(); });
+more.addEventListener('click', fetchImages);
+
+setInterval(() => {
+ if (paused) return;
+ secondsLeft--;
+ if (secondsLeft <= 0) {
+  secondsLeft = 40;
+  moveNext();
+ }
+ timerText.textContent = 'Muda wa kubadilika: sekunde ' + secondsLeft;
+}, 1000);
+
+fetchImages();
+})();
+</script>
+</body>
+</html>
