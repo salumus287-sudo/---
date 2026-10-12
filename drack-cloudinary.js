@@ -1,11 +1,28 @@
 "use strict";
 
-const cloudinary = require("cloudinary").v2;
+const { createClient } = require("@supabase/supabase-js");
 const multer = require("multer");
 const crypto = require("crypto");
+const path = require("path");
 
 const COOKIE_NAME = "drack_admin_session";
 const SESSION_DURATION = 8 * 60 * 60 * 1000;
+const MAX_FILE_SIZE = 50 * 1024 * 1024;
+const BUCKET = "drack-media";
+
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+const configured = Boolean(supabaseUrl && supabaseKey);
+
+const supabase = configured
+  ? createClient(supabaseUrl, supabaseKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    })
+  : null;
 
 function safeEqual(a, b) {
   if (typeof a !== "string" || typeof b !== "string") {
@@ -93,27 +110,11 @@ function requireAdminSession(req, res, next) {
   next();
 }
 
-function cookieOptions(req, clear = false) {
-  const secure = String(req.get("x-forwarded-proto") || "")
-    .split(",")[0].trim() === "https";
-
-  return [
-    `${COOKIE_NAME}=`,
-    "Path=/",
-    "HttpOnly",
-    "SameSite=Strict",
-    ...(secure ? ["Secure"] : []),
-    clear ? "Max-Age=0" : `Max-Age=${SESSION_DURATION / 1000}`
-  ].join("; ");
-}
-
-module.exports = function registerDrackCloudinary(app) {
-  const configured = Boolean(process.env.CLOUDINARY_URL);
-
+function registerDrackCloudinary(app) {
   const upload = multer({
     storage: multer.memoryStorage(),
     limits: {
-      fileSize: 100 * 1024 * 1024,
+      fileSize: MAX_FILE_SIZE,
       files: 1
     },
     fileFilter: (req, file, cb) => {
@@ -126,10 +127,6 @@ module.exports = function registerDrackCloudinary(app) {
       cb(new Error("Ruhusiwa kupakia faili za audio au video pekee."));
     }
   });
-
-  if (configured) {
-    cloudinary.config({ secure: true });
-  }
 
   // LOGIN
   app.post("/api/admin/login", (req, res) => {
@@ -203,17 +200,18 @@ module.exports = function registerDrackCloudinary(app) {
     });
   });
 
-  // CLOUDINARY STATUS
+  // STORAGE STATUS
   app.get("/api/drack-media/status", (req, res) => {
-    res.json({
+    return res.json({
       success: true,
-      cloudinaryConfigured: configured,
-      maxFileSizeMB: 100,
+      storageConfigured: configured,
+      provider: "supabase",
+      maxFileSizeMB: 50,
       supportedTypes: ["audio", "video"]
     });
   });
 
-  // UPLOAD: LOGIN REQUIRED
+  // UPLOAD: ADMIN LOGIN REQUIRED
   app.post(
     "/api/admin/drack-media/upload",
     requireAdminSession,
@@ -222,7 +220,7 @@ module.exports = function registerDrackCloudinary(app) {
       if (!configured) {
         return res.status(503).json({
           success: false,
-          message: "Cloudinary haijasanidiwa kwenye server."
+          message: "Supabase haijasanidiwa kwenye Render."
         });
       }
 
@@ -233,43 +231,59 @@ module.exports = function registerDrackCloudinary(app) {
         });
       }
 
-      const isVideo = req.file.mimetype
-        .toLowerCase()
-        .startsWith("video/");
+      const mime = String(req.file.mimetype || "").toLowerCase();
+      const isVideo = mime.startsWith("video/");
+
+      const originalExt = path.extname(req.file.originalname || "")
+        .toLowerCase();
+
+      const ext = /^\.[a-z0-9]{1,10}$/.test(originalExt)
+        ? originalExt
+        : "";
+
+      const storagePath =
+        `${Date.now()}-${crypto.randomUUID()}${ext}`;
 
       try {
-        const result = await new Promise((resolve, reject) => {
-          const stream = cloudinary.uploader.upload_stream({
-            resource_type: "video",
-            folder: "drack-hub/media",
-            use_filename: false,
-            unique_filename: true,
-            overwrite: false
-          }, (error, uploaded) => {
-            if (error) return reject(error);
-            resolve(uploaded);
+        const { data, error } = await supabase.storage
+          .from(BUCKET)
+          .upload(storagePath, req.file.buffer, {
+            contentType: mime,
+            cacheControl: "3600",
+            upsert: false
           });
 
-          stream.end(req.file.buffer);
-        });
+        if (error) {
+          console.error("DRACK SUPABASE UPLOAD:", error.message);
+
+          return res.status(502).json({
+            success: false,
+            message:
+              "Upload imeshindwa. Hakiki Supabase, bucket na file size."
+          });
+        }
+
+        const { data: publicData } = supabase.storage
+          .from(BUCKET)
+          .getPublicUrl(data.path);
 
         return res.status(201).json({
           success: true,
           media: {
             name: req.file.originalname,
             type: isVideo ? "video" : "audio",
-            url: result.secure_url,
-            publicId: result.public_id,
-            format: result.format,
-            bytes: result.bytes
+            url: publicData.publicUrl,
+            publicId: data.path,
+            format: ext.replace(".", ""),
+            bytes: req.file.size
           }
         });
       } catch (error) {
-        console.error("DRACK CLOUDINARY UPLOAD:", error.message);
+        console.error("DRACK SUPABASE UPLOAD:", error.message);
 
         return res.status(502).json({
           success: false,
-          message: "Upload imeshindwa. Hakiki mipangilio ya Cloudinary."
+          message: "Hitilafu imetokea wakati wa kupakia faili."
         });
       }
     }
@@ -277,7 +291,9 @@ module.exports = function registerDrackCloudinary(app) {
 
   console.log(
     configured
-      ? "DRACK CLOUDINARY: CONFIGURED"
-      : "DRACK CLOUDINARY: WAITING FOR CLOUDINARY_URL"
+      ? "DRACK SUPABASE STORAGE: CONFIGURED"
+      : "DRACK SUPABASE STORAGE: WAITING FOR ENVIRONMENT VARIABLES"
   );
-};
+}
+
+module.exports = registerDrackCloudinary;
