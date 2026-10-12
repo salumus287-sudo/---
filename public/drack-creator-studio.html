@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#080d19">
+<title>DRACK CREATOR STUDIO</title>
+
+<style>
+:root {
+  --bg: #080d19;
+  --panel: #111a2b;
+  --panel2: #18243a;
+  --text: #f4f7ff;
+  --muted: #9eabc2;
+  --green: #18e68a;
+  --blue: #637cff;
+  --border: #293650;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, sans-serif;
+}
+
+button, input, select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 15px;
+  background: #0c1424;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.brand {
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.brand span {
+  color: var(--green);
+}
+
+.header-sub {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+.home-btn {
+  color: white;
+  text-decoration: none;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 12px;
+}
+
+main {
+  width: min(1200px, 100%);
+  margin: auto;
+  padding: 16px;
+}
+
+.intro {
+  margin: 8px 0 18px;
+}
+
+.intro h1 {
+  font-size: clamp(23px, 5vw, 35px);
+  margin: 0 0 8px;
+}
+
+.intro p {
+  color: var(--muted);
+  line-height: 1.6;
+  font-size: 14px;
+  margin: 0;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 15px;
+  align-items: start;
+}
+
+.canvas-panel, .tools-panel {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.panel-heading {
+  padding: 13px 15px;
+  font-size: 13px;
+  font-weight: bold;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.canvas-wrap {
+  padding: 14px;
+  min-height: 310px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 20% 20%, #1c2a43 0, transparent 40%),
+    #0a1120;
+}
+
+#canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 72vh;
+  object-fit: contain;
+  background: white;
+  touch-action: none;
+  box-shadow: 0 8px 35px #0008;
+  border-radius: 3px;
+}
+
+.canvas-help {
+  color: var(--muted);
+  font-size: 11px;
+  text-align: center;
+  padding: 0 12px 14px;
+}
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.btn {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel2);
+  color: var(--text);
+  padding: 11px 8px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.btn:active {
+  transform: scale(.98);
+}
+
+.btn-primary {
+  color: #06170f;
+  background: var(--green);
+  border-color: var(--green);
+}
+
+.btn-blue {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: white;
+}
+
+.btn-danger {
+  color: #ffb4b4;
+  border-color: #713a4c;
+}
+
+.tools-content {
+  padding: 13px;
+}
+
+.tool-section {
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tool-section:last-child {
+  border: 0;
+  margin-bottom: 0;
+}
+
+.tool-section h3 {
+  font-size: 13px;
+  margin: 0 0 11px;
+}
+
+.field {
+  margin-bottom: 10px;
+}
+
+.field label {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  margin-bottom: 6px;
+}
+
+input[type="text"], select, input[type="number"] {
+  width: 100%;
+  min-width: 0;
+  color: var(--text);
+  background: #0a1221;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 11px;
+  outline: none;
+}
+
+input:focus, select:focus {
+  border-color: var(--green);
+}
+
+input[type="color"] {
+  width: 100%;
+  height: 42px;
+  background: #0a1221;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 4px;
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--green);
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+
+.tool-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.tool-buttons .full {
+  grid-column: 1 / -1;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.file-label {
+  display: block;
+  text-align: center;
+  border: 1px dashed #4e6487;
+  border-radius: 10px;
+  padding: 14px 8px;
+  background: #0b1424;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#status {
+  color: var(--green);
+  font-size: 12px;
+  line-height: 1.5;
+  min-height: 18px;
+  margin-top: 8px;
+}
+
+footer {
+  color: var(--muted);
+  text-align: center;
+  padding: 25px 12px;
+  font-size: 11px;
+}
+
+@media (max-width: 800px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .tools-panel {
+    order: 2;
+  }
+
+  .canvas-wrap {
+    min-height: 220px;
+    padding: 10px;
+  }
+
+  #canvas {
+    max-height: 55vh;
+  }
+
+  main {
+    padding: 10px;
+  }
+
+  header {
+    padding: 12px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div>
+    <div class="brand">🎨 DRACK <span>CREATOR STUDIO</span></div>
+    <div class="header-sub">CREATE • DESIGN • DOWNLOAD</div>
+  </div>
+  <a class="home-btn" href="/">← DRACK HUB</a>
+</header>
+
+<main>
+  <section class="intro">
+    <h1>Tengeneza ubunifu wako. ✨</h1>
+    <p>
+      Tengeneza poster, picha za WhatsApp, cover za video na miundo
+      ya majina moja kwa moja kwenye simu yako.
+    </p>
+  </section>
+
+  <div class="workspace">
+
+    <section class="canvas-panel">
+      <div class="panel-heading">
+        <span>🖼️ ENEO LA KUBUNIA</span>
+        <span id="dimensions">1080 × 1080</span>
+      </div>
+
+      <div class="canvas-wrap">
+        <canvas id="canvas" width="1080" height="1080"></canvas>
+      </div>
+
+      <div class="canvas-help">
+        Gusa maandishi au umbo kwenye picha ili kulichagua.
+        Unaweza kuliburuta kwa kidole.
+      </div>
+
+      <div class="quick-actions">
+        <button class="btn" id="undoBtn">↶ Undo</button>
+        <button class="btn" id="redoBtn">↷ Redo</button>
+        <button class="btn btn-danger" id="deleteBtn">🗑 Futa</button>
+      </div>
+    </section>
+
+    <section class="tools-panel">
+      <div class="panel-heading">🛠️ VIFAA VYA UBUNIFU</div>
+
+      <div class="tools-content">
+
+        <div class="tool-section">
+          <h3>📐 Ukubwa wa picha</h3>
+
+          <div class="field">
+            <label>Chagua muundo</label>
+            <select id="format">
+              <option value="1080,1080">Square — 1080 × 1080</option>
+              <option value="1080,1350">Instagram Post — 1080 × 1350</option>
+              <option value="1080,1920">WhatsApp Status — 1080 × 1920</option>
+              <option value="1280,720">YouTube Cover — 1280 × 720</option>
+              <option value="1200,628">Facebook Post — 1200 × 628</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Rangi ya mandhari</label>
+            <input type="color" id="bgColor" value="#101d35">
+          </div>
+
+          <button class="btn btn-primary" id="applyBg" style="width:100%">
+            🎨 Badilisha mandhari
+          </button>
+        </div>
+
+        <div class="tool-section">
+          <h3>✍️ Ongeza maandishi</h3>
+
+          <div class="field">
+            <label>Andika maandishi yako</label>
+            <input type="text" id="textInput" placeholder="Mfano: DRACK HUB">
+          </div>
+
+          <div class="grid2">
+            <div class="field">
+              <label>Rangi ya maandishi</label>
+              <input type="color" id="textColor" value="#ffffff">
+            </div>
+
+            <div class="field">
+              <label>Ukubwa</label>
+              <input type="number" id="fontSize" value="72" min="12" max="240">
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Aina ya maandishi</label>
+            <select id="fontFamily">
+              <option value="Arial">Arial</option>
+              <option value="Georgia">Georgia</option>
+              <option value="Impact">Impact</option>
+              <option value="monospace">Monospace</option>
+              <option value="cursive">Cursive</option>
+            </select>
+          </div>
+
+          <div class="tool-buttons">
+            <button class="btn btn-primary full" id="addText">＋ Ongeza maandishi</button>
+            <button class="btn" id="boldBtn">𝐁 Bold</button>
+            <button class="btn" id="centerBtn">↔ Center</button>
+          </div>
+        </div>
+
+        <div class="tool-section">
+          <h3>🖼️ Ongeza picha</h3>
+
+          <label class="file-label" for="imageInput">
+            📂 Chagua picha kutoka simu
+          </label>
+          <input type="file" id="imageInput" accept="image/*">
+
+          <p style="font-size:11px;color:var(--muted);line-height:1.5">
+            Picha yako inachakatwa kwenye kivinjari chako.
+            Chagua picha unayomiliki au unayo ruhusa ya kutumia.
+          </p>
+        </div>
+
+        <div class="tool-section">
+          <h3>🔷 Maumbo</h3>
+
+          <div class="grid2">
+            <button class="btn" id="addRect">▰ Mstatili</button>
+            <button class="btn" id="addCircle">● Duara</button>
+          </div>
+
+          <div class="field" style="margin-top:10px">
+            <label>Rangi ya umbo</label>
+            <input type="color" id="shapeColor" value="#18e68a">
+          </div>
+        </div>
+
+        <div class="tool-section">
+          <h3>🎯 Kitu kilichochaguliwa</h3>
+
+          <div class="field">
+            <label>Uwazi</label>
+            <input type="range" id="opacity" min="10" max="100" value="100">
+          </div>
+
+          <div class="tool-buttons">
+            <button class="btn" id="frontBtn">⬆ Mbele</button>
+            <button class="btn" id="backBtn">⬇ Nyuma</button>
+          </div>
+        </div>
+
+        <div class="tool-section">
+          <h3>💾 Pakua kazi yako</h3>
+
+          <div class="field">
+            <label>Jina la faili</label>
+            <input type="text" id="fileName" value="drack-creator-design">
+          </div>
+
+          <div class="tool-buttons">
+            <button class="btn btn-primary full" id="downloadBtn">
+              ⬇ PAKUA PNG
+            </button>
+            <button class="btn full" id="saveProject">💾 Hifadhi project kwenye kifaa</button>
+            <label class="file-label full" for="projectInput">
+              📂 Fungua project iliyohifadhiwa
+            </label>
+            <input type="file" id="projectInput" accept=".json,application/json">
+          </div>
+
+          <div id="status" role="status"></div>
+        </div>
+
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  © 2026 DRACK HUB · DRACK CREATOR STUDIO
+</footer>
+
+<script>
+(() => {
+  'use strict';
+
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+
+  const $ = id => document.getElementById(id);
+
+  let objects = [];
+  let selectedId = null;
+  let nextId = 1;
+  let background = '#101d35';
+  let history = [];
+  let historyIndex = -1;
+  let drag = null;
+
+  function status(message, error = false) {
+    $('status').textContent = message;
+    $('status').style.color = error ? '#ff9696' : '#18e68a';
+  }
+
+  function selected() {
+    return objects.find(o => o.id === selectedId) || null;
+  }
+
+  function snapshot() {
+    const data = objects.map(o => {
+      const copy = {...o};
+      if (o.type === 'image') {
+        copy.src = o.src;
+      }
+      return copy;
+    });
+
+    history = history.slice(0, historyIndex + 1);
+    history.push(JSON.stringify({objects: data, background}));
+    if (history.length > 40) history.shift();
+    historyIndex = history.length - 1;
+  }
+
+  function restoreHistory(index) {
+    if (index < 0 || index >= history.length) return;
+
+    historyIndex = index;
+    const state = JSON.parse(history[index]);
+    background = state.background;
+    objects = state.objects.map(o => ({...o}));
+
+    const pending = objects.filter(o => o.type === 'image' && o.src);
+
+    Promise.all(pending.map(o => loadImage(o.src).then(img => {
+      o.image = img;
+    }).catch(() => {}))).then(render);
+
+    $('bgColor').value = background;
+    render();
+  }
+
+  function loadImage(src) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = src;
+    });
+  }
+
+  function addObject(obj) {
+    obj.id = nextId++;
+    obj.opacity = obj.opacity ?? 1;
+    objects.push(obj);
+    selectedId = obj.id;
+    snapshot();
+    render();
+  }
+
+  function drawObject(o) {
+    ctx.save();
+    ctx.globalAlpha = o.opacity ?? 1;
+
+    if (o.type === 'text') {
+      ctx.fillStyle = o.color;
+      ctx.font = `${o.bold ? 'bold ' : ''}${o.size}px "${o.font}"`;
+      ctx.textAlign = o.align || 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(o.text, o.x, o.y, canvas.width * 0.9);
+    }
+
+    if (o.type === 'rect') {
+      ctx.fillStyle = o.color;
+      ctx.fillRect(o.x, o.y, o.w, o.h);
+    }
+
+    if (o.type === 'circle') {
+      ctx.fillStyle = o.color;
+      ctx.beginPath();
+      ctx.ellipse(
+        o.x + o.w / 2,
+        o.y + o.h / 2,
+        Math.abs(o.w / 2),
+        Math.abs(o.h / 2),
+        0, 0, Math.PI * 2
+      );
+      ctx.fill();
+    }
+
+    if (o.type === 'image' && o.image) {
+      ctx.drawImage(o.image, o.x, o.y, o.w, o.h);
+    }
+
+    ctx.restore();
+
+    if (o.id === selectedId) {
+      const b = bounds(o);
+      ctx.save();
+      ctx.strokeStyle = '#18e68a';
+      ctx.lineWidth = Math.max(2, canvas.width / 500);
+      ctx.setLineDash([10, 8]);
+      ctx.strokeRect(b.x - 8, b.y - 8, b.w + 16, b.h + 16);
+      ctx.restore();
+    }
+  }
+
+  function bounds(o) {
+    if (o.type === 'text') {
+      ctx.save();
+      ctx.font = `${o.bold ? 'bold ' : ''}${o.size}px "${o.font}"`;
+      const width = ctx.measureText(o.text).width;
+      ctx.restore();
+
+      let x = o.x;
+      if (o.align === 'center') x -= width / 2;
+      if (o.align === 'right') x -= width;
+
+      return {
+        x,
+        y: o.y - o.size / 2,
+        w: width,
+        h: o.size * 1.2
+      };
+    }
+
+    return {
+      x: o.x,
+      y: o.y,
+      w: o.w,
+      h: o.h
+    };
+  }
+
+  function render() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = background;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    for (const o of objects) drawObject(o);
+
+    $('dimensions').textContent = `${canvas.width} × ${canvas.height}`;
+  }
+
+  function changeFormat() {
+    const [w, h] = $('format').value.split(',').map(Number);
+    canvas.width = w;
+    canvas.height = h;
+    render();
+    snapshot();
+  }
+
+  $('format').addEventListener('change', changeFormat);
+
+  $('applyBg').addEventListener('click', () => {
+    background = $('bgColor').value;
+    snapshot();
+    render();
+    status('Mandhari yamebadilishwa.');
+  });
+
+  $('addText').addEventListener('click', () => {
+    const text = $('textInput').value.trim();
+    if (!text) {
+      status('Andika maandishi kwanza.', true);
+      return;
+    }
+
+    addObject({
+      type: 'text',
+      text,
+      x: canvas.width / 2,
+      y: canvas.height / 2,
+      size: Math.max(12, Math.min(240, Number($('fontSize').value) || 72)),
+      color: $('textColor').value,
+      font: $('fontFamily').value,
+      bold: false,
+      align: 'center'
+    });
+
+    status('Maandishi yameongezwa. Yaburute kwa kidole.');
+  });
+
+  $('imageInput').addEventListener('change', async e => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      status('Tafadhali chagua faili la picha.', true);
+      return;
+    }
+
+    if (file.size > 15 * 1024 * 1024) {
+      status('Picha ni kubwa sana. Chagua picha chini ya 15 MB.', true);
+      return;
+    }
+
+    try {
+      const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const img = await loadImage(dataUrl);
+      const maxW = canvas.width * 0.7;
+      const maxH = canvas.height * 0.7;
+      const scale = Math.min(maxW / img.width, maxH / img.height, 1);
+
+      addObject({
+        type: 'image',
+        src: dataUrl,
+        image: img,
+        x: (canvas.width - img.width * scale) / 2,
+        y: (canvas.height - img.height * scale) / 2,
+        w: img.width * scale,
+        h: img.height * scale
+      });
+
+      status('Picha imeongezwa kwenye design yako.');
+    } catch {
+      status('Imeshindwa kufungua picha hiyo.', true);
+    }
+
+    e.target.value = '';
+  });
+
+  $('addRect').addEventListener('click', () => {
+    addObject({
+      type: 'rect',
+      x: canvas.width * 0.2,
+      y: canvas.height * 0.2,
+      w: canvas.width * 0.6,
+      h: canvas.height * 0.2,
+      color: $('shapeColor').value
+    });
+    status('Mstatili umeongezwa.');
+  });
+
+  $('addCircle').addEventListener('click', () => {
+    addObject({
+      type: 'circle',
+      x: canvas.width * 0.3,
+      y: canvas.height * 0.3,
+      w: canvas.width * 0.4,
+      h: canvas.height * 0.4,
+      color: $('shapeColor').value
+    });
+    status('Duara limeongezwa.');
+  });
+
+  $('boldBtn').addEventListener('click', () => {
+    const o = selected();
+    if (!o || o.type !== 'text') {
+      status('Chagua maandishi kwanza.', true);
+      return;
+    }
+
+    o.bold = !o.bold;
+    snapshot();
+    render();
+  });
+
+  $('centerBtn').addEventListener('click', () => {
+    const o = selected();
+    if (!o || o.type !== 'text') {
+      status('Chagua maandishi kwanza.', true);
+      return;
+    }
+
+    o.align = o.align === 'center' ? 'left' : 'center';
+    o.x = o.align === 'center' ? canvas.width / 2 : canvas.width * 0.1;
+    snapshot();
+    render();
+  });
+
+  $('opacity').addEventListener('input', () => {
+    const o = selected();
+    if (!o) return;
+    o.opacity = Number($('opacity').value) / 100;
+    render();
+  });
+
+  $('opacity').addEventListener('change', snapshot);
+
+  $('deleteBtn').addEventListener('click', () => {
+    if (!selected()) {
+      status('Chagua kitu unachotaka kufuta.', true);
+      return;
+    }
+
+    objects = objects.filter(o => o.id !== selectedId);
+    selectedId = null;
+    snapshot();
+    render();
+    status('Kitu kimefutwa.');
+  });
+
+  $('frontBtn').addEventListener('click', () => {
+    const o = selected();
+    if (!o) return;
+    objects = objects.filter(x => x.id !== o.id);
+    objects.push(o);
+    snapshot();
+    render();
+  });
+
+  $('backBtn').addEventListener('click', () => {
+    const o = selected();
+    if (!o) return;
+    objects = objects.filter(x => x.id !== o.id);
+    objects.unshift(o);
+    snapshot();
+    render();
+  });
+
+  $('undoBtn').addEventListener('click', () => {
+    if (historyIndex > 0) restoreHistory(historyIndex - 1);
+  });
+
+  $('redoBtn').addEventListener('click', () => {
+    if (historyIndex < history.length - 1) restoreHistory(historyIndex + 1);
+  });
+
+  function pointerPosition(e) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: (e.clientX - rect.left) * canvas.width / rect.width,
+      y: (e.clientY - rect.top) * canvas.height / rect.height
+    };
+  }
+
+  function hitTest(x, y) {
+    for (let i = objects.length - 1; i >= 0; i--) {
+      const o = objects[i];
+      const b = bounds(o);
+
+      if (
+        x >= b.x - 12 &&
+        x <= b.x + b.w + 12 &&
+        y >= b.y - 12 &&
+        y <= b.y + b.h + 12
+      ) return o;
+    }
+    return null;
+  }
+
+  canvas.addEventListener('pointerdown', e => {
+    const p = pointerPosition(e);
+    const o = hitTest(p.x, p.y);
+
+    selectedId = o ? o.id : null;
+
+    if (o) {
+      drag = {
+        id: o.id,
+        startX: p.x,
+        startY: p.y,
+        x: o.x,
+        y: o.y,
+        moved: false
+      };
+      canvas.setPointerCapture(e.pointerId);
+    } else {
+      drag = null;
+    }
+
+    render();
+  });
+
+  canvas.addEventListener('pointermove', e => {
+    if (!drag) return;
+
+    const p = pointerPosition(e);
+    const o = objects.find(x => x.id === drag.id);
+    if (!o) return;
+
+    const dx = p.x - drag.startX;
+    const dy = p.y - drag.startY;
+
+    if (Math.abs(dx) + Math.abs(dy) > 2) drag.moved = true;
+
+    o.x = drag.x + dx;
+    o.y = drag.y + dy;
+
+    render();
+  });
+
+  canvas.addEventListener('pointerup', () => {
+    if (drag && drag.moved) snapshot();
+    drag = null;
+  });
+
+  canvas.addEventListener('pointercancel', () => {
+    drag = null;
+  });
+
+  $('downloadBtn').addEventListener('click', () => {
+    const oldSelected = selectedId;
+    selectedId = null;
+    render();
+
+    canvas.toBlob(blob => {
+      selectedId = oldSelected;
+      render();
+
+      if (!blob) {
+        status('Imeshindwa kuunda picha. Jaribu tena.', true);
+        return;
+      }
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      let name = $('fileName').value.trim() || 'drack-creator-design';
+
+      name = name.replace(/[^a-zA-Z0-9_-]/g, '-');
+      a.href = url;
+      a.download = name + '.png';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+
+      status('Picha yako imeandaliwa kupakuliwa! 🎉');
+    }, 'image/png');
+  });
+
+  $('saveProject').addEventListener('click', () => {
+    const data = {
+      app: 'DRACK CREATOR STUDIO',
+      version: 1,
+      width: canvas.width,
+      height: canvas.height,
+      background,
+      objects: objects.map(o => {
+        const copy = {...o};
+        delete copy.image;
+        return copy;
+      })
+    };
+
+    const blob = new Blob([JSON.stringify(data)], {
+      type: 'application/json'
+    });
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'drack-creator-project.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    status('Project imehifadhiwa kwenye kifaa chako.');
+  });
+
+  $('projectInput').addEventListener('change', async e => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      const data = JSON.parse(await file.text());
+
+      if (
+        data.app !== 'DRACK CREATOR STUDIO' ||
+        !Array.isArray(data.objects) ||
+        data.objects.length > 200
+      ) {
+        throw new Error('Project si sahihi');
+      }
+
+      const newObjects = [];
+
+      for (const raw of data.objects) {
+        const o = {...raw};
+
+        if (o.type === 'image') {
+          if (typeof o.src !== 'string' || !o.src.startsWith('data:image/')) {
+            throw new Error('Picha ndani ya project si sahihi');
+          }
+          o.image = await loadImage(o.src);
+        }
+
+        if (!['text', 'rect', 'circle', 'image'].includes(o.type)) {
+          throw new Error('Kuna kitu kisichotambulika');
+        }
+
+        newObjects.push(o);
+      }
+
+      canvas.width = Math.max(100, Math.min(3000, Number(data.width) || 1080));
+      canvas.height = Math.max(100, Math.min(3000, Number(data.height) || 1080));
+      background = /^#[0-9a-f]{6}$/i.test(data.background) ? data.background : '#101d35';
+      objects = newObjects;
+      nextId = Math.max(1, ...objects.map(o => Number(o.id) + 1 || 1));
+      selectedId = null;
+
+      $('bgColor').value = background;
+      $('format').value = `${canvas.width},${canvas.height}`;
+
+      history = [];
+      historyIndex = -1;
+      snapshot();
+      render();
+      status('Project imefunguliwa kikamilifu.');
+    } catch (err) {
+      status('Imeshindwa kufungua project hii. Hakikisha ni faili sahihi.', true);
+    }
+
+    e.target.value = '';
+  });
+
+  $('textInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') $('addText').click();
+  });
+
+  background = $('bgColor').value;
+  snapshot();
+  render();
+  status('Karibu DRACK CREATOR STUDIO! Anza kubuni. 🚀');
+})();
+</script>
+
+</body>
+</html>
