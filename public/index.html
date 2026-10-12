@@ -979,97 +979,53 @@ nav.menu > a#drack-home-video-download {
 
 
 <style id="drack-home-celebration-v1">
-/* Taa laini pembezoni */
 #drack-celebration-frame {
-  position:fixed;
-  inset:0;
-  z-index:99990;
-  pointer-events:none;
-  border:3px solid transparent;
-  border-radius:3px;
-  animation:drackSoftLights 8s linear infinite;
+  position: fixed;
+  inset: 0;
+  z-index: 99990;
+  pointer-events: none;
+  overflow: hidden;
 }
-@keyframes drackSoftLights {
-  0%,100% {border-color:rgba(0,220,180,.55);box-shadow:inset 0 0 9px rgba(0,220,180,.12)}
-  25% {border-color:rgba(70,150,255,.55);box-shadow:inset 0 0 9px rgba(70,150,255,.12)}
-  50% {border-color:rgba(220,100,255,.5);box-shadow:inset 0 0 9px rgba(220,100,255,.12)}
-  75% {border-color:rgba(255,190,70,.5);box-shadow:inset 0 0 9px rgba(255,190,70,.12)}
+#drack-celebration-frame::before,
+#drack-celebration-frame::after {
+  content: "✦";
+  position: fixed;
+  top: 10px;
+  font-size: 27px;
+  animation: drackStarColors 7s ease-in-out infinite alternate;
+  text-shadow: 0 0 7px currentColor, 0 0 15px currentColor;
+}
+#drack-celebration-frame::before { left: 10px; }
+#drack-celebration-frame::after { right: 10px; animation-delay: 2s; }
+
+#drack-star-bottom-left,
+#drack-star-bottom-right {
+  position: fixed;
+  bottom: 10px;
+  z-index: 99991;
+  pointer-events: none;
+  font-size: 27px;
+  animation: drackStarColors 7s ease-in-out infinite alternate;
+  text-shadow: 0 0 7px currentColor, 0 0 15px currentColor;
+}
+#drack-star-bottom-left { left: 10px; animation-delay: 3s; }
+#drack-star-bottom-right { right: 10px; animation-delay: 5s; }
+
+@keyframes drackStarColors {
+  0% { color: #ff6b8a; opacity: .55; }
+  25% { color: #ffd166; opacity: 1; }
+  50% { color: #55e6c1; opacity: .6; }
+  75% { color: #65cfff; opacity: 1; }
+  100% { color: #d6a3ff; opacity: .65; }
 }
 
-/* Ujumbe wa pongezi */
-#drack-home-greeting {
-  position:fixed;
-  z-index:99998;
-  top:12px;
-  left:0;
-  width:100%;
-  box-sizing:border-box;
-  overflow:hidden;
-  padding:10px 0;
-  text-align:center;
-  background:rgba(0,0,0,.24);
-  border-top:1px solid rgba(255,255,255,.18);
-  border-bottom:1px solid rgba(255,255,255,.18);
-}
-#drack-home-greeting span {
-  display:block;
-  width:100%;
-  box-sizing:border-box;
-  white-space:normal;
-  padding:0 10px;
-  text-align:center;
-  color:#fff;
-  font-size:clamp(15px,4.2vw,23px);
-  line-height:1.5;
-  font-weight:900;
-  overflow-wrap:anywhere;
-  text-shadow:0 0 5px rgba(0,180,255,.65);
-  animation:drackGreetingGlow 5s ease-in-out infinite alternate;
-}
-
-  to {opacity:1;text-shadow:0 0 8px rgba(100,220,255,.65)}
-}
-
-/* Kimondo cha WELCOME */
-#drack-home-meteor {
-  position:fixed;
-  left:-60%;
-  top:43%;
-  z-index:99991;
-  white-space:nowrap;
-  pointer-events:none;
-  opacity:0;
-  color:#fff;
-  font-size:clamp(30px,8vw,64px);
-  font-weight:1000;
-  font-style:italic;
-  letter-spacing:3px;
-  text-shadow:0 0 8px rgba(255,255,255,.8),
-              0 0 16px rgba(0,190,255,.65),
-              0 0 25px rgba(180,80,255,.45);
-}
-#drack-home-meteor::before {
-  content:"";
-  position:absolute;
-  right:70%;
-  top:50%;
-  width:100%;
-  height:3px;
-  background:linear-gradient(90deg,transparent,rgba(100,210,255,.75),rgba(255,255,255,.8));
-}
-#drack-home-meteor.drack-meteor-fly {
-  animation:drackMeteorFlight 4.5s ease-in-out forwards;
-}
-@keyframes drackMeteorFlight {
-  0% {left:-60%;top:53%;opacity:0;transform:rotate(-7deg)}
-  12% {opacity:1}
-  55% {top:43%;opacity:1}
-  100% {left:110%;top:32%;opacity:0;transform:rotate(5deg)}
-}
-@media(prefers-reduced-motion:reduce) {
-  #drack-home-greeting span {animation-duration:45s}
-  #drack-home-celebration-v1,
-  #drack-home-meteor {transition:none}
+@media (prefers-reduced-motion: reduce) {
+  #drack-celebration-frame::before,
+  #drack-celebration-frame::after,
+  #drack-star-bottom-left,
+  #drack-star-bottom-right {
+    animation: none;
+  }
 }
 </style>
 @keyframes drackGreetingGlow {
@@ -2989,25 +2945,12 @@ function drackCloseFootballLive() {
 
 
 <div id="drack-celebration-frame" aria-hidden="true"></div>
-<div id="drack-home-greeting" aria-hidden="true">
-  <span>🎉❤️ 𝒐𝒏𝒈𝒆𝒓𝒂 𝒏𝒂 𝒂𝒉𝒔𝒂𝒏𝒕𝒆 𝒌𝒘𝒂 𝒌𝒖𝒕𝒆𝒎𝒃𝒆𝒍𝒆𝒂 𝒅𝒓𝒂𝒄𝒌 𝒉𝒖𝒃 🎉❤️ &nbsp;&nbsp;&nbsp; WELCOME TO DRACK HUB 🌍</span>
-</div>
-<div id="drack-home-meteor" aria-hidden="true">WELCOME</div>
-<script id="drack-home-celebration-script">
-(function(){
-  var meteor = document.getElementById('drack-home-meteor');
-  if (!meteor) return;
 
-  function launchMeteor() {
-    meteor.classList.remove('drack-meteor-fly');
-    void meteor.offsetWidth;
-    meteor.classList.add('drack-meteor-fly');
-  }
 
-  launchMeteor();
-  window.setInterval(launchMeteor, 60000);
-})();
-</script>\n</body>
+\n
+<span id="drack-star-bottom-left" aria-hidden="true">✦</span>
+<span id="drack-star-bottom-right" aria-hidden="true">✦</span>
+</body>
 </html>
 
 <style id="drack-comments-style">
