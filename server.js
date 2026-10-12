@@ -1,6 +1,5 @@
 require("dotenv").config();
 const registerMusic = require("./music");
-const registerDrackPlusMusic = require("./drack-plus-music");
 const registerDrackPlusDownloads = require("./drack-plus-downloads");
 const registerDrackCloudinary = require("./drack-cloudinary");
 
@@ -1435,7 +1434,6 @@ app.get("/music-test", (req, res) => {
 });
 
 registerMusic(app);
-registerDrackPlusMusic(app);
 registerDrackPlusDownloads(app);
 registerDrackCloudinary(app);
 
