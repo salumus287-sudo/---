@@ -7,321 +7,120 @@
 <title>DRACK PICTURES</title>
 <style>
 *{box-sizing:border-box}
-
-html,body{
- margin:0;padding:0;width:100%;height:100%;
- overflow:hidden;background:#000;
-}
-
-body{
- position:fixed;inset:0;
- font-family:Arial,sans-serif;
-}
-
-#screen{
- position:absolute;inset:0;
- display:flex;align-items:center;justify-content:center;
- background:#000;overflow:hidden;
-}
-
-#photo{
- width:100%;height:100%;
- object-fit:contain;display:block;
- transition:opacity .7s ease;
-}
-
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000}
+body{position:fixed;inset:0}
+#screen{position:absolute;inset:0;background:#000;overflow:hidden}
+#photo{width:100%;height:100%;object-fit:contain;display:block;transition:opacity .7s}
 #photo.fade{opacity:0}
-
-/* Rangi zinazowaka pembezoni */
-#lights{
- position:absolute;inset:0;pointer-events:none;
- border:5px solid transparent;
- border-radius:3px;
- background:
- linear-gradient(#0000,#0000) padding-box,
- conic-gradient(from var(--angle,0deg),
- #ff004c,#ff8c00,#ffff00,#00ff80,
- #00d9ff,#304cff,#b000ff,#ff00b7,#ff004c) border-box;
- animation:rotateLights 3s linear infinite,glow 1s ease-in-out infinite alternate;
- z-index:10;
-}
-
-@property --angle{
- syntax:"<angle>";
- initial-value:0deg;
- inherits:false;
-}
-
-@keyframes rotateLights{
- to{--angle:360deg}
-}
-
-@keyframes glow{
- from{filter:brightness(.8);box-shadow:inset 0 0 10px #fff5,0 0 8px #00eaff}
- to{filter:brightness(1.8);box-shadow:inset 0 0 24px #fff8,0 0 25px #ff00d4}
-}
-
-/* Maneno yanayozunguka pembezoni */
-.edge{
- position:absolute;z-index:12;
- color:#fff;
- font-weight:900;
- font-size:clamp(12px,3.2vw,22px);
- text-align:center;
- text-shadow:0 0 6px #ff00de,0 0 14px #00eaff,0 0 22px #fff;
- pointer-events:none;
- white-space:nowrap;
- animation:rainbow 2s linear infinite;
-}
-
-#topText{
- top:15px;left:0;width:100%;
- animation:topRun 10s linear infinite,rainbow 2s linear infinite;
-}
-
-#bottomText{
- bottom:15px;right:0;width:100%;
- animation:bottomRun 11s linear infinite,rainbow 2s linear infinite;
-}
-
-#leftText{
- left:8px;top:50%;
- writing-mode:vertical-rl;
- transform:translateY(-50%) rotate(180deg);
-}
-
-#rightText{
- right:8px;top:50%;
- writing-mode:vertical-rl;
- transform:translateY(-50%);
-}
-
-@keyframes topRun{
- 0%{transform:translateX(100%)}
- 100%{transform:translateX(-100%)}
-}
-
-@keyframes bottomRun{
- 0%{transform:translateX(-100%)}
- 100%{transform:translateX(100%)}
-}
-
-@keyframes rainbow{
- 0%{color:#fff;text-shadow:0 0 8px #ff003c,0 0 18px #ff003c}
- 25%{color:#fff700;text-shadow:0 0 8px #fff700,0 0 18px #ff8c00}
- 50%{color:#00ffff;text-shadow:0 0 8px #00ffff,0 0 18px #008cff}
- 75%{color:#ff71ff;text-shadow:0 0 8px #ff00de,0 0 18px #a000ff}
- 100%{color:#fff;text-shadow:0 0 8px #00ff66,0 0 18px #00ff66}
-}
-
-/* WELCOME kama kimondo */
-#meteor{
- position:absolute;z-index:15;
- top:43%;left:-80%;
- white-space:nowrap;
- font-weight:1000;
- font-size:clamp(34px,10vw,78px);
- font-style:italic;
- letter-spacing:5px;
- color:#fff;
- opacity:0;
- pointer-events:none;
- text-shadow:0 0 8px #fff,0 0 18px #00eaff,0 0 35px #0066ff,0 0 55px #ff00d4;
-}
-
-#meteor::before{
- content:"";
- position:absolute;
- width:150%;height:5px;
- right:65%;top:50%;
- background:linear-gradient(90deg,transparent,#00eaff,#fff);
- box-shadow:0 0 14px #00eaff;
-}
-
-#meteor.fly{animation:meteorFly 4s ease-in-out forwards}
-
-@keyframes meteorFly{
- 0%{left:-85%;top:55%;opacity:0;transform:rotate(-8deg) scale(.65)}
- 12%{opacity:1}
- 40%{top:43%;transform:rotate(0deg) scale(1.1)}
- 68%{top:35%;transform:rotate(4deg) scale(1)}
- 90%{opacity:1}
- 100%{left:110%;top:25%;opacity:0;transform:rotate(8deg) scale(.7)}
-}
-
-/* Ujumbe mkubwa unaojitokeza katikati */
-#message{
- position:absolute;z-index:14;
- left:50%;top:50%;
- transform:translate(-50%,-50%) scale(.5);
- width:76%;
- text-align:center;
- font-size:clamp(17px,5vw,38px);
- font-weight:1000;
- line-height:1.5;
- color:#fff;
- opacity:0;
- pointer-events:none;
- text-shadow:0 0 8px #ff00de,0 0 18px #00eaff,0 0 30px #fff;
-}
-
-#message.show{animation:messagePop 4s ease forwards}
-
-@keyframes messagePop{
- 0%{opacity:0;transform:translate(-50%,-50%) scale(.3) rotate(-8deg)}
- 15%{opacity:1;transform:translate(-50%,-50%) scale(1.08) rotate(0)}
- 25%{transform:translate(-50%,-50%) scale(1)}
- 75%{opacity:1}
- 100%{opacity:0;transform:translate(-50%,-50%) scale(1.35) rotate(5deg)}
-}
-
-@media(max-width:480px){
- #lights{border-width:4px}
- .edge{font-size:12px}
- #leftText{left:4px}
- #rightText{right:4px}
-}
+#lights{position:absolute;inset:0;border:5px solid transparent;border-image:none;pointer-events:none;z-index:5;box-shadow:inset 0 0 15px #00eaff,0 0 15px #ff00e6;animation:colors 3s linear infinite}
+@keyframes colors{0%{border-color:#ff004c;box-shadow:inset 0 0 20px #ff004c,0 0 15px #ff004c}25%{border-color:#00ffff;box-shadow:inset 0 0 20px #00ffff,0 0 15px #00ffff}50%{border-color:#39ff14;box-shadow:inset 0 0 20px #39ff14,0 0 15px #39ff14}75%{border-color:#ff00ff;box-shadow:inset 0 0 20px #ff00ff,0 0 15px #ff00ff}100%{border-color:#ffff00;box-shadow:inset 0 0 20px #ffff00,0 0 15px #ffff00}}
+.edge{position:absolute;z-index:7;color:white;font-weight:900;font-size:clamp(12px,3vw,22px);white-space:nowrap;text-shadow:0 0 8px #ff00e6,0 0 15px #00eaff;pointer-events:none;animation:rainbow 2s linear infinite}
+#top{top:12px;left:0;animation:runRight 12s linear infinite,rainbow 2s linear infinite}
+#bottom{bottom:12px;right:0;animation:runLeft 12s linear infinite,rainbow 2s linear infinite}
+#left{left:5px;top:50%;writing-mode:vertical-rl;transform:translateY(-50%) rotate(180deg)}
+#right{right:5px;top:50%;writing-mode:vertical-rl;transform:translateY(-50%)}
+@keyframes runRight{from{transform:translateX(100%)}to{transform:translateX(-100%)}}
+@keyframes runLeft{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+@keyframes rainbow{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(360deg)}}
+#meteor{position:absolute;left:-100%;top:42%;z-index:8;white-space:nowrap;font-size:clamp(35px,10vw,75px);font-weight:1000;font-style:italic;color:#fff;text-shadow:0 0 10px #fff,0 0 25px #00eaff,0 0 45px #ff00e6;pointer-events:none}
+#meteor.fly{animation:fly 4s ease-in-out forwards}
+@keyframes fly{0%{left:-90%;top:55%;opacity:0;transform:rotate(-8deg)}15%{opacity:1}55%{top:40%;opacity:1}100%{left:120%;top:25%;opacity:0;transform:rotate(8deg)}}
+#message{position:absolute;z-index:8;top:50%;left:50%;width:75%;text-align:center;transform:translate(-50%,-50%) scale(.5);font-size:clamp(18px,5vw,38px);font-weight:1000;color:#fff;text-shadow:0 0 10px #ff00e6,0 0 20px #00eaff;opacity:0;pointer-events:none}
+#message.show{animation:pop 4s ease forwards}
+@keyframes pop{0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}20%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}35%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1.3)}}
 </style>
 </head>
 <body>
 <div id="screen">
- <img id="photo" alt="">
-
- <div id="meteor">WELCOME</div>
- <div id="message"></div>
-
- <div id="topText" class="edge">🎉❤️ ONGERA NA AHSANTE KWA KUTEMBELEA DRACK HUB 🎉❤️</div>
- <div id="bottomText" class="edge">🌍 KARIBU DRACK HUB • DRACK PICTURES ❤️🎉</div>
- <div id="leftText" class="edge">🎉❤️ KARIBU SANA ❤️🎉</div>
- <div id="rightText" class="edge">🌈 DRACK HUB 🌈</div>
- <div id="lights"></div>
+<img id="photo" alt="">
+<div id="meteor">WELCOME</div>
+<div id="message"></div>
+<div id="top" class="edge">🎉❤️ ONGERA NA AHSANTE KWA KUTEMBELEA DRACK HUB 🎉❤️</div>
+<div id="bottom" class="edge">🌍 KARIBU DRACK HUB • DRACK PICTURES ❤️🎉</div>
+<div id="left" class="edge">🎉❤️ KARIBU SANA ❤️🎉</div>
+<div id="right" class="edge">🌈 DRACK HUB 🌈</div>
+<div id="lights"></div>
 </div>
-
 <script>
 (()=>{
-'use strict';
-
-const api='https://commons.wikimedia.org/w/api.php';
 const photo=document.getElementById('photo');
 const meteor=document.getElementById('meteor');
 const message=document.getElementById('message');
 
-const topics=[
-'Tanzania Zanzibar landscapes',
-'African wildlife animals',
-'famous singers musicians',
-'famous football players',
-'famous places world landmarks',
-'delicious food photography',
-'luxury cars photography',
-'beautiful houses architecture',
-'lifestyle photography',
-'tropical ocean beaches',
-'mountains waterfalls',
-'African safari animals',
-'beautiful birds photography',
-'world famous buildings',
-'flowers gardens',
-'football teams stadiums',
-'sunsets landscapes',
-'islands beaches',
-'wild horses nature',
-'beautiful cities'
+/* Picha za moja kwa moja kutoka Unsplash */
+const photos=[
+'https://images.unsplash.com/photo-1500595046743-cd271d694d30?auto=format&fit=crop&w=1800&q=85',
+'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1800&q=85',
+'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1800&q=85',
+'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1800&q=85',
+'https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1800&q=85',
+'https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?auto=format&fit=crop&w=1800&q=85',
+'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=1800&q=85',
+'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=1800&q=85',
+'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1800&q=85',
+'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=1800&q=85',
+'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1800&q=85',
+'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1800&q=85',
+'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1800&q=85',
+'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1800&q=85',
+'https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1800&q=85',
+'https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1800&q=85',
+'https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=1800&q=85',
+'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1800&q=85',
+'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1800&q=85',
+'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1800&q=85',
+'https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=1800&q=85',
+'https://images.unsplash.com/photo-1485965120184-e220f721d03e?auto=format&fit=crop&w=1800&q=85',
+'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1800&q=85',
+'https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&w=1800&q=85'
 ];
 
 const greetings=[
 '🎉❤️ ONGERA NA AHSANTE KWA KUTEMBELEA DRACK HUB ❤️🎉',
 '🌍 WELCOME TO DRACK HUB 🌍',
 '❤️ KARIBU SANA DRACK PICTURES ❤️',
-'🎉 ASANTE KWA KUWA SEHEMU YA DRACK HUB 🎉',
 '✨ DRACK HUB — DUNIA YA PICHA ✨',
 '🌈 FURAHA YAKO, DRACK HUB ❤️'
 ];
 
-let pool=[];
-let seen=new Set();
-let topic=0;
-let current='';
-let busy=false;
-let changing=false;
+let order=[];
+let index=0;
+let showing=false;
 let greetingIndex=0;
 
-async function load(){
- if(busy)return;
- busy=true;
-
- try{
-  const params=new URLSearchParams({
-   action:'query',
-   format:'json',
-   origin:'*',
-   generator:'search',
-   gsrsearch:topics[topic++%topics.length],
-   gsrnamespace:'6',
-   gsrlimit:'30',
-   prop:'imageinfo',
-   iiprop:'url',
-   iiurlwidth:'1600'
-  });
-
-  const response=await fetch(api+'?'+params.toString());
-  if(!response.ok)throw Error('Network');
-
-  const data=await response.json();
-
-  for(const item of Object.values(data.query?.pages||{})){
-   const url=item.imageinfo?.[0]?.thumburl||item.imageinfo?.[0]?.url;
-   if(url&&!seen.has(url)){
-    seen.add(url);
-    pool.push(url);
-   }
-  }
- }catch(error){
-  /* Jaribu tena wakati muunganisho unapatikana */
- }finally{
-  busy=false;
+function shuffle(){
+ order=photos.map((_,i)=>i);
+ for(let i=order.length-1;i>0;i--){
+  const j=Math.floor(Math.random()*(i+1));
+  [order[i],order[j]]=[order[j],order[i]];
  }
+ index=0;
 }
 
-async function nextPicture(){
- if(changing)return;
- changing=true;
- photo.classList.add('fade');
-
- let attempts=0;
- while(pool.length===0&&attempts<3){
-  await load();
-  attempts++;
- }
-
- if(pool.length===0){
-  photo.classList.remove('fade');
-  changing=false;
-  return;
- }
-
- const index=Math.floor(Math.random()*pool.length);
- let url=pool.splice(index,1)[0];
-
- if(url===current&&pool.length){
-  url=pool.splice(Math.floor(Math.random()*pool.length),1)[0];
- }
-
+function nextPicture(){
+ if(showing)return;
+ showing=true;
+ if(index>=order.length)shuffle();
+ const url=photos[order[index++]];
  const tester=new Image();
 
  tester.onload=()=>{
-  current=url;
-  photo.src=url;
-  photo.classList.remove('fade');
-  changing=false;
+  photo.classList.add('fade');
+  setTimeout(()=>{
+   photo.src=url;
+   photo.classList.remove('fade');
+   showing=false;
+  },350);
  };
 
  tester.onerror=()=>{
-  photo.classList.remove('fade');
-  changing=false;
-  nextPicture();
+  showing=false;
+  if(index<order.length)nextPicture();
+  else{
+   shuffle();
+   nextPicture();
+  }
  };
-
  tester.src=url;
 }
 
@@ -333,34 +132,18 @@ function showMeteor(){
 
 function showMessage(){
  message.classList.remove('show');
- message.textContent=greetings[greetingIndex%greetings.length];
- greetingIndex++;
+ message.textContent=greetings[greetingIndex++%greetings.length];
  void message.offsetWidth;
  message.classList.add('show');
 }
 
-async function start(){
- await load();
- await nextPicture();
-
- /* Badilisha picha kila baada ya sekunde 15 */
- setInterval(nextPicture,15000);
-
- /* Tafuta picha nyingine mapema */
- setInterval(()=>{
-  if(pool.length<8)load();
- },5000);
-
- /* WELCOME inaruka kama kimondo */
- showMeteor();
- setInterval(showMeteor,9000);
-
- /* Ujumbe wa pongezi hubadilika */
- showMessage();
- setInterval(showMessage,7000);
-}
-
-start();
+shuffle();
+nextPicture();
+setInterval(nextPicture,15000);
+setInterval(showMeteor,9000);
+setInterval(showMessage,7000);
+showMeteor();
+showMessage();
 })();
 </script>
 </body>
