@@ -403,6 +403,168 @@ function registerDrackCloudinary(app) {
     }
   });
 
+
+  // DRACK HUB: SEO pages for songs uploaded by admin.
+  function drackUploadedSongSlug(title, artist) {
+    return String((artist || "") + " " + (title || ""))
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  }
+
+  function drackUploadedSongEscape(value) {
+    return String(value == null ? "" : value).replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[char]);
+  }
+
+  function drackUploadedSongMetadata(fileName) {
+    const ext = path.extname(fileName);
+    const marker = fileName.indexOf("--");
+    if (marker < 0) return null;
+
+    try {
+      const token = fileName.slice(marker + 2, fileName.length - ext.length);
+      const metadata = JSON.parse(Buffer.from(token, "base64url").toString("utf8"));
+
+      if (!metadata || typeof metadata.title !== "string" || !metadata.title.trim()) {
+        return null;
+      }
+
+      return {
+        title: metadata.title.trim(),
+        artist: typeof metadata.artist === "string" ? metadata.artist.trim() : "",
+        ext
+      };
+    } catch {
+      return null;
+    }
+  }
+
+  async function drackUploadedAudioFiles() {
+    if (!configured || !supabase) {
+      throw new Error("Supabase haijasanidiwa.");
+    }
+
+    const allFiles = [];
+    let offset = 0;
+
+    while (true) {
+      const { data, error } = await supabase.storage
+        .from(BUCKET)
+        .list("", {
+          limit: 1000,
+          offset,
+          sortBy: { column: "created_at", order: "desc" }
+        });
+
+      if (error) throw error;
+
+      const batch = data || [];
+      allFiles.push(...batch);
+
+      if (batch.length < 1000) break;
+      offset += batch.length;
+    }
+
+    return allFiles
+      .filter(file =>
+        file.name &&
+        !file.name.startsWith(".") &&
+        /\.(mp3|m4a|aac|ogg|wav|flac|opus|wma)$/i.test(file.name)
+      )
+      .map(file => ({
+        file,
+        metadata: drackUploadedSongMetadata(file.name)
+      }))
+      .filter(item => item.metadata && item.metadata.title);
+  }
+
+  app.get("/uploaded-music/:slug", async (req, res) => {
+    try {
+      const requestedSlug = String(req.params.slug || "").toLowerCase();
+      const songs = await drackUploadedAudioFiles();
+
+      const match = songs.find(item =>
+        drackUploadedSongSlug(item.metadata.title, item.metadata.artist) === requestedSlug
+      );
+
+      if (!match) {
+        return res.status(404).send(
+          "<!doctype html><html lang=\"sw\"><meta charset=\"utf-8\">" +
+          "<title>Wimbo haujapatikana | DRACK HUB</title>" +
+          "<h1>Wimbo haujapatikana</h1><a href=\"/\">Rudi DRACK HUB</a></html>"
+        );
+      }
+
+      const { title, artist, ext } = match.metadata;
+      const downloadName = `${title}${artist ? " - " + artist : ""}${ext}`;
+
+      const { data: signed, error: signError } = await supabase.storage
+        .from(BUCKET)
+        .createSignedUrl(match.file.name, 3600, { download: downloadName });
+
+      if (signError || !signed) {
+        throw signError || new Error("Imeshindikana kupata kiungo cha wimbo.");
+      }
+
+      const safeTitle = drackUploadedSongEscape(title);
+      const safeArtist = drackUploadedSongEscape(artist || "Msanii hajatajwa");
+      const safeUrl = drackUploadedSongEscape(signed.signedUrl);
+      const canonical = "https://drack-hub-gldg.onrender.com/uploaded-music/" +
+        drackUploadedSongSlug(title, artist);
+
+      res.set("Cache-Control", "no-store");
+      res.type("html").send(`<!doctype html>
+<html lang="sw">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${safeTitle} - ${safeArtist} | DRACK HUB</title>
+<meta name="description" content="Sikiliza ${safeTitle} ya ${safeArtist} kupitia DRACK HUB.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="${canonical}">
+<meta property="og:type" content="music.song">
+<meta property="og:title" content="${safeTitle} - ${safeArtist} | DRACK HUB">
+<meta property="og:description" content="Sikiliza wimbo huu kupitia DRACK HUB.">
+<meta property="og:url" content="${canonical}">
+<script type="application/ld+json">${JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "MusicRecording",
+  "name": title,
+  "byArtist": { "@type": "Person", "name": artist || "Msanii hajatajwa" },
+  "url": canonical
+})}</script>
+<style>
+body{font-family:Arial,sans-serif;max-width:760px;margin:0 auto;padding:20px;background:#f7f7f7;color:#222}
+main{background:white;padding:24px;border-radius:14px}
+a{color:#087b45}audio{width:100%;margin:18px 0}
+h1{overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<main>
+<a href="/">← Rudi DRACK HUB</a>
+<h1>🎵 ${safeTitle}</h1>
+<p>🎤 ${safeArtist}</p>
+<p>Sikiliza wimbo kupitia DRACK HUB.</p>
+<audio controls preload="none" src="${safeUrl}">Kifaa chako hakitumii audio player.</audio>
+<p><a href="${safeUrl}">⬇ Pakua wimbo</a></p>
+</main>
+</body>
+</html>`);
+    } catch (error) {
+      console.error("DRACK UPLOADED SONG PAGE ERROR:", error.message);
+      res.status(500).send("Imeshindikana kufungua wimbo kwa sasa. Tafadhali jaribu tena.");
+    }
+  });
+
 }
 
 module.exports = registerDrackCloudinary;
