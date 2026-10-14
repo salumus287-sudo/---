@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111111">
+<title>MEMKWA SCHOOL | DRACK HUB</title>
+<meta name="description" content="Tazama video za MEMKWA SCHOOL ndani ya DRACK HUB.">
+<style>
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:#101010;color:#f5f5f5;font-family:Arial,sans-serif}
+header{padding:25px 16px;text-align:center;background:linear-gradient(135deg,#111,#7f1010,#d32f2f)}
+header h1{margin:0;font-size:clamp(26px,6vw,42px)}
+header p{margin:10px 0 0;color:#eee}
+.top{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;padding:15px}
+.top a,.top button{border:0;border-radius:9px;padding:11px 15px;background:#b71c1c;color:white;text-decoration:none;font-weight:bold;font-size:14px}
+main{max-width:1100px;margin:auto;padding:12px}
+.status{text-align:center;padding:18px;margin:8px 0 20px;background:#202020;border-radius:10px;line-height:1.6}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:16px}
+.card{background:#1d1d1d;border:1px solid #383838;border-radius:12px;overflow:hidden}
+.player{position:relative;aspect-ratio:16/9;background:#000}
+.player img,.player iframe{width:100%;height:100%;display:block;object-fit:cover;border:0}
+.play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border:0;border-radius:50%;width:64px;height:64px;background:#d20f20;color:#fff;font-size:28px;cursor:pointer}
+.badge{position:absolute;left:9px;top:9px;padding:5px 8px;background:#b71c1c;border-radius:5px;font-size:11px;font-weight:bold}
+.info{padding:13px}
+.info h2{font-size:17px;line-height:1.45;margin:0 0 10px;overflow-wrap:anywhere}
+.info p{font-size:13px;color:#bbb;margin:7px 0;line-height:1.5}
+.empty{text-align:center;padding:25px;color:#ddd}
+footer{text-align:center;padding:25px 12px;color:#aaa;font-size:13px}
+</style>
+</head>
+<body>
+<header>
+<h1>📺 MEMKWA SCHOOL</h1>
+<p>Burudani na video za MEMKWA SCHOOL — ndani ya DRACK HUB</p>
+</header>
+<nav class="top">
+<a href="/">⌂ RUDI DRACK HUB</a>
+<button id="refresh" type="button">↻ PAKIA UPYA</button>
+</nav>
+<main>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0">
+<input id="memkwa-search" type="search" placeholder="🔎 Tafuta video kwa jina..." aria-label="Tafuta video" style="flex:1;min-width:180px;padding:12px;border-radius:9px;border:1px solid #555;background:#202020;color:white">
+<button id="memkwa-more" type="button" style="padding:12px;border:0;border-radius:9px;background:#b71c1c;color:white;font-weight:bold">⬇️ PAKIA VIDEO ZAIDI</button>
+</div>
+<div id="status" class="status" role="status">⏳ Inatafuta video za MEMKWA SCHOOL...</div>
+<div id="videos" class="grid"></div>
+</main>
+<footer>MEMKWA SCHOOL · Powered by DRACK HUB</footer>
+<script>
+(function(){
+"use strict";
+const status=document.getElementById("status");
+const list=document.getElementById("videos");
+const refresh=document.getElementById("refresh");
+const search=document.getElementById("memkwa-search");
+const more=document.getElementById("memkwa-more");
+let nextToken=null;
+let loading=false;
+let finished=false;
+let total=0;
+
+function esc(value){
+ return String(value||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function dateText(value){
+ if(!value)return "Haijatajwa";
+ const d=new Date(value);
+ return Number.isNaN(d.getTime())?"Haijatajwa":d.toLocaleDateString("sw-TZ");
+}
+function card(video){
+ const id=video.id;
+ const title=esc(video.title);
+ const date=esc(dateText(video.publishedAt));
+ const thumb=video.thumbnail||("https://i.ytimg.com/vi/"+encodeURIComponent(id)+"/hqdefault.jpg");
+ return '<article class="card" data-title="'+title.toLowerCase()+'"><div class="player">'+
+ '<img src="'+esc(thumb)+'" alt="Picha ya video: '+title+'" loading="lazy">'+
+ '<span class="badge">MEMKWA SCHOOL</span>'+
+ '<button class="play" type="button" aria-label="Cheza '+title+'" data-video-id="'+esc(id)+'">▶</button>'+
+ '</div><div class="info"><h2>'+title+'</h2><p>📺 MEMKWA SCHOOL</p><p>📅 '+date+'</p></div></article>';
+}
+function filterVideos(){
+ const term=search.value.trim().toLowerCase();
+ let visible=0;
+ list.querySelectorAll(".card").forEach(el=>{
+  const show=el.dataset.title.includes(term);
+  el.hidden=!show;
+  if(show)visible++;
+ });
+ if(term)status.textContent="Matokeo ya utafutaji: "+visible;
+ else status.textContent="Video zilizopakiwa: "+total+(finished?" · Video zote zimepakiwa.":" · Bado kuna video za kupakia.");
+}
+list.addEventListener("click",function(event){
+ const button=event.target.closest(".play");
+ if(!button)return;
+ const id=button.dataset.videoId;
+ if(!/^[a-zA-Z0-9_-]{11}$/.test(id||""))return;
+ const player=button.closest(".player");
+ const iframe=document.createElement("iframe");
+ iframe.src="https://www.youtube-nocookie.com/embed/"+encodeURIComponent(id)+"?autoplay=1";
+ iframe.title="MEMKWA SCHOOL video";
+ iframe.allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share";
+ iframe.allowFullscreen=true;
+ iframe.loading="lazy";
+ iframe.referrerPolicy="strict-origin-when-cross-origin";
+ player.replaceChildren(iframe);
+});
+async function loadVideos(reset){
+ if(loading||finished&&!reset)return;
+ loading=true;
+ refresh.disabled=true;
+ more.disabled=true;
+ if(reset){
+  nextToken=null;finished=false;total=0;list.replaceChildren();
+ }
+ status.textContent="⏳ Inapakia video za MEMKWA SCHOOL...";
+ try{
+  const url="/api/memkwa-school-videos"+(nextToken?"?token="+encodeURIComponent(nextToken)+"&page="+(Math.floor(total/50)+1):"?page=1");
+  const response=await fetch(url,{cache:"no-store"});
+  const data=await response.json();
+  if(!response.ok||!data.success)throw new Error(data.message||"Huduma haipatikani.");
+  const videos=(data.videos||[]).filter(v=>/^[a-zA-Z0-9_-]{11}$/.test(v.id||""));
+  list.insertAdjacentHTML("beforeend",videos.map(card).join(""));
+  total+=videos.length;
+  nextToken=data.nextPageToken||null;
+  finished=!data.hasMore;
+  more.hidden=finished;
+  status.textContent="✅ Video "+total+" zimepakiwa."+(finished?" Hizi ndizo video zote zilizorudishwa na YouTube.":" Bonyeza PAKIA VIDEO ZAIDI kuendelea.");
+  filterVideos();
+ }catch(error){
+  status.textContent="⚠️ "+(error.message||"Imeshindwa kupakia video.")+" Jaribu tena.";
+ }finally{
+  loading=false;refresh.disabled=false;more.disabled=false;
+ }
+}
+search.addEventListener("input",filterVideos);
+more.addEventListener("click",()=>loadVideos(false));
+refresh.addEventListener("click",()=>loadVideos(true));
+loadVideos(true);
+})();
+</script>
+</body>
+</html>

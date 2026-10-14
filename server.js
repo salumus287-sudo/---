@@ -741,9 +741,122 @@ app.get("/api/donta-tv-videos", async (req, res) => {
   }
 });
 
-let nbcDrackNewsCache = null;
-let nbcDrackNewsCacheAt = 0;
+// DRACK_MEMKWA_SCHOOL_API
+let memkwaSchoolCache = null;
+let memkwaSchoolCacheAt = 0;
 
+app.get("/api/memkwa-school-videos", async (req, res) => {
+  try {
+    const key = process.env.YOUTUBE_API_KEY;
+    if (!key) {
+      return res.status(503).json({
+        success: false,
+        message: "Huduma ya video haijawezeshwa kwa sasa."
+      });
+    }
+
+    const api = "https://www.googleapis.com/youtube/v3/";
+    const handle = "steve_mweusi";
+    const requestedPage = String(req.query.page || "1");
+    const pageNumber = Number(requestedPage);
+
+    if (!Number.isInteger(pageNumber) || pageNumber < 1 || pageNumber > 10000) {
+      return res.status(400).json({
+        success: false,
+        message: "Namba ya ukurasa si sahihi."
+      });
+    }
+
+    const channelUrl = api + "channels?part=contentDetails&forHandle=" +
+      encodeURIComponent(handle) +
+      "&key=" + encodeURIComponent(key);
+
+    const channelResponse = await fetch(channelUrl, {
+      signal: AbortSignal.timeout(15000)
+    });
+    const channelData = await channelResponse.json();
+
+    if (!channelResponse.ok) {
+      console.error("MEMKWA SCHOOL channel API error:", channelData.error?.code);
+      return res.status(502).json({
+        success: false,
+        message: "Imeshindwa kupata channel ya MEMKWA SCHOOL."
+      });
+    }
+
+    const channel = (channelData.items || [])[0];
+    const uploads = channel?.contentDetails?.relatedPlaylists?.uploads;
+
+    if (!uploads) {
+      return res.status(404).json({
+        success: false,
+        message: "Channel @steve_mweusi haijapatikana kupitia YouTube API."
+      });
+    }
+
+    const params = new URLSearchParams({
+      part: "snippet,contentDetails",
+      playlistId: uploads,
+      maxResults: "50",
+      key
+    });
+
+    if (req.query.token) {
+      params.set("pageToken", String(req.query.token));
+    } else if (pageNumber > 1) {
+      return res.status(400).json({
+        success: false,
+        message: "Tumia token ya ukurasa uliotangulia kupakia video zaidi."
+      });
+    }
+
+    const videosResponse = await fetch(api + "playlistItems?" + params, {
+      signal: AbortSignal.timeout(15000)
+    });
+    const videosData = await videosResponse.json();
+
+    if (!videosResponse.ok) {
+      console.error("MEMKWA SCHOOL videos API error:", videosData.error?.code);
+      return res.status(502).json({
+        success: false,
+        message: "Imeshindwa kupakia video za MEMKWA SCHOOL."
+      });
+    }
+
+    const videos = (videosData.items || [])
+      .map(item => {
+        const snippet = item.snippet || {};
+        const id = item.contentDetails?.videoId || snippet.resourceId?.videoId;
+        if (!id) return null;
+
+        return {
+          id,
+          title: snippet.title || "Video ya MEMKWA SCHOOL",
+          publishedAt: snippet.publishedAt || "",
+          thumbnail:
+            snippet.thumbnails?.high?.url ||
+            snippet.thumbnails?.medium?.url ||
+            snippet.thumbnails?.default?.url ||
+            ""
+        };
+      })
+      .filter(Boolean);
+
+    return res.json({
+      success: true,
+      videos,
+      nextPageToken: videosData.nextPageToken || null,
+      hasMore: Boolean(videosData.nextPageToken),
+      page: pageNumber
+    });
+  } catch (error) {
+    console.error("MEMKWA SCHOOL API error:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Hitilafu imetokea wakati wa kupakia video."
+    });
+  }
+});
 app.get("/api/nbc-drack-news", async (req, res) => {
   try {
     if (nbcDrackNewsCache &&
