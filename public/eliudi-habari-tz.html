@@ -4,11 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#07111f">
-
 <title>ELIUDI HABARI TZ | DRACK HUB</title>
-
-<meta name="description"
-content="ELIUDI HABARI TZ ndani ya DRACK HUB. Habari za Tanzania na dunia kupitia vyanzo rasmi vya habari za video.">
+<meta name="description" content="DRACK HUB PRESENTS — ELIUDI HABARI TZ. Habari za Tanzania na dunia, video na taarifa zenye kutaja vyanzo vyake.">
 
 <style>
 :root {
@@ -16,139 +13,192 @@ content="ELIUDI HABARI TZ ndani ya DRACK HUB. Habari za Tanzania na dunia kupiti
   --bg: #07111f;
   --panel: #101e30;
   --blue: #168cff;
+  --green: #35e6a1;
   --text: #f4f7fb;
   --muted: #aab8ca;
   --border: #263a52;
 }
-
-* {
-  box-sizing: border-box;
-}
-
+* { box-sizing: border-box; }
 body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
   font-family: Arial, sans-serif;
 }
-
 header {
-  padding: 16px;
+  padding: 15px;
   background: #0b1728;
   border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 5;
 }
-
+.header-inner {
+  width: min(100%, 950px);
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
 .brand {
-  font-size: 23px;
+  font-size: 21px;
   font-weight: 900;
   letter-spacing: .5px;
 }
-
-.brand span {
-  color: var(--blue);
-}
-
+.brand span { color: var(--blue); }
 .back {
   display: inline-block;
-  margin-top: 13px;
-  padding: 10px 14px;
+  padding: 10px 12px;
   border-radius: 9px;
   background: #172a41;
   color: white;
   text-decoration: none;
+  font-size: 13px;
 }
-
 main {
   width: min(100% - 24px, 950px);
   margin: 20px auto 40px;
 }
-
 .hero {
-  padding: 25px 18px;
-  border: 1px solid var(--border);
+  padding: 26px 19px;
+  border: 1px solid #294767;
   border-radius: 18px;
-  background: linear-gradient(135deg, #122c49, #101827);
+  background: linear-gradient(135deg, #122c49, #101827 75%);
+  box-shadow: 0 12px 35px #0003;
 }
-
 .badge {
   display: inline-block;
-  padding: 6px 10px;
+  padding: 7px 11px;
   border-radius: 20px;
   background: #153b30;
   color: #83f5c2;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+.hero h1 {
+  margin: 16px 0 8px;
+  font-size: clamp(27px, 7vw, 42px);
+  line-height: 1.2;
+}
+.hero h1 span { color: #49a8ff; }
+.hero p { line-height: 1.65; }
+.muted { color: var(--muted); }
+.presented {
+  display: inline-block;
+  margin-top: 9px;
+  color: var(--green);
   font-size: 12px;
   font-weight: bold;
+  letter-spacing: 1px;
 }
-
-h1 {
-  margin: 15px 0 8px;
-  font-size: clamp(25px, 6vw, 38px);
-}
-
-h1 span {
-  color: #49a8ff;
-}
-
-p {
-  line-height: 1.6;
-}
-
-.muted {
-  color: var(--muted);
-}
-
 .section-title {
   margin: 28px 0 13px;
-  font-size: 21px;
+  font-size: 20px;
 }
-
-.sources {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.source {
-  display: block;
-  padding: 18px 13px;
-  border-radius: 13px;
-  border: 1px solid var(--border);
-  background: var(--panel);
-  color: white;
-  text-decoration: none;
-}
-
-.source strong {
-  display: block;
-  font-size: 17px;
-  margin-bottom: 7px;
-}
-
-.source small {
-  color: var(--muted);
-}
-
-.notice, .panel {
-  padding: 17px;
+.panel {
+  padding: 15px;
   border: 1px solid var(--border);
   border-radius: 14px;
   background: var(--panel);
 }
-
-.notice {
-  margin-top: 18px;
-  color: var(--muted);
-}
-
 .news-status {
-  padding: 14px 0;
+  padding: 12px 0;
   color: var(--muted);
+  line-height: 1.6;
 }
-
+#news-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+.eliudi-video-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #303f52;
+  border-radius: 15px;
+  background: #0b1522;
+}
+.video-player {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #02060b;
+  overflow: hidden;
+}
+.video-player img,
+.video-player iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: cover;
+}
+.video-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 68px;
+  height: 48px;
+  border: 2px solid #ffffffa8;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #168cff, #0757c8);
+  color: white;
+  font-size: 25px;
+  cursor: pointer;
+  box-shadow: 0 5px 25px #0009;
+}
+.video-play:active { transform: translate(-50%, -50%) scale(.94); }
+.video-play:focus-visible {
+  outline: 3px solid white;
+  outline-offset: 4px;
+}
+.video-label {
+  position: absolute;
+  left: 9px;
+  top: 9px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: #07111fdd;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: .6px;
+}
+.eliudi-video-info { padding: 13px; }
+.eliudi-video-info h3 {
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 0 0 10px;
+  overflow-wrap: anywhere;
+}
+.eliudi-video-info p {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 6px 0;
+}
+.source-label {
+  color: var(--green);
+  font-weight: bold;
+}
+.notice {
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #0b1728;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
 .comment-box textarea {
   display: block;
   width: 100%;
-  min-height: 110px;
+  min-height: 100px;
   margin: 12px 0;
   padding: 12px;
   border: 1px solid var(--border);
@@ -158,7 +208,6 @@ p {
   font: inherit;
   resize: vertical;
 }
-
 .comment-box button {
   padding: 12px 17px;
   border: 0;
@@ -167,167 +216,111 @@ p {
   color: white;
   font-weight: bold;
 }
-
-.comment-box button:disabled {
-  opacity: .55;
+.comment-box button:disabled { opacity: .55; }
+.comment-status {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
 }
-
 footer {
-  padding: 22px 12px;
+  padding: 24px 14px;
   text-align: center;
   border-top: 1px solid var(--border);
   color: var(--muted);
+  line-height: 1.8;
 }
-
+footer strong { color: white; }
+.whatsapp {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 10px 14px;
+  border-radius: 9px;
+  background: #128c55;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 13px;
+}
 @media (max-width: 420px) {
-  .sources {
-    grid-template-columns: 1fr;
-  }
+  .header-inner { align-items: flex-start; }
+  .brand { font-size: 18px; }
+  .back { padding: 9px; }
+  .hero { padding: 22px 15px; }
+  .panel { padding: 11px; }
 }
-
-<style id="drack-eliudi-video-style">
-#news-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
-  gap: 16px;
-  margin-top: 16px;
-}
-.eliudi-video-card {
-  min-width: 0;
-  overflow: hidden;
-  border: 1px solid #303943;
-  border-radius: 14px;
-  background: #111820;
-}
-.eliudi-video-card iframe {
-  display: block;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  border: 0;
-}
-.eliudi-video-info { padding: 12px; }
-.eliudi-video-info h3 {
-  font-size: 15px;
-  line-height: 1.5;
-  margin: 0 0 8px;
-}
-.eliudi-video-info p {
-  font-size: 12px;
-  color: #b7c2ce;
-  margin: 5px 0;
-}
-.eliudi-video-info a { color: #61d8a5; }
-</style>
-
 </style>
 </head>
 
 <body>
-
 <header>
-  <div class="brand">DRACK <span>HUB</span></div>
-  <a class="back" href="/">← Rudi DRACK HUB</a>
+  <div class="header-inner">
+    <div class="brand">DRACK <span>HUB</span></div>
+    <a class="back" href="/">← Rudi DRACK HUB</a>
+  </div>
 </header>
 
 <main>
-
   <section class="hero">
     <span class="badge">📰 KITUO CHA HABARI</span>
-
-    <h1>𝐄𝐋𝐈𝐔𝐃𝐈 <span>𝐇𝐀𝐁𝐀𝐑𝐈 𝐓𝐙</span></h1>
-
-    <p>Habari za Tanzania na dunia, taarifa mpya na habari za video
-    kutoka kwenye vyanzo rasmi.</p>
-
+    <h1>ELIUDI <span>HABARI TZ</span></h1>
+    <div class="presented">DRACK HUB PRESENTS</div>
+    <p>
+      Karibu ELIUDI HABARI TZ, sehemu ya habari za Tanzania na dunia
+      ndani ya DRACK HUB.
+    </p>
     <p class="muted">
-      Lengo letu ni kukuletea habari mpya kila siku,
-      pamoja na chanzo cha kila taarifa.
+      Tunakusogezea video za habari na kutaja chanzo cha kila video
+      pale taarifa hizo zinapopatikana.
     </p>
   </section>
 
-  <h2 class="section-title">📺 VYANZO VYA HABARI</h2>
-
-  <section class="sources">
-
-    <a class="source"
-       href="https://www.bbc.com/news"
-       target="_blank" rel="noopener noreferrer">
-      <strong>🌍 BBC NEWS</strong>
-      <small>Habari za dunia na video</small>
-    </a>
-
-    <a class="source"
-       href="https://www.itv.com/news"
-       target="_blank" rel="noopener noreferrer">
-      <strong>📺 ITV NEWS</strong>
-      <small>Habari na taarifa za video</small>
-    </a>
-
-    <a class="source"
-       href="https://www.tbc.go.tz/"
-       target="_blank" rel="noopener noreferrer">
-      <strong>🇹🇿 TBC</strong>
-      <small>Shirika la Utangazaji Tanzania</small>
-    </a>
-
-    <a class="source"
-       href="https://www.youtube.com/"
-       target="_blank" rel="noopener noreferrer">
-      <strong>▶️ HABARI ZA VIDEO</strong>
-      <small>Video kutoka kwenye vyanzo rasmi</small>
-    </a>
-
-  </section>
-
   <h2 class="section-title">🔴 HABARI MPYA ZA VIDEO</h2>
-
   <section class="panel">
-    <div id="news-status" class="news-status" role="status">
-      ⏳ Sehemu ya kuunganisha habari mpya za video
-      inaandaliwa.
+    <div id="news-status" class="news-status" role="status" aria-live="polite">
+      ⏳ Tunatafuta video mpya za habari...
     </div>
-
     <div id="news-list"></div>
   </section>
 
   <div class="notice">
-    ℹ️ Habari zitaonyeshwa kwa kutaja chanzo chake.
-    Video zitaonyeshwa ndani ya DRACK HUB pale chanzo
-    kinaporuhusu kuingizwa kwenye tovuti nyingine.
+    ℹ️ Video huchezwa hapa ndani ya DRACK HUB pale chanzo kinaporuhusu.
+    Video zinaweza kuonyesha vidhibiti au alama za YouTube wakati wa kucheza.
+    Jina la chanzo huonyeshwa ili kutofautisha mchapishaji wa video na DRACK HUB.
   </div>
 
   <h2 class="section-title">💬 MAONI YA WASOMAJI</h2>
-
   <section class="panel comment-box">
-    <p class="muted">
-      Maoni yatasimamiwa na admin kabla ya kuchapishwa.
+    <p>
+      Unaweza kuandika maoni yako kuhusu habari unayoisoma.
     </p>
-
+    <p class="comment-status">
+      Mfumo mpya wa maoni, Like/Unlike na idhini ya admin utaunganishwa
+      na database katika hatua inayofuata. Sehemu hii bado haipokei maoni.
+    </p>
     <textarea
       id="eliudi-comment"
       maxlength="1000"
-      placeholder="Kisanduku cha maoni kitaunganishwa na mfumo wa admin... "
-      disabled></textarea>
-
-    <button type="button" disabled>
-      Tuma maoni
-    </button>
-
-    <p class="muted" style="font-size:13px">
-      Mfumo wa maoni bado haujaunganishwa na database.
-    </p>
+      placeholder="Maoni yako yatawekwa hapa baada ya mfumo kuunganishwa..."
+      disabled
+      aria-label="Maoni ya msomaji"></textarea>
+    <button type="button" disabled>Tuma maoni</button>
   </section>
-
 </main>
 
 <footer>
-  <strong>𝐄𝐋𝐈𝐔𝐃𝐈 𝐇𝐀𝐁𝐀𝐑𝐈 𝐓𝐙</strong>
-  <p>Sehemu ya DRACK HUB</p>
+  <strong>ELIUDI HABARI TZ</strong><br>
+  DRACK HUB PRESENTS<br>
+  <strong>CREATOR: DRACK</strong><br>
+  <a class="whatsapp"
+     href="https://wa.me/255772818601"
+     target="_blank"
+     rel="noopener noreferrer">WhatsApp Support: 255772818601</a>
 </footer>
 
+<script>
+(function () {
+  "use strict";
 
-<script id="DRACK_ELIUDI_YOUTUBE_V1">
-(async function () {
   const status = document.getElementById("news-status");
   const list = document.getElementById("news-list");
 
@@ -343,56 +336,109 @@ footer {
     });
   }
 
-  status.textContent = "⏳ Tunatafuta video mpya za habari...";
-
-  try {
-    const response = await fetch(
-      "/api/youtube-videos?q=" +
-      encodeURIComponent("Tanzania habari news") +
-      "&limit=12"
-    );
-
-    const data = await response.json();
-
-    if (!response.ok || !data.success) {
-      throw new Error(data.message || "Huduma ya video haipatikani kwa sasa.");
-    }
-
-    const videos = (data.videos || []).filter(function (video) {
-      return /^[a-zA-Z0-9_-]{11}$/.test(video.id || "");
-    });
-
-    if (!videos.length) {
-      status.textContent = "Hakuna video zilizopatikana kwa sasa. Tafadhali jaribu tena baadaye.";
-      return;
-    }
-
-    list.innerHTML = videos.map(function (video) {
-      const id = encodeURIComponent(video.id);
-
-      return '<article class="eliudi-video-card">' +
-        '<iframe src="https://www.youtube-nocookie.com/embed/' + id +
-        '" title="' + escapeHTML(video.title) +
-        '" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>' +
-        '<div class="eliudi-video-info">' +
-        '<h3>' + escapeHTML(video.title) + '</h3>' +
-        '<p>📺 Chanzo: ' + escapeHTML(video.channel) + '</p>' +
-        '<p>📅 Tarehe: ' + escapeHTML(
-          video.publishedAt ? new Date(video.publishedAt).toLocaleDateString("sw-TZ") : "Haijatajwa"
-        ) + '</p>' +
-        '<a href="' + escapeHTML(video.url) +
-        '" target="_blank" rel="noopener noreferrer">Fungua video kwenye YouTube ↗</a>' +
-        '</div></article>';
-    }).join("");
-
-    status.textContent = "✅ Video " + videos.length +
-      " zimepatikana. Bonyeza video unayotaka kutazama.";
-  } catch (error) {
-    status.textContent = "⚠️ " + error.message +
-      " Hakikisha YouTube API imewezeshwa kwenye Render.";
+  function safeDate(value) {
+    if (!value) return "Haijatajwa";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "Haijatajwa";
+    return date.toLocaleDateString("sw-TZ");
   }
+
+  function makeVideoCard(video) {
+    const id = video.id;
+    const title = escapeHTML(video.title || "Habari ya video");
+    const channel = escapeHTML(video.channel || "Chanzo hakijatajwa");
+    const date = escapeHTML(safeDate(video.publishedAt));
+    const thumbnail = "https://i.ytimg.com/vi/" +
+      encodeURIComponent(id) + "/hqdefault.jpg";
+
+    return `
+      <article class="eliudi-video-card">
+        <div class="video-player">
+          <img
+            src="${thumbnail}"
+            alt="Picha ya video: ${title}"
+            loading="lazy"
+            referrerpolicy="strict-origin-when-cross-origin">
+          <span class="video-label">DRACK HUB VIDEO</span>
+          <button
+            class="video-play"
+            type="button"
+            aria-label="Cheza video: ${title}"
+            data-video-id="${id}">▶</button>
+        </div>
+        <div class="eliudi-video-info">
+          <h3>${title}</h3>
+          <p><span class="source-label">📺 Chanzo:</span> ${channel}</p>
+          <p>📅 Tarehe: ${date}</p>
+        </div>
+      </article>`;
+  }
+
+  list.addEventListener("click", function (event) {
+    const button = event.target.closest(".video-play");
+    if (!button) return;
+
+    const id = button.dataset.videoId;
+    if (!/^[a-zA-Z0-9_-]{11}$/.test(id || "")) return;
+
+    const player = button.closest(".video-player");
+    if (!player) return;
+
+    const iframe = document.createElement("iframe");
+    iframe.src = "https://www.youtube-nocookie.com/embed/" +
+      encodeURIComponent(id) + "?autoplay=1";
+    iframe.title = "Video ya habari ya DRACK HUB";
+    iframe.loading = "lazy";
+    iframe.allow =
+      "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+    iframe.allowFullscreen = true;
+    iframe.referrerPolicy = "strict-origin-when-cross-origin";
+
+    player.replaceChildren(iframe);
+  });
+
+  async function loadVideos() {
+    status.textContent = "⏳ Tunatafuta video mpya za habari...";
+
+    try {
+      const response = await fetch(
+        "/api/youtube-videos?q=" +
+        encodeURIComponent("Tanzania habari news") +
+        "&limit=12"
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(
+          data.message || "Huduma ya video haipatikani kwa sasa."
+        );
+      }
+
+      const videos = (data.videos || []).filter(function (video) {
+        return /^[a-zA-Z0-9_-]{11}$/.test(video.id || "");
+      });
+
+      if (!videos.length) {
+        status.textContent =
+          "Hakuna video zilizopatikana kwa sasa. Tafadhali jaribu tena baadaye.";
+        return;
+      }
+
+      list.innerHTML = videos.map(makeVideoCard).join("");
+      status.textContent =
+        "✅ Video " + videos.length +
+        " zimepatikana. Bonyeza kitufe cha PLAY kutazama hapa.";
+
+    } catch (error) {
+      status.textContent =
+        "⚠️ " + (error.message || "Hitilafu imetokea.") +
+        " Hakikisha huduma ya video imewezeshwa kwenye Render.";
+    }
+  }
+
+  loadVideos();
 })();
 </script>
-
 </body>
 </html>
