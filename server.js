@@ -635,6 +635,112 @@ app.get("/api/youtube-videos", async (req, res) => {
 });
 
 
+
+// DRACK_DONTA_TV_API
+let dontaTvCache = null;
+let dontaTvCacheAt = 0;
+
+app.get("/api/donta-tv-videos", async (req, res) => {
+  try {
+    if (dontaTvCache && Date.now() - dontaTvCacheAt < 300000) {
+      return res.json(dontaTvCache);
+    }
+
+    const key = process.env.YOUTUBE_API_KEY;
+    if (!key) {
+      return res.status(503).json({
+        success: false,
+        message: "Huduma ya video haijawezeshwa kwa sasa."
+      });
+    }
+
+    const api = "https://www.googleapis.com/youtube/v3/";
+    const channelUrl = api + "channels?part=contentDetails&forHandle=" +
+      encodeURIComponent("dontatv255") +
+      "&key=" + encodeURIComponent(key);
+
+    const channelResponse = await fetch(channelUrl, {
+      signal: AbortSignal.timeout(15000)
+    });
+    const channelData = await channelResponse.json();
+
+    if (!channelResponse.ok) {
+      console.error("DONTA TV channel API error:", channelData.error?.code);
+      return res.status(502).json({
+        success: false,
+        message: "Imeshindwa kupata channel ya DONTA TV. Jaribu tena baadaye."
+      });
+    }
+
+    const channel = (channelData.items || [])[0];
+    if (!channel) {
+      return res.status(404).json({
+        success: false,
+        message: "Channel @dontatv255 haijapatikana kupitia YouTube API."
+      });
+    }
+
+    const uploads = channel.contentDetails?.relatedPlaylists?.uploads;
+    if (!uploads) {
+      return res.status(404).json({
+        success: false,
+        message: "Orodha ya video za DONTA TV haijapatikana."
+      });
+    }
+
+    const videosUrl = api + "playlistItems?part=snippet,contentDetails" +
+      "&playlistId=" + encodeURIComponent(uploads) +
+      "&maxResults=20&key=" + encodeURIComponent(key);
+
+    const videosResponse = await fetch(videosUrl, {
+      signal: AbortSignal.timeout(15000)
+    });
+    const videosData = await videosResponse.json();
+
+    if (!videosResponse.ok) {
+      console.error("DONTA TV videos API error:", videosData.error?.code);
+      return res.status(502).json({
+        success: false,
+        message: "Imeshindwa kupakia video za DONTA TV kwa sasa."
+      });
+    }
+
+    const videos = (videosData.items || []).map(item => {
+      const snippet = item.snippet || {};
+      const id = item.contentDetails?.videoId ||
+        snippet.resourceId?.videoId;
+
+      return {
+        id,
+        title: snippet.title || "Video ya DONTA TV",
+        description: snippet.description || "",
+        channel: snippet.channelTitle || "DONTA TV",
+        publishedAt: snippet.publishedAt || "",
+        thumbnail:
+          snippet.thumbnails?.high?.url ||
+          snippet.thumbnails?.medium?.url ||
+          snippet.thumbnails?.default?.url || ""
+      };
+    }).filter(video => /^[a-zA-Z0-9_-]{11}$/.test(video.id || ""));
+
+    dontaTvCache = {
+      success: true,
+      count: videos.length,
+      channel: "DONTA TV",
+      videos
+    };
+    dontaTvCacheAt = Date.now();
+
+    return res.json(dontaTvCache);
+  } catch (error) {
+    console.error("DONTA TV ERROR:", error.message);
+    return res.status(502).json({
+      success: false,
+      message: "Imeshindwa kuwasiliana na YouTube. Jaribu tena baadaye."
+    });
+  }
+});
+
 let nbcDrackNewsCache = null;
 let nbcDrackNewsCacheAt = 0;
 
