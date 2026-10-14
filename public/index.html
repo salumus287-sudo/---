@@ -1029,6 +1029,42 @@ nav.menu > a#drack-home-video-download {
 }
 </style>
 
+
+<!-- DRACK_COPY_PROTECTION -->
+<style>
+html, body {
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none !important;
+}
+input, textarea, [contenteditable="true"] {
+  -webkit-user-select: text !important;
+  user-select: text !important;
+}
+</style>
+<script>
+document.addEventListener("contextmenu", function(e) {
+  e.preventDefault();
+});
+document.addEventListener("copy", function(e) {
+  e.preventDefault();
+});
+document.addEventListener("cut", function(e) {
+  e.preventDefault();
+});
+document.addEventListener("selectstart", function(e) {
+  if (!e.target.closest("input, textarea, [contenteditable='true']")) {
+    e.preventDefault();
+  }
+});
+document.addEventListener("keydown", function(e) {
+  if ((e.ctrlKey || e.metaKey) &&
+      ["c", "x", "a"].includes(e.key.toLowerCase())) {
+    e.preventDefault();
+  }
+});
+</script>
+
 </head>
 
 <body>
