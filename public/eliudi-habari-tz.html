@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#07111f">
 <title>ELIUDI HABARI TZ | DRACK HUB</title>
-<meta name="description" content="DRACK HUB PRESENTS — ELIUDI HABARI TZ. Habari za Tanzania na dunia, video na taarifa zenye kutaja vyanzo vyake.">
+<meta name="description" content="Karibu ELIUDI HABARI TZ — habari za Tanzania na dunia ndani ya DRACK HUB.">
 
 <style>
 :root {
@@ -286,6 +286,63 @@ footer strong { color: white; }
   .hero { padding: 22px 15px; }
   .panel { padding: 11px; }
 }
+
+/* Bango fupi la KARIBU */
+.welcome-banner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 13px;
+  width: 100%;
+  max-width: 620px;
+  min-height: 104px;
+  margin: 0 auto 20px;
+  padding: 17px 15px;
+  overflow: hidden;
+  border: 1px solid #32658a;
+  border-radius: 14px;
+  background: linear-gradient(110deg, #0b192b, #153b56, #0b192b);
+  box-shadow: 0 5px 18px #0004, inset 0 0 15px #168cff12;
+}
+.welcome-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+.welcome-word {
+  color: #f7fbff;
+  font-size: clamp(27px, 7vw, 39px);
+  line-height: 1.05;
+  font-weight: 900;
+  letter-spacing: 4px;
+  text-shadow: 0 0 10px #6bc4ff55;
+}
+.welcome-brand {
+  margin-top: 7px;
+  color: #8fd8ff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+.welcome-light {
+  flex: 0 0 9px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #9de8ff;
+  box-shadow: 0 0 7px 2px #64cfff88;
+  animation: welcomeGlow 2.8s ease-in-out infinite;
+}
+.light-right { animation-delay: 1.4s; }
+@keyframes welcomeGlow {
+  0%, 100% { opacity: .55; box-shadow: 0 0 5px 1px #64cfff66; }
+  50% { opacity: 1; box-shadow: 0 0 9px 2px #64cfff99; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .welcome-light { animation: none; }
+}
+
 </style>
 </head>
 
@@ -298,18 +355,14 @@ footer strong { color: white; }
 </header>
 
 <main>
-  <section class="hero">
-    <span class="badge">📰 KITUO CHA HABARI</span>
-    <h1>ELIUDI <span>HABARI TZ</span></h1>
-    <div class="presented">DRACK HUB PRESENTS</div>
-    <p>
-      Karibu ELIUDI HABARI TZ, sehemu ya habari za Tanzania na dunia
-      ndani ya DRACK HUB.
-    </p>
-    <p class="muted">
-      Tunakusogezea video za habari na kutaja chanzo cha kila video
-      pale taarifa hizo zinapopatikana.
-    </p>
+
+  <section class="welcome-banner" aria-label="Karibu ELIUDI HABARI TZ">
+    <span class="welcome-light light-left" aria-hidden="true"></span>
+    <div class="welcome-content">
+      <div class="welcome-word">KARIBU</div>
+      <div class="welcome-brand">ELIUDI HABARI TZ</div>
+    </div>
+    <span class="welcome-light light-right" aria-hidden="true"></span>
   </section>
 
   <h2 class="section-title">🔴 HABARI MPYA ZA VIDEO</h2>
@@ -320,11 +373,7 @@ footer strong { color: white; }
     <div id="news-list"></div>
   </section>
 
-  <div class="notice">
-    ℹ️ Video huchezwa hapa ndani ya DRACK HUB pale chanzo kinaporuhusu.
-    Video zinaweza kuonyesha vidhibiti au alama za YouTube wakati wa kucheza.
-    Jina la chanzo huonyeshwa ili kutofautisha mchapishaji wa video na DRACK HUB.
-  </div>
+
 
   <h2 class="section-title">💬 MAONI YA WASOMAJI</h2>
   <section class="panel comment-box" aria-labelledby="eliudi-comments-heading">
@@ -352,7 +401,6 @@ footer strong { color: white; }
 
 <footer>
   <strong>ELIUDI HABARI TZ</strong><br>
-  DRACK HUB PRESENTS<br>
   <strong>CREATOR: DRACK</strong><br>
   <a class="whatsapp"
      href="https://wa.me/255772818601"
