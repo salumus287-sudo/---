@@ -145,10 +145,25 @@ body{
         <button>📊 DASHBOARD</button>
         <button>📰 POSTS</button>
         <button>💬 COMMENTS</button>
+        <button type="button" id="eliudi-comments-open">📰 ELIUDI COMMENTS</button>
         <button>👥 VISITORS</button>
         <button>📈 ANALYTICS</button>
         <button>⚙️ SETTINGS</button>
     </nav>
+
+    <section id="eliudi-comments-panel" class="panel" hidden
+      style="padding:12px;margin-top:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+        <strong>📰 ELIUDI HABARI TZ — MAONI</strong>
+        <button type="button" id="eliudi-comments-close"
+          style="padding:10px 14px;cursor:pointer;">✖ Funga</button>
+      </div>
+      <iframe id="eliudi-comments-frame"
+        title="Usimamizi wa maoni ya ELIUDI HABARI TZ"
+        data-src="/eliudi-comments-admin.html"
+        style="display:block;width:100%;height:75vh;min-height:560px;border:1px solid #293950;border-radius:10px;background:#0b1220;"
+        loading="lazy"></iframe>
+    </section>
 
     <section class="panel">
         <div class="panel-title">📊 ADMIN DASHBOARD</div>
@@ -271,5 +286,29 @@ setInterval(loadAdminStats, 30000);
 </script>
 
 <p id="drackMediaUploadLink" style="margin:16px 0"><a href="/drack-media-admin.html" style="display:inline-block;padding:12px 16px;background:#13b96b;color:#07130c;text-decoration:none;border-radius:8px;font-weight:bold">🎵🎬 PAKIA NYIMBO NA VIDEO</a></p>
+
+<script id="DRACK_ELIUDI_ADMIN_INTEGRATION">
+(() => {
+  const openButton = document.getElementById("eliudi-comments-open");
+  const closeButton = document.getElementById("eliudi-comments-close");
+  const panel = document.getElementById("eliudi-comments-panel");
+  const frame = document.getElementById("eliudi-comments-frame");
+
+  if (!openButton || !closeButton || !panel || !frame) return;
+
+  openButton.addEventListener("click", () => {
+    panel.hidden = false;
+    if (!frame.getAttribute("src")) {
+      frame.setAttribute("src", frame.dataset.src);
+    }
+    panel.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  closeButton.addEventListener("click", () => {
+    panel.hidden = true;
+  });
+})();
+</script>
+
 </body>
 </html>
