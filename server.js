@@ -9,6 +9,7 @@ const path = require("path");
 const { importAllNews } = require("./dailynews-import");
 const { Pool } = require("pg");
 const registerLiveMatch = require("./live-match");
+const registerEliudiComments = require("./eliudi-comments");
 
 const app = express();
 
@@ -41,6 +42,7 @@ if (process.env.DATABASE_URL) {
 registerDynamicSitemap(app);
 app.use(express.static(path.join(__dirname, "public")));
 registerLiveMatch(app, pool);
+registerEliudiComments(app, pool);
 
 // ===============================
 // API HEALTH

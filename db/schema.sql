@@ -118,3 +118,33 @@ ON comment_replies(comment_id);
 
 CREATE INDEX IF NOT EXISTS idx_comment_reactions_comment_id
 ON comment_reactions(comment_id);
+
+-- ============================================================
+-- ELIUDI HABARI TZ: INDEPENDENT COMMENTS SYSTEM
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS eliudi_comments (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(60) NOT NULL DEFAULT 'Msomaji',
+    content VARCHAR(1000) NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'pending'
+        CHECK (status IN ('pending', 'approved')),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS eliudi_comment_reactions (
+    id SERIAL PRIMARY KEY,
+    comment_id INTEGER NOT NULL
+        REFERENCES eliudi_comments(id) ON DELETE CASCADE,
+    visitor_id VARCHAR(100) NOT NULL,
+    reaction VARCHAR(10) NOT NULL
+        CHECK (reaction IN ('like', 'unlike')),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (comment_id, visitor_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_eliudi_comments_status_created
+ON eliudi_comments(status, created_at DESC);
+
+CREATE INDEX IF NOT EXISTS idx_eliudi_reactions_comment
+ON eliudi_comment_reactions(comment_id);

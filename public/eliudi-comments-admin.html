@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>ELIUDI HABARI TZ — Usimamizi wa Maoni</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b1220;
+      --panel: #131e30;
+      --line: #293950;
+      --text: #edf4ff;
+      --muted: #a9b8cc;
+      --green: #16a36a;
+      --red: #d94350;
+      --blue: #2563eb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, Arial, sans-serif;
+      line-height: 1.5;
+    }
+    header {
+      padding: 24px 16px;
+      background: #101b2d;
+      border-bottom: 1px solid var(--line);
+    }
+    header, main { width: 100%; }
+    .wrap { max-width: 900px; margin: auto; }
+    h1 { margin: 0 0 6px; font-size: 23px; }
+    h2 { font-size: 18px; }
+    p { color: var(--muted); }
+    main { max-width: 900px; padding: 18px 14px 50px; margin: auto; }
+    .panel, .comment {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    label { display: block; margin: 12px 0 6px; font-weight: 650; }
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 9px;
+      border: 1px solid #42536c;
+      background: #0b1423;
+      color: white;
+      font: inherit;
+    }
+    button {
+      border: 0;
+      border-radius: 9px;
+      padding: 10px 14px;
+      color: white;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    button:disabled { opacity: .5; cursor: wait; }
+    .primary { background: var(--blue); }
+    .approve { background: var(--green); }
+    .delete { background: var(--red); }
+    .secondary { background: #34445b; }
+    .actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 14px; }
+    .comment h3 { margin: 0 0 5px; font-size: 16px; }
+    .comment p { white-space: pre-wrap; overflow-wrap: anywhere; color: var(--text); }
+    .meta { font-size: 12px; color: var(--muted); }
+    .status { font-size: 13px; margin-top: 12px; overflow-wrap: anywhere; }
+    .good { color: #64e6a7; }
+    .bad { color: #ff9299; }
+    .hidden { display: none; }
+    .empty { text-align: center; padding: 25px 8px; color: var(--muted); }
+    .toolbar { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: end; }
+    @media (max-width: 520px) {
+      .toolbar { grid-template-columns: 1fr; }
+      h1 { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>🛡️ ELIUDI HABARI TZ</h1>
+    <div>Usimamizi wa maoni ya wasomaji</div>
+  </div>
+</header>
+
+<main>
+  <section class="panel" id="login-panel">
+    <h2>🔐 Ingia kama msimamizi</h2>
+    <p>Ingiza ufunguo wa admin ulioweka kwenye mazingira ya Render.</p>
+    <form id="login-form">
+      <label for="admin-key">Ufunguo wa siri</label>
+      <input id="admin-key" type="password" autocomplete="current-password"
+             required placeholder="Ingiza ufunguo wako" spellcheck="false">
+      <div class="actions">
+        <button class="primary" type="submit">Ingia na uangalie maoni</button>
+      </div>
+    </form>
+    <div id="login-status" class="status" role="status"></div>
+  </section>
+
+  <section id="dashboard" class="hidden">
+    <div class="panel">
+      <h2>📋 Maoni ya wasomaji</h2>
+      <div class="toolbar">
+        <div>
+          <label for="status-filter">Chagua maoni</label>
+          <select id="status-filter">
+            <option value="pending">Yanayosubiri kuidhinishwa</option>
+            <option value="approved">Yaliyoidhinishwa</option>
+            <option value="all">Maoni yote</option>
+          </select>
+        </div>
+        <div class="actions">
+          <button id="refresh-btn" class="primary" type="button">🔄 Onyesha upya</button>
+          <button id="logout-btn" class="secondary" type="button">Toka</button>
+        </div>
+      </div>
+      <div id="list-status" class="status" role="status"></div>
+    </div>
+    <div id="comments-list" aria-live="polite"></div>
+  </section>
+</main>
+
+<script>
+(() => {
+  "use strict";
+
+  const loginPanel = document.getElementById("login-panel");
+  const loginForm = document.getElementById("login-form");
+  const keyInput = document.getElementById("admin-key");
+  const loginStatus = document.getElementById("login-status");
+  const dashboard = document.getElementById("dashboard");
+  const filter = document.getElementById("status-filter");
+  const list = document.getElementById("comments-list");
+  const listStatus = document.getElementById("list-status");
+  const refreshButton = document.getElementById("refresh-btn");
+  const logoutButton = document.getElementById("logout-btn");
+
+  let adminKey = "";
+  let busy = false;
+
+  function showStatus(element, message, good = false) {
+    element.textContent = message;
+    element.className = "status " + (good ? "good" : "bad");
+  }
+
+  async function api(path, options = {}) {
+    const response = await fetch(path, {
+      ...options,
+      headers: {
+        "x-eliudi-admin-key": adminKey,
+        ...(options.headers || {})
+      },
+      cache: "no-store"
+    });
+
+    let data;
+    try {
+      data = await response.json();
+    } catch {
+      throw new Error("Server haikurudisha majibu yanayotambulika.");
+    }
+
+    if (!response.ok || !data.success) {
+      if (response.status === 401 || response.status === 403) {
+        throw new Error("Ufunguo haujakubaliwa. Hakikisha umeweka ufunguo sahihi.");
+      }
+      if (response.status === 503) {
+        throw new Error(data.message || "Mfumo haujawa tayari. Kagua mipangilio ya Render.");
+      }
+      throw new Error(data.message || "Ombi halikufanikiwa.");
+    }
+    return data;
+  }
+
+  function makeButton(label, className, handler) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = className;
+    button.textContent = label;
+    button.addEventListener("click", handler);
+    return button;
+  }
+
+  function renderComments(comments) {
+    list.replaceChildren();
+
+    if (!comments.length) {
+      const empty = document.createElement("div");
+      empty.className = "panel empty";
+      empty.textContent = "Hakuna maoni katika kundi hili kwa sasa.";
+      list.appendChild(empty);
+      return;
+    }
+
+    for (const comment of comments) {
+      const card = document.createElement("article");
+      card.className = "comment";
+
+      const name = document.createElement("h3");
+      name.textContent = comment.name || "Msomaji";
+
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      const date = comment.created_at
+        ? new Date(comment.created_at).toLocaleString("sw-TZ")
+        : "Muda haujulikani";
+      meta.textContent = "Namba: " + comment.id + " • " + date +
+        " • Hali: " + comment.status;
+
+      const content = document.createElement("p");
+      content.textContent = comment.content || "";
+
+      const actions = document.createElement("div");
+      actions.className = "actions";
+
+      if (comment.status !== "approved") {
+        actions.appendChild(makeButton("✅ Idhinisha", "approve", async () => {
+          if (busy) return;
+          busy = true;
+          try {
+            await api("/api/admin/eliudi/comments/" +
+              encodeURIComponent(comment.id) + "/approve", { method: "PATCH" });
+            showStatus(listStatus, "Maoni yameidhinishwa.", true);
+            await loadComments();
+          } catch (error) {
+            showStatus(listStatus, error.message);
+          } finally {
+            busy = false;
+          }
+        }));
+      }
+
+      actions.appendChild(makeButton("🗑️ Futa", "delete", async () => {
+        if (busy) return;
+        if (!window.confirm("Una uhakika unataka kufuta maoni haya?")) return;
+        busy = true;
+        try {
+          await api("/api/admin/eliudi/comments/" +
+            encodeURIComponent(comment.id), { method: "DELETE" });
+          showStatus(listStatus, "Maoni yamefutwa.", true);
+          await loadComments();
+        } catch (error) {
+          showStatus(listStatus, error.message);
+        } finally {
+          busy = false;
+        }
+      }));
+
+      card.append(name, meta, content, actions);
+      list.appendChild(card);
+    }
+  }
+
+  async function loadComments() {
+    if (!adminKey) return;
+    refreshButton.disabled = true;
+    showStatus(listStatus, "Inapakia maoni...", true);
+
+    try {
+      const data = await api(
+        "/api/admin/eliudi/comments?status=" + encodeURIComponent(filter.value)
+      );
+      renderComments(data.comments || []);
+      showStatus(listStatus, "Maoni yaliyopatikana: " +
+        (data.comments || []).length, true);
+    } catch (error) {
+      showStatus(listStatus, error.message);
+      if (error.message.includes("Ufunguo haujakubaliwa")) {
+        logout();
+      }
+    } finally {
+      refreshButton.disabled = false;
+    }
+  }
+
+  function logout() {
+    adminKey = "";
+    keyInput.value = "";
+    dashboard.classList.add("hidden");
+    loginPanel.classList.remove("hidden");
+    list.replaceChildren();
+    listStatus.textContent = "";
+    showStatus(loginStatus, "Umetoka kwenye ukurasa wa usimamizi.", true);
+  }
+
+  loginForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const enteredKey = keyInput.value.trim();
+    if (!enteredKey) {
+      showStatus(loginStatus, "Tafadhali ingiza ufunguo wa admin.");
+      return;
+    }
+
+    adminKey = enteredKey;
+    showStatus(loginStatus, "Inakagua ufunguo...", true);
+
+    try {
+      const data = await api("/api/admin/eliudi/comments?status=pending");
+      loginPanel.classList.add("hidden");
+      dashboard.classList.remove("hidden");
+      renderComments(data.comments || []);
+      showStatus(listStatus, "Umeingia. Maoni yanayosubiri: " +
+        (data.comments || []).length, true);
+    } catch (error) {
+      adminKey = "";
+      showStatus(loginStatus, error.message);
+    }
+  });
+
+  refreshButton.addEventListener("click", loadComments);
+  filter.addEventListener("change", loadComments);
+  logoutButton.addEventListener("click", logout);
+})();
+</script>
+</body>
+</html>

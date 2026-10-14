@@ -195,6 +195,44 @@ main {
   font-size: 13px;
   line-height: 1.7;
 }
+
+.comment-box label {
+  display: block;
+  margin-top: 12px;
+  font-weight: bold;
+}
+.comment-box input {
+  display: block;
+  width: 100%;
+  margin: 8px 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #081321;
+  color: white;
+  font: inherit;
+}
+.comment-item {
+  margin: 12px 0;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow-wrap: anywhere;
+}
+.comment-item p { white-space: pre-wrap; line-height: 1.6; }
+.comment-item small { color: var(--muted); }
+.comment-reactions { display: flex; gap: 8px; flex-wrap: wrap; }
+.comment-reactions button {
+  margin-top: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #172a41;
+  color: white;
+  cursor: pointer;
+}
+.comment-box button:disabled { opacity: .55; }
+
 .comment-box textarea {
   display: block;
   width: 100%;
@@ -289,21 +327,26 @@ footer strong { color: white; }
   </div>
 
   <h2 class="section-title">💬 MAONI YA WASOMAJI</h2>
-  <section class="panel comment-box">
-    <p>
-      Unaweza kuandika maoni yako kuhusu habari unayoisoma.
-    </p>
-    <p class="comment-status">
-      Mfumo mpya wa maoni, Like/Unlike na idhini ya admin utaunganishwa
-      na database katika hatua inayofuata. Sehemu hii bado haipokei maoni.
-    </p>
-    <textarea
-      id="eliudi-comment"
-      maxlength="1000"
-      placeholder="Maoni yako yatawekwa hapa baada ya mfumo kuunganishwa..."
-      disabled
-      aria-label="Maoni ya msomaji"></textarea>
-    <button type="button" disabled>Tuma maoni</button>
+  <section class="panel comment-box" aria-labelledby="eliudi-comments-heading">
+    <p>Andika maoni yako kuhusu habari. Maoni yataonekana baada ya kuidhinishwa na admin.</p>
+
+    <form id="eliudi-comment-form">
+      <label for="eliudi-name">Jina (si lazima)</label>
+      <input id="eliudi-name" maxlength="60" placeholder="Jina lako au acha wazi">
+
+      <label for="eliudi-comment">Maoni yako</label>
+      <textarea id="eliudi-comment" maxlength="1000" minlength="2"
+        required placeholder="Andika maoni yako hapa..."
+        aria-label="Maoni ya msomaji"></textarea>
+
+      <button id="eliudi-comment-submit" type="submit">📨 Tuma maoni</button>
+    </form>
+
+    <p id="eliudi-comment-status" class="comment-status" role="status" aria-live="polite"></p>
+    <h3 id="eliudi-comments-heading">Maoni yaliyoidhinishwa</h3>
+    <div id="eliudi-comments-list" aria-live="polite">
+      <p class="comment-status">⏳ Tunapakia maoni...</p>
+    </div>
   </section>
 </main>
 
@@ -440,5 +483,150 @@ footer strong { color: white; }
   loadVideos();
 })();
 </script>
+
+<script>
+(function () {
+  "use strict";
+
+  const form = document.getElementById("eliudi-comment-form");
+  const nameInput = document.getElementById("eliudi-name");
+  const contentInput = document.getElementById("eliudi-comment");
+  const submitButton = document.getElementById("eliudi-comment-submit");
+  const status = document.getElementById("eliudi-comment-status");
+  const commentsList = document.getElementById("eliudi-comments-list");
+
+  if (!form || !commentsList) return;
+
+  function getVisitorId() {
+    const key = "eliudi_comment_visitor_id";
+    try {
+      let id = localStorage.getItem(key);
+      if (!id) {
+        id = (window.crypto && crypto.randomUUID)
+          ? crypto.randomUUID()
+          : "v-" + Date.now() + "-" + Math.random().toString(36).slice(2);
+        localStorage.setItem(key, id);
+      }
+      return id;
+    } catch (_) {
+      return "v-" + Math.random().toString(36).slice(2) + Date.now();
+    }
+  }
+
+  const visitorId = getVisitorId();
+
+  function element(tag, text, className) {
+    const node = document.createElement(tag);
+    if (text !== undefined) node.textContent = text;
+    if (className) node.className = className;
+    return node;
+  }
+
+  function showMessage(message) {
+    status.textContent = message;
+  }
+
+  async function loadComments() {
+    try {
+      const response = await fetch("/api/eliudi/comments");
+      const data = await response.json();
+      if (!response.ok || !data.success) throw new Error(data.message || "Huduma haipatikani.");
+
+      commentsList.replaceChildren();
+
+      if (!data.comments.length) {
+        commentsList.appendChild(element("p", "Bado hakuna maoni yaliyoidhinishwa.", "comment-status"));
+        return;
+      }
+
+      data.comments.forEach(function (comment) {
+        const card = element("article", undefined, "comment-item");
+        card.appendChild(element("strong", comment.name || "Msomaji"));
+        card.appendChild(element("p", comment.content));
+        const date = comment.created_at
+          ? new Date(comment.created_at).toLocaleString("sw-TZ")
+          : "";
+        card.appendChild(element("small", date));
+
+        const reactions = element("div", undefined, "comment-reactions");
+
+        const likeButton = element("button",
+          "👍 Like (" + Number(comment.likes || 0) + ")");
+        likeButton.type = "button";
+        likeButton.addEventListener("click", function () {
+          sendReaction(comment.id, "like", likeButton);
+        });
+
+        const unlikeButton = element("button",
+          "👎 Unlike (" + Number(comment.unlikes || 0) + ")");
+        unlikeButton.type = "button";
+        unlikeButton.addEventListener("click", function () {
+          sendReaction(comment.id, "unlike", unlikeButton);
+        });
+
+        reactions.append(likeButton, unlikeButton);
+        card.appendChild(reactions);
+        commentsList.appendChild(card);
+      });
+    } catch (error) {
+      commentsList.replaceChildren(
+        element("p", "Imeshindwa kupakia maoni. Jaribu tena baadaye.", "comment-status")
+      );
+    }
+  }
+
+  async function sendReaction(id, reaction, button) {
+    button.disabled = true;
+    try {
+      const response = await fetch("/api/eliudi/comments/" + encodeURIComponent(id) + "/reaction", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ visitorId: visitorId, reaction: reaction })
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) throw new Error(data.message || "Imeshindwa.");
+      await loadComments();
+    } catch (error) {
+      showMessage(error.message || "Imeshindwa kuweka reaction.");
+      button.disabled = false;
+    }
+  }
+
+  form.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const name = nameInput.value.trim() || "Msomaji";
+    const content = contentInput.value.trim();
+
+    if (name.length > 60 || content.length < 2 || content.length > 1000) {
+      showMessage("Jina lisizidi herufi 60 na maoni yawe na herufi 2–1000.");
+      return;
+    }
+
+    submitButton.disabled = true;
+    showMessage("⏳ Tunatuma maoni...");
+
+    try {
+      const response = await fetch("/api/eliudi/comments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name, content: content })
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) throw new Error(data.message || "Imeshindwa kutuma maoni.");
+
+      form.reset();
+      showMessage(data.message || "Maoni yamepokelewa na yanasubiri idhini ya admin.");
+    } catch (error) {
+      showMessage(error.message || "Hitilafu ya mtandao. Jaribu tena.");
+    } finally {
+      submitButton.disabled = false;
+    }
+  });
+
+  loadComments();
+})();
+</script>
+
 </body>
 </html>
