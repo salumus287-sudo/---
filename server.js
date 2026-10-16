@@ -857,6 +857,9 @@ app.get("/api/memkwa-school-videos", async (req, res) => {
     });
   }
 });
+let nbcDrackNewsCache = null;
+let nbcDrackNewsCacheAt = 0;
+
 app.get("/api/nbc-drack-news", async (req, res) => {
   try {
     if (nbcDrackNewsCache &&
