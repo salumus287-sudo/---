@@ -10,6 +10,7 @@ const { importAllNews } = require("./dailynews-import");
 const { Pool } = require("pg");
 const registerLiveMatch = require("./live-match");
 const registerEliudiComments = require("./eliudi-comments");
+const registerDrackPush = require("./drack-push");
 
 const app = express();
 
@@ -43,6 +44,7 @@ registerDynamicSitemap(app);
 app.use(express.static(path.join(__dirname, "public")));
 registerLiveMatch(app, pool);
 registerEliudiComments(app, pool);
+registerDrackPush(app, pool);
 
 // ===============================
 // API HEALTH
