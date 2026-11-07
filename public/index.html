@@ -1065,6 +1065,14 @@ document.addEventListener("keydown", function(e) {
 });
 </script>
 
+
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/drack-hub-icon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#080c11">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="DRACK HUB">
+<meta name="mobile-web-app-capable" content="yes">
+
 </head>
 
 <body>
@@ -2999,6 +3007,21 @@ function drackCloseFootballLive() {
 <span id="drack-star-bottom-left" aria-hidden="true">✦</span>
 <span id="drack-star-bottom-right" aria-hidden="true">✦</span>
 <script src="/drack-push-client.js" defer></script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function() {
+    navigator.serviceWorker.register("/sw.js")
+      .then(function(reg) {
+        console.log("DRACK HUB PWA ready:", reg.scope);
+      })
+      .catch(function(err) {
+        console.log("PWA registration failed:", err);
+      });
+  });
+}
+</script>
+
 </body>
 </html>
 

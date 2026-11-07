@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<rect width="512" height="512" rx="110" fill="#080c11"/>
+<path d="M100 100h170c115 0 180 60 180 156S385 412 270 412H100z" fill="#00d9ff"/>
+<path d="M170 170h95c70 0 110 30 110 86s-40 86-110 86h-95z" fill="#080c11"/>
+<text x="256" y="285" text-anchor="middle" font-size="90" font-weight="bold" fill="#00d9ff">D</text>
+</svg>
