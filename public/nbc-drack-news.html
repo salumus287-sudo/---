@@ -92,16 +92,63 @@ function dateText(value) {
   if (Number.isNaN(d.getTime())) return esc(value);
   return d.toLocaleString('sw-TZ',{dateStyle:'medium',timeStyle:'short'});
 }
+function safeArticleHtml(html) {
+  const template = document.createElement('template');
+  template.innerHTML = html || '';
+  const allowed = new Set(['P','BR','STRONG','B','EM','I','U','H2','H3','H4','UL','OL','LI','BLOCKQUOTE','FIGURE','FIGCAPTION','IMG','A']);
+  function clean(node) {
+    [...node.childNodes].forEach(child => {
+      if (child.nodeType === 8) {
+        child.remove();
+      } else if (child.nodeType === 1) {
+        if (!allowed.has(child.tagName)) {
+          child.replaceWith(...child.childNodes);
+          return;
+        }
+        [...child.attributes].forEach(attr => {
+          const name = attr.name.toLowerCase();
+          if (!['href','src','alt','title'].includes(name)) child.removeAttribute(attr.name);
+        });
+        if (child.tagName === 'IMG') {
+          const src = child.getAttribute('src') || '';
+          if (!src.startsWith('https://')) child.remove();
+          else {
+            child.setAttribute('loading','lazy');
+            child.style.maxWidth = '100%';
+            child.style.height = 'auto';
+          }
+        } else if (child.tagName === 'A') {
+          const href = child.getAttribute('href') || '';
+          if (!href.startsWith('https://')) child.removeAttribute('href');
+          else {
+            child.setAttribute('target','_blank');
+            child.setAttribute('rel','noopener noreferrer');
+          }
+        }
+        if (child.isConnected) clean(child);
+      }
+    });
+  }
+  clean(template.content);
+  return template.innerHTML;
+}
 function renderNews(posts) {
   if (!posts?.length) return showEmpty('news-list','Hakuna habari zilizopatikana kwa sasa.');
-  $('news-list').innerHTML = posts.map(p => `
-    <article class="card">
+  $('news-list').innerHTML = posts.map(p => {
+    const title = esc(cleanHtml(p.title?.rendered || p.title || 'Habari'));
+    const media = p._embedded?.['wp:featuredmedia']?.[0]?.source_url || '';
+    const image = media.startsWith('https://')
+      ? `<img src="${esc(media)}" alt="${title}" loading="lazy" style="width:100%;max-height:360px;object-fit:cover;border-radius:10px;margin:10px 0">`
+      : '';
+    const content = safeArticleHtml(p.content?.rendered || p.content || p.excerpt?.rendered || p.excerpt || 'Maelezo ya habari hayajapatikana.');
+    return `<article class="card">
       <span class="badge">HABARI ZA LIGI</span>
-      <h3>${esc(cleanHtml(p.title?.rendered || p.title))}</h3>
-      <p>${esc(cleanHtml(p.excerpt?.rendered || p.excerpt || 'Soma habari kamili kwenye chanzo.')).slice(0,320)}</p>
+      <h3>${title}</h3>
+      ${image}
+      <div class="article-content">${content}</div>
       <p>📅 ${dateText(p.date)}</p>
-      <a href="${esc(p.link)}" target="_blank" rel="noopener">SOMA HABARI KAMILI ↗</a>
-    </article>`).join('');
+    </article>`;
+  }).join('');
 }
 function renderTable(id, table) {
   if (!table) return showEmpty(id,'Msimamo haujapatikana kwa sasa.');

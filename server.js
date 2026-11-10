@@ -888,7 +888,7 @@ app.get("/api/nbc-drack-news", async (req, res) => {
     }
 
     const urls = [
-      root + "wp/v2/posts?per_page=15&_fields=date,link,title,excerpt",
+      root + "wp/v2/posts?per_page=15&_embed=1&_fields=date,link,title,excerpt,content,featured_media,_embedded",
       root + "sportspress/v2/tables?per_page=10&leagues=432&seasons=431",
       root + "sportspress/v2/tables?per_page=10&leagues=445&seasons=431",
       root + "sportspress/v2/events?per_page=100&leagues=432&seasons=431&orderby=date&order=desc",
